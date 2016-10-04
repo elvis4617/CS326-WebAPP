@@ -1,0 +1,56 @@
+body{
+
+}
+
+
+/*Left Navbar before collapse*/
+@media (min-width:768px){
+.navbar-fixed-left{
+
+  width: 270px;
+  position: fixed;
+  border-radius: 0;
+  height: 100%;
+}
+
+}
+
+
+.navbar-brand{
+  width:100%;
+  margin-top, margin-bottom: 20px;
+}
+
+ul.nav{
+  margin-top:50px;
+}
+
+ul.nav li a{
+  line-height:40px;
+  font-size: 1.2em;
+
+}
+
+ul.nav li a .glyphicon{
+  padding:10px;
+  padding-left:0px;
+}
+
+
+/*Left Navbar after collapse*/
+@media (max-width:768px){
+  .navbar-fixed-left{
+    width:55px;
+    position:fixed;
+    height:100%;
+  }
+
+  ul.nav.navbar-toggle{
+    border:none;
+    width: 100%;
+    margin-top:20px;
+  }
+  .navbar-brand{
+    padding-left:0;
+  }
+}
