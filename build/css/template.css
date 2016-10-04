@@ -53,4 +53,14 @@ ul.nav li a .glyphicon{
   .navbar-brand{
     padding-left:0;
   }
+  .hidding{
+    display: none;
+  }
+}
+
+.logout{
+  position:absolute;
+  bottom:0px;
+  left:0px;
+  width:100%;
 }
