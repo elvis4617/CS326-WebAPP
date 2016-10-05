@@ -1,0 +1,25 @@
+@media (max-width:768px){
+  .content{
+    padding-left:60px;
+  }
+}
+
+@media(min-width:768px){
+  .content{
+    padding-left:280px;
+  }
+}
+
+.content .row{
+
+  padding-left:10px;
+}
+
+.message-panel{
+  background: lightgray;
+}
+
+ul.media-list li{
+  padding-top:10px;
+  border-bottom: 0.5px solid blue;
+}
