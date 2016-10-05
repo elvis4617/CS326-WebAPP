@@ -1,0 +1,50 @@
+body {
+  padding-top: 60px;
+}
+
+.page-number a {
+  font-size: 17px;
+  border-style: solid;
+  border-color: dodgerblue;
+  border-width: 1px;
+  padding: 5px
+}
+
+.page-number strong{
+  font-size: 17px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: dodgerblue;
+  color: white;
+  background-color: deepskyblue;
+  padding: 5px
+}
+
+.forum.table th.cell-stat{
+  width: 8em;
+}
+
+.small-letters{
+  font-size:80%;
+}
+
+.thread{
+  line-height:3em !important;
+}
+
+.thread-body{
+  width:100%;
+  min-height:200px;
+}
+
+.thread-body-container{
+  padding:1px;
+}
+
+.panel-body{
+  padding-top: 0px !important;
+}
+
+.name{
+  color:black;
+}
