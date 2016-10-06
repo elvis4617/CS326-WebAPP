@@ -11,6 +11,7 @@ body{
   position: fixed;
   border-radius: 0;
   height: 100%;
+
 }
 
 }
@@ -43,6 +44,7 @@ ul.nav li a .glyphicon{
     width:55px;
     position:fixed;
     height:100%;
+    z-index: 10;
   }
 
   ul.nav.navbar-toggle{

@@ -1,3 +1,41 @@
+.tab-bar{
+  padding-left: 25px;
+}
+
+.btn-friends{
+  font-size: 18px;
+  background-color: #f8f8f8;
+}
+
+.pad{
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+.media-pad{
+  padding-top:5px;
+}
+
+.friends-panel{
+  border-color: #e7e7e7;
+  background-color: #f8f8f8;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #e7e7e7;
+    margin: 1em 0;
+    padding: 0;
+    width: 50%;
+}
+
+.user-name{
+  font-size: 18px;
+  color: #337ab7;
+}
+
 body {
   padding-top: 60px;
 }
@@ -47,4 +85,8 @@ body {
 
 .name{
   color:black;
+}
+
+.friend-request{
+  width: 50%;
 }
