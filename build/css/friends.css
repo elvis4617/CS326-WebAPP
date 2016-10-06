@@ -4,7 +4,7 @@
 }
 
 .media-pad{
-  padding-top:5px;
+  padding-top: 5px;
 }
 
 .friends-panel{
@@ -13,9 +13,9 @@
 
 .friends-panel .media {
   /* Adds whitespace between bottom border and buttons */
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   /* Adds whitespace between top of media object and top border. */
-  padding-top: 5px;
+  padding-top: 15px;
 }
 
 hr {
@@ -25,7 +25,6 @@ hr {
     border-top: 1px solid #e7e7e7;
     margin: 1em 0;
     padding: 0;
-    width: 50%;
 }
 
 .user-name{
@@ -46,5 +45,5 @@ body {
 }
 
 .friend-request{
-  margin-top: 10px;
+  margin-top: 15px;
 }
