@@ -1,0 +1,29 @@
+body{
+  padding-top:60px;
+}
+
+li.accepted{
+  background-color: #abecaf;
+}
+
+li.unread{
+  background-color: #f5f1f1;
+}
+
+li.accepted, li.unread{
+  border-bottom: 0.5px solid lightgray;
+}
+
+img.media-object{
+  width:64px;
+  height:64px;
+}
+
+.n-toolbar .btn{
+
+  font-size:18px;
+}
+
+.n-toolbar .active{
+  color:lightgray;
+}

@@ -21,7 +21,6 @@
 }
 
 ul.media-list li{
-  padding-top:10px;
   border-bottom: 0.5px solid blue;
 }
 
@@ -31,4 +30,9 @@ ul.list-striped > li:nth-child(even){
 
 ul.list-striped > li:nth-child(odd){
   background-color: #babae6;
+}
+
+img.media-object {
+  width:67px;
+  height:67px;
 }
