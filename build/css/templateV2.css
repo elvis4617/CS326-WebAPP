@@ -1,0 +1,18 @@
+.navbar button:active,
+.navbar button:focus,
+.navbar button:active:focus {
+  background-color: transparent;
+  color: blue ;
+  border: none;
+/* Removes halo and shadow on button when clicked. */
+  outline: none;
+  box-shadow: none;
+}
+
+body{
+  padding-top:60px;
+}
+
+.navbar button{
+  border:none !important;
+}
