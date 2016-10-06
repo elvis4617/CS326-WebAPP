@@ -1,12 +1,3 @@
-.tab-bar{
-  padding-left: 25px;
-}
-
-.btn-friends{
-  font-size: 18px;
-  background-color: #f8f8f8;
-}
-
 .pad{
   padding-top: 15px !important;
   padding-bottom: 15px !important;
@@ -17,8 +8,14 @@
 }
 
 .friends-panel{
-  border-color: #e7e7e7;
   background-color: #f8f8f8;
+}
+
+.friends-panel .media {
+  /* Adds whitespace between bottom border and buttons */
+  margin-bottom: 10px;
+  /* Adds whitespace between top of media object and top border. */
+  padding-top: 5px;
 }
 
 hr {
@@ -40,45 +37,6 @@ body {
   padding-top: 60px;
 }
 
-.page-number a {
-  font-size: 17px;
-  border-style: solid;
-  border-color: dodgerblue;
-  border-width: 1px;
-  padding: 5px
-}
-
-.page-number strong{
-  font-size: 17px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: dodgerblue;
-  color: white;
-  background-color: deepskyblue;
-  padding: 5px
-}
-
-.forum.table th.cell-stat{
-  width: 8em;
-}
-
-.small-letters{
-  font-size:80%;
-}
-
-.thread{
-  line-height:3em !important;
-}
-
-.thread-body{
-  width:100%;
-  min-height:200px;
-}
-
-.thread-body-container{
-  padding:1px;
-}
-
 .panel-body{
   padding-top: 0px !important;
 }
@@ -88,5 +46,5 @@ body {
 }
 
 .friend-request{
-  width: 50%;
+  margin-top: 10px;
 }
