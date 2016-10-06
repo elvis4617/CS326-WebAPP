@@ -1,23 +1,10 @@
-@media (max-width:768px){
-  .content{
-    padding-left:60px;
-    z-index: 1;
-  }
-}
-
-@media(min-width:768px){
-  .content{
-    padding-left:280px;
-  }
-}
-
-.content .row{
-
-  padding-left:10px;
+body{
+  padding-top: 60px;
 }
 
 .message-panel{
-  background: lightgray;
+  background: #f8f8f8;
+  margin-top: 10px;
 }
 
 ul.media-list li{
