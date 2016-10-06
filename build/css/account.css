@@ -39,3 +39,8 @@ input{
   width: 70%;
   min-height: 100px;
 }
+
+.profpic {
+  width: 100px;
+  height: 100px;
+}
