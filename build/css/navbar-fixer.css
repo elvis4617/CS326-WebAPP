@@ -25,6 +25,7 @@
   }
   .navbar-nav>li {
       float: none;
+      display: inline-block;;
   }
   .navbar-nav>li>a {
       padding-top: 10px;
