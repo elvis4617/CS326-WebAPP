@@ -58,7 +58,7 @@ h6 {
     text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
 }
 
-@media(max-width:767px) {
+@media(max-width:1200px) {
     .intro-message {
         padding-bottom: 15%;
     }
