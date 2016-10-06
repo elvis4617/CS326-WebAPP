@@ -1,0 +1,13 @@
+.group_pic {
+  width: 100px;
+  height: 100px;
+}
+
+.description {
+  padding-top: 20px;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.button {
+  padding-top: 10px;
+}
