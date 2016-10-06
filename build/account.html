@@ -4,184 +4,206 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>I didn't steal this from workshop3</title>
+    <title>To Gather</title>
     <!-- Bootstrap's CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/template.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
     <link href="css/account.css" rel="stylesheet">
+
   </head>
   <body>
     <!-- All of your HTML will go between here.... -->
 
 
 
-            <!--Left Side Bar-->
-        <div class = "navbar navbar-default navbar-fixed-left">
-          <a class="navbar-brand" href="#" style="display:block">Brand</a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand logo" href="index.html">ToGather</a>
+                <form class = "navbar-form navbar-left" role ="search">
+                  <div class = "input-group">
+                    <input type ="text" class = "form-control" placeholder="Search ToGather">
+                      <span class = "input-group-btn">
+                        <button type = "submit" class = "btn btn-default">
+                          <span class = "glyphicon glyphicon-search"></span>
+                        </button>
+                      </span>
+                  </div>
+                </form>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="index.html">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Groups</a>
+                    </li>
+                    <li>
+                        <a href="invitationpage.html">Invitation</a>
+                    </li>
+                    <li>
+                        <a href="forum.html">Forum</a>
+                    </li>
+                    <li>
+                        <a href="friends_my_friends.html">Friends</a>
+                    </li>
+                    <li>
+                      <a class = "dropdown-toggle" data-toggle = "dropdown" href = "#">
+                        <span class = "glyphicon glyphicon-bell"></span>
+                        <span class = "badge">3</span>
+                      </a>
 
-          <!--Collased Navbar-->
-          <ul class="nav navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-            <li role="presentation" class="active">
-              <a href="#"><span class="glyphicon glyphicon-home"></span>
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-list-alt"></span>
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-check"></span>
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-user"></span>
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-cog"></span>
-            </a>
-            </li>
-          </ul>
+                      <ul class = "dropdown-menu">
+                        <li><a href = "#">Test Notification 1</a></li>
+                        <li><a href = "#">Test Notification 2</a></li>
+                        <li><a href = "#">Test Notification 3</a></li>
+                      </ul>
+                    </li>
 
+                    <li class="nav-icon">
+                      <a class = "dropdown-toggle" data-toggle = "dropdown" href = "#">
+                        <span class = "glyphicon glyphicon-envelope"></span>
+                        <span class = "badge">2</span>
+                      </a>
+                      <ul class = "dropdown-menu">
+                        <li><a href = "#">Test Message 1</a></li>
+                        <li><a href = "#">Test Message 2</a></li>
+                      </ul>
+                    </li>
 
-          <!--Normal Navbar-->
-          <ul class="nav navbar-collapse collapse" id="navbar-collpase">
-            <li role="presentation" class="active">
-              <a href="#"><span class="glyphicon glyphicon-home"></span>
-                Home
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-list-alt"></span>
-                Forum
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-check"></span>
-                My Invitation/Request
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-user"></span>
-                Friends
-            </a>
-            </li>
-            <li role="presentation">
-              <a href="#"><span class="glyphicon glyphicon-cog"></span>
-                My Account
-            </a>
-            </li>
-          </ul>
+                    <li class="nav-icon">
+                      <a class = "dropdown-toggle" data-toggle = "dropdown" href = "#">
+                        <img width = "20px" class = "img-rounded" src = "img/testProfilePic.jpg">
+                      </a>
+                      <ul class = "dropdown-menu">
+                        <li><a href = "account.html">View Profile</a></li>
+                        <li><a href = "#">Log Out</a></li>
+                      </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
 
-          <a type="button" class="btn btn-default logout collapsed" aria-label="Left Align">
-            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-              <span class="hidding">  User Name(Not you?)</span>
-          </a>
-
-
-        </div><!--left side bar-->
-
-        <div class="container-fluid content">
+        <div class="container content">
           <!-- Title -->
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-7 col-md-offset-3">
               <div class="page-header">
                 <h1>My Account </h1>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="media">
-                <div class="media-left media-top">
-                  <img class="media-object" src="..." alt="Profle PIC">
-                </div>
-                <div class="media-body">
-                  <h2>Username</h2>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="media">
+                    <div class="media-left media-top">
+                      <img class="media-object user-icon" src="..." alt="Profle PIC">
+                    </div>
+                    <div class="media-body">
+                      <h2>Username</h2>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <br>
-          <div class="row info">
-            <h4>User Information:</h4>
-            <div class="col-md-4">
-              <label>First Name:</label>John
-            </div>
-            <div class="col-md-8">
-              <label>Last name:</label>Doe
-            </div>
-          </div>
-          <div class="row text">
-            <div class="col-md-12">
-              <label>E-mail</label>jdoe@example.com
-            </div>
-          </div>
-          <div class="row text">
-            <div class="col-md-4">
-              <label>Grade</label>Senior
-            </div>
-            <div class="col-md-8">
-              <label>Major</label>Computer Science
-            </div>
-          </div>
-          <div class="row text">
-            <div class="col-md-12">
-              <label>Description</label>This is me.
-            </div>
-          </div>
-          <br>
-          <div class="row input">
-            <h4>Edit Information:</h4>
-            <div class="col-md-4">
-              <form>
-                <label>First name:</label>
-                <input type="text" name="firstname">
-              </form>
-            </div>
-            <div class="col-md-8">
-              <form>
-                <label>Last name:</label>
-                <input type="text" name="lastname">
-              </form>
-            </div>
-          </div>
-          <div class="row text">
-            <div class="col-md-12">
-              <form>
-                <label>E-mail:</label>
-                <input type="text" name="e-mail">
-              </form>
-            </div>
-          </div>
-          <div class="row text">
-            <div class="col-md-4">
-              <form>
-                <label>Grade:</label>
-                <input type="text" name="grade">
-              </form>
-            </div>
-            <div class="col-md-8">
-              <form>
-                <label>Major:</label>
-                <input type="text" name="major">
-              </form>
-            </div>
-          </div>
-          <div class="row text">
-            <div class="col-md-12">
-              <form>
-                <label>Description:</label>
-                <input type="text" name="description">
-              </form>
-            </div>
-          </div>
-          <div class="row submit">
-            <div class="col-md-12">
-              <button type="button">Submit</button>
+
+              <br>
+              <div class="row info">
+                <h4>User Information:</h4>
+                <div class="col-md-4">
+                  <label>First Name:</label>John
+                </div>
+                <div class="col-md-8">
+                  <label>Last name:</label>Doe
+                </div>
+              </div>
+              <div class="row text">
+                <div class="col-md-12">
+                  <label>E-mail</label>jdoe@example.com
+                </div>
+              </div>
+              <div class="row text">
+                <div class="col-md-4">
+                  <label>Grade</label>Senior
+                </div>
+                <div class="col-md-8">
+                  <label>Major</label>Computer Science
+                </div>
+              </div>
+              <div class="row text">
+                <div class="col-md-12">
+                  <label>Description</label>This is me.
+                </div>
+              </div>
+              <br>
+
+              <div class="row input">
+                <h4>Edit Information:</h4>
+                <div class="col-md-8">
+                  <form>
+                    <label>First name:</label>
+                    <input type="text" name="firstname">
+                  </form>
+                </div>
+                <div class="col-md-8">
+                  <form>
+                    <label>Last name:</label>
+                    <input type="text" name="lastname">
+                  </form>
+                </div>
+              </div>
+              <div class="row text">
+                <div class="col-md-8">
+                  <form>
+                    <label>E-mail:</label>
+                    <input type="text" name="e-mail">
+                  </form>
+                </div>
+              </div>
+              <div class="row text">
+                <div class="col-md-8">
+                  <form>
+                    <label>Grade:</label>
+                    <input type="text" name="grade">
+                  </form>
+                </div>
+                <div class="col-md-8">
+                  <form>
+                    <label>Major:</label>
+                    <input type="text" name="major">
+                  </form>
+                </div>
+              </div>
+              <div class="row text">
+                <div class="col-md-8">
+                  <form>
+                    <label>Description:</label>
+                    <textarea class="description" type="text" name="description" draggable="false">
+                    </textarea>
+                  </form>
+                </div>
+              </div>
+              <div class="row submit">
+                <div class="col-md-12">
+                  <button type="button">Submit</button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div><!--container-->
+
 
 
     <!-- ...and here. -->
