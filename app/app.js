@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MailBox from './components/mailbox';
+import MailBoxThread from './components/mailboxthread';
 import NavBar from './components/navbar';
 import { IndexRoute, Router, Route, browserHistory, Link} from 'react-router';
 
@@ -25,7 +25,7 @@ class LandingPage extends React.Component {
 
 class NotificationPage extends React.Component {
   render() {
-    return <MailBox />;
+    return <MailBoxThread />;
   }
 }
 

@@ -6,12 +6,12 @@ export default class Mail extends React.Component {
       <div>
       <div className="media">
         <div className="media-left media-top">
-          <img className="media-object" src="../build/img/pineapple_profile_pic.png" alt="Generic placeholder image"/>
+          <img className="media-object" src="img/pineapple_profile_pic.png" alt="Generic placeholder image"/>
         </div>
         <div className="media-body">
           <div className="media-body">
               <a href="#">{this.props.author}</a>
-              <br /> {this.props.tilte}
+              <br /> {this.props.title}
               <br /><span className="pull-right"><a href="#" >Accepted</a> · <a href="#" >Peace Out</a> · <a type="button" data-toggle="modal" data-target="#modal-content-1">Details</a> · {this.props.postDate}</span>
                 <div className="modal fade" id="modal-content-1" role="dialog">
                   <div className="modal-dialog">

@@ -27,3 +27,25 @@ img.media-object{
 .n-toolbar .active{
   color:lightgray;
 }
+
+.message-panel{
+  background: #f8f8f8;
+  margin-top: 10px;
+}
+
+ul.media-list li{
+  border-bottom: 0.5px solid blue;
+}
+
+ul.list-striped > li:nth-child(even){
+  background-color: #fdffd1;
+}
+
+ul.list-striped > li:nth-child(odd){
+  background-color: #babae6;
+}
+
+img.media-object {
+  width:67px;
+  height:67px;
+}
