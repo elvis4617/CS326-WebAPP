@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MailBox from './components/mailbox';
-import { IndexRoute, Router, Route, browserHistory } from 'react-router';
+import NavBar from './components/navbar';
+import { IndexRoute, Router, Route, browserHistory, Link} from 'react-router';
 
 // Fake Home Page
 class LandingPage extends React.Component {
@@ -13,6 +14,9 @@ class LandingPage extends React.Component {
       <p>I am Fake</p>
       <p>I am Fake</p>
       <p>I am Fake</p>
+      <Link to="/Notification">
+          whatever
+        </Link>
       </div>
     );
   }
@@ -28,7 +32,10 @@ class NotificationPage extends React.Component {
 class App extends React.Component {
     render() {
       return (
-        <div>{this.props.children}</div>
+        <div>
+        <NavBar />
+        {this.props.children}
+        </div>
       );
     }
   }
@@ -38,7 +45,7 @@ class App extends React.Component {
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={LandingPage} />
-        <Route path="Notification" component={NotificationPage} />
+        <Route path="/Notification" component={NotificationPage} />
       </Route>
     </Router>
   ),
