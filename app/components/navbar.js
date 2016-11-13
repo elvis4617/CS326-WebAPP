@@ -1,4 +1,5 @@
 import React from 'react';
+import Reset_DB from './reset_db';
 import { Link} from 'react-router';
 
 export default class NavBar extends React.Component{
@@ -30,6 +31,9 @@ export default class NavBar extends React.Component{
 
               <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                   <ul className="nav navbar-nav navbar-right list-inline">
+                      <li>
+                        <Reset_DB />
+                      </li>
                       <li>
                         <Link to={'/Index'}>
                           <span href="#">Home</span>

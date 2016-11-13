@@ -138,7 +138,7 @@ var initialData = {
     },
     "4": {
       "_id": 4,
-      "contents": [1] 
+      "contents": [1]
     }
   }
 };
@@ -199,23 +199,3 @@ export function resetDatabase() {
   localStorage.setItem('togather_data', JSON.stringify(initialData));
   data = JSONClone(initialData);
 }
-
-/**
- * Reset database button.
- */
-class ResetDatabase extends React.Component {
-  render() {
-    return (
-      <button className="btn btn-default" type="button" onClick={() => {
-        resetDatabase();
-        window.alert("Database reset! Refreshing the page now...");
-        document.location.reload(false);
-      }}>Reset Mock DB</button>
-    );
-  }
-}
-
-ReactDOM.render(
-  <ResetDatabase />,
-  document.getElementById('togather-db-reset')
-);
