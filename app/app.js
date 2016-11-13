@@ -2,21 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MailBoxThread from './components/mailboxthread';
 import NavBar from './components/navbar';
-import { IndexRoute, Router, Route, browserHistory, Link} from 'react-router';
+import Landing from './components/landing';
+import Recommend_Left from './components/Recommend_Left';
+import Recommend_Right from './components/Recommend_Right';
+import Footer from './components/footer';
+import { IndexRoute, Router, Route, browserHistory} from 'react-router';
 
-// Fake Home Page
 class LandingPage extends React.Component {
   render() {
     return (
       <div>
-      <p>I am Fake</p>
-      <p>I am Fake</p>
-      <p>I am Fake</p>
-      <p>I am Fake</p>
-      <p>I am Fake</p>
-      <Link to="/Notification">
-          whatever
-        </Link>
+        <Landing />
+        <Recommend_Left />
+        <Recommend_Right />
+        <Recommend_Left />
+        <Footer />
       </div>
     );
   }
@@ -45,7 +45,9 @@ class App extends React.Component {
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={LandingPage} />
+        <Route path="/Index" component={LandingPage} />
         <Route path="/Notification" component={NotificationPage} />
+        //some
       </Route>
     </Router>
   ),

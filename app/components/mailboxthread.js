@@ -3,6 +3,7 @@ import MailBox from './mailbox';
 import Mail from './mail';
 import MailToolBar from './mailtoolbar';
 import PageNav from './pagenav';
+import MailBoxTitle from './mailbox_title'
 
 export default class MailBoxThread extends React.Component{
   render(){
@@ -10,10 +11,8 @@ export default class MailBoxThread extends React.Component{
       <div className="container">
         <div className="row">
           <div className="col-md-8 col-md-offset-2">
-
-            <div className="row">
-              <MailToolBar />
-            </div>
+            <MailBoxTitle />
+            <MailToolBar />
 
             <div className="row">
               <MailBox >

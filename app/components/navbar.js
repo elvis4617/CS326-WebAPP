@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link} from 'react-router';
 
 export default class NavBar extends React.Component{
   render(){
@@ -12,7 +13,9 @@ export default class NavBar extends React.Component{
                       <span className="icon-bar"></span>
                       <span className="icon-bar"></span>
                   </button>
-                  <a className="navbar-brand logo" href="index.html">ToGather</a>
+                  <Link to={'/Index'}>
+                    <span className="navbar-brand logo" href="#">ToGather</span>
+                  </Link>
                   <form className= "navbar-form navbar-left" role ="search">
                     <div className= "input-group">
                       <input type ="text" className= "form-control" placeholder="Search ToGather" />
@@ -28,16 +31,24 @@ export default class NavBar extends React.Component{
               <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                   <ul className="nav navbar-nav navbar-right list-inline">
                       <li>
-                          <a href="index.html">Home</a>
+                        <Link to={'/Index'}>
+                          <span href="#">Home</span>
+                        </Link>
                       </li>
                       <li>
-                          <a href="notifications.html">Invitation</a>
+                        <Link to={'/Notification'}>
+                          <span href="#">Invitation</span>
+                        </Link>
                       </li>
                       <li>
-                          <a href="forum.html">Forum</a>
+                        <Link to={'/Forum'}>
+                          <span href="">Forum</span>
+                        </Link>
                       </li>
                       <li>
-                          <a href="friends_my_friends.html">Friends</a>
+                        <Link to={'/MyFriend'}>
+                          <span href="#">Friends</span>
+                        </Link>
                       </li>
 
                       <li>
@@ -69,8 +80,14 @@ export default class NavBar extends React.Component{
                           <img width = "20px" className= "img-rounded" src = "img/testProfilePic.jpg"/>
                         </a>
                         <ul className= "dropdown-menu">
-                          <li><a href = "account.html">View Profile</a></li>
-                          <li><a href = "#">Log Out</a></li>
+                          <li>
+                            <Link to={'/MyProfile'}>
+                              <span href = "#">View Profile</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <a href = "#">Log Out</a>
+                          </li>
                         </ul>
                       </li>
                   </ul>
