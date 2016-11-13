@@ -6,7 +6,7 @@ import Landing from './components/landing';
 import Recommend_Left from './components/Recommend_Left';
 import Recommend_Right from './components/Recommend_Right';
 import Footer from './components/footer';
-import { IndexRoute, Router, Route, browserHistory} from 'react-router';
+import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 
 class LandingPage extends React.Component {
   render() {
@@ -42,7 +42,7 @@ class App extends React.Component {
 
 
   ReactDOM.render((
-    <Router history={browserHistory}>
+    <Router history={hashHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={LandingPage} />
         <Route path="/Index" component={LandingPage} />
