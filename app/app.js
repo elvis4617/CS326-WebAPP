@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import MailBoxThread from './components/mailboxthread';
 import NavBar from './components/navbar';
 import Landing from './components/landing';
-import Recommend_Left from './components/Recommend_Left';
-import Recommend_Right from './components/Recommend_Right';
+import Recommend from './components/Recommend';
+import Recommend_Left from './components/recommend_left';
+import Recommend_Right from './components/recommend_right';
 import Footer from './components/footer';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 
@@ -13,9 +14,7 @@ class LandingPage extends React.Component {
     return (
       <div>
         <Landing />
-        <Recommend_Left />
-        <Recommend_Right />
-        <Recommend_Left />
+        <Recommend user={2} />
         <Footer />
       </div>
     );
@@ -25,7 +24,12 @@ class LandingPage extends React.Component {
 
 class NotificationPage extends React.Component {
   render() {
-    return <MailBoxThread />;
+    return (
+      <div>
+        <MailBoxThread />;
+        <Footer />
+      </div>
+    )
   }
 }
 
@@ -33,7 +37,7 @@ class App extends React.Component {
     render() {
       return (
         <div>
-        <NavBar />
+        <NavBar user={2 } />
         {this.props.children}
         </div>
       );

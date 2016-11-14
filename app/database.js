@@ -16,7 +16,8 @@ var initialData = {
       "description": "I'm a person",
       "friendList": [2,3], // list of id's of friends
       "groupList": [1], // list of id's of goups the user belongs to
-      "mailbox": [1] // list of request id's in the users mailbox
+      "mailbox": [1], // list of request id's in the users mailbox
+      "postItem":  [] //list of postItem in the
     },
     "2": {
       "_id": 2,
@@ -29,7 +30,8 @@ var initialData = {
       "description": "I'm a human",
       "friendList": [1,3,4],
       "groupList": [1],
-      "mailbox": []
+      "mailbox": [],
+      "postItem": [1,2,3]
     },
     "3": {
       "_id": 3,
@@ -42,7 +44,8 @@ var initialData = {
       "description": "I'm an artist",
       "friendList": [1,2,4],
       "groupList": [2],
-      "mailbox": []
+      "mailbox": [],
+      "postItem": []
     },
     "4": {
       "_id": 4,
@@ -55,7 +58,8 @@ var initialData = {
       "description": "I'm me",
       "friendList": [2,3],
       "groupList": [1],
-      "mailbox": []
+      "mailbox": [],
+      "postItem": []
     }
   },
   // "group collection"
@@ -119,6 +123,55 @@ var initialData = {
           "postDate": 1453690800000
         }
       ]
+    },
+    "2": {
+      "_id": 2, // id of the post item
+      "author": 2, // id of the author
+      "postDate": 1453690800000,
+      "title": "Final",
+      "content": "Man that cs250 midterm was awful",
+      "viewCount": 2,
+      "replyCount": 3,
+      "lastReplyAuthor": 3, // id of the last user to reply
+      "lastReplyDate": 1453690800000,
+      "commentThread": [ // list of all comments on the post
+        {
+          "author": 1, // id of the user who commented
+          "content": "yeah it was",
+          "postDate": 1453690800000
+        },
+        {
+          "author": 3,
+          "content": "It wasn't that bad.",
+          "postDate": 1453690800000
+        }
+      ]
+    },
+    "3": {
+      "_id": 3, // id of the post item
+      "author": 2, // id of the author
+      "postDate": 1453690800000,
+      "title": "Midterm",
+      "content": "Man that cs250 midterm was awful",
+      "viewCount": 3,
+      "replyCount": 4,
+      "lastReplyAuthor": 3, // id of the last user to reply
+      "lastReplyDate": 1453690800000,
+      "commentThread": [ // list of all comments on the post
+        {
+          "author": 1, // id of the user who commented
+          "content": "yeah it was",
+          "postDate": 1453690800000
+        },
+        {
+          "author": 3,
+          "content": "It wasn't that bad.",
+          "postDate": 1453690800000
+        }
+      ]
+    },
+    "4":{
+      "totalNumOfPost": 3
     }
   },
   // forum collection

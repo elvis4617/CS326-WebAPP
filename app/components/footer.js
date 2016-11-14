@@ -10,7 +10,7 @@ export default class Footer extends React.Component{
                   <div className="col-lg-12">
                       <ul className="list-inline">
                           <li>
-                              <Link to="./Index">
+                              <Link to="/Index">
                                 <span href="#">Home</span>
                               </Link>
                           </li>

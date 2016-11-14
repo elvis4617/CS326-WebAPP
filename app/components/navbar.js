@@ -1,9 +1,12 @@
 import React from 'react';
 import Reset_DB from './reset_db';
 import { Link} from 'react-router';
+import UnReadMsg from './unreadmsg'
 
 export default class NavBar extends React.Component{
+
   render(){
+    var data = this.state;
     return (
       <nav className="navbar navbar-default navbar-fixed-top topnav" role="navigation">
           <div className="container topnav">
@@ -55,29 +58,7 @@ export default class NavBar extends React.Component{
                         </Link>
                       </li>
 
-                      <li>
-                        <a className= "dropdown-toggle" data-toggle = "dropdown" href = "#">
-                          <span className= "glyphicon glyphicon-bell"></span>
-                          <span className= "badge">3</span>
-                        </a>
-
-                        <ul className= "dropdown-menu">
-                          <li><a href = "#">Test Notification 1</a></li>
-                          <li><a href = "#">Test Notification 2</a></li>
-                          <li><a href = "#">Test Notification 3</a></li>
-                        </ul>
-                      </li>
-
-                      <li className="nav-icon">
-                        <a className= "dropdown-toggle" data-toggle = "dropdown" href = "#">
-                          <span className= "glyphicon glyphicon-envelope"></span>
-                          <span className= "badge">2</span>
-                        </a>
-                        <ul className= "dropdown-menu">
-                          <li><a href = "#">Test Message 1</a></li>
-                          <li><a href = "#">Test Message 2</a></li>
-                        </ul>
-                      </li>
+                      <UnReadMsg user={this.props.user}/>
 
                       <li className="nav-icon">
                         <a className= "dropdown-toggle" data-toggle = "dropdown" href = "#">
