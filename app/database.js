@@ -85,17 +85,17 @@ var initialData = {
     }
   },
   // "requests" collection. requests sent to a ToGather user.
-  "requests": {
+  "requestItems": {
     // request with id = 1
     "1": {
       "_id": 1,
       "author": 4, // id of the user who is the author
       "reciever": 1, // id of the user who is recieving the request
       "createDate": 1453690800000,
-      "status": "unaccepted",
+      "status": false,
       "title": "friendRequest",
       "content": "Would you like to be friends?",
-      "read": "false" // if the reciever has read the request
+      "read": false // if the reciever has read the request
     }
   },
   // postItem collection

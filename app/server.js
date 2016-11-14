@@ -4,18 +4,28 @@ import {readDocument, readDocumentNoId, writeDocument, addDocument} from './data
  * Given a feed item ID, returns a FeedItem object with references resolved.
  * Internal to the server, since it's synchronous.
  */
-function getFeedItemSync(feedItemId) {
-  var feedItem = readDocument('feedItems', feedItemId); // Resolve 'like' counter.
-  feedItem.likeCounter =
-  feedItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
+function getRequestItemSync(requestItemId) {
+  var requestItem = readDocument('requestItem', requestItemId);
+  requestItem.likeCounter =
+  requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
   // FeedItems in the DB, we would
-  // need to check the type and have logic for each type. feedItem.contents.author =
-  readDocument('users', feedItem.contents.author);
+  // need to check the type and have logic for each type.
+  requestItem.author = readDocument('users', requestItem.author);
+  requestItem.reciever = readDocument('users', requestItem.reciever);
   // Resolve comment author.
-  feedItem.comments.forEach((comment) => {
-    comment.author = readDocument('users', comment.author);
-  });
-  return feedItem;
+
+  return requestItem;
+}
+
+export function getRequestData(user, cb){
+
+  //Get the user
+  var userData = readDocument('users',user);
+  //Read user's mailbox and parse it
+  userData.mailbox.map((requestId) => getRequestItemSync(requestId));
+
+  //Return mailbox with parsed requests
+  emulateServerReturn(userData.mailbox,cb);
 }
 
 export function getUnReadMsgs(user, cb){
