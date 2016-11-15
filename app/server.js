@@ -154,6 +154,13 @@ export function getThreeMaxPost(postItemData){
   return recommend_list;
 }
 
+/*
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ */
 export function readRequest(requestItemId, userId, cb) {
   var requestItem = readDocument('requests', requestItemId);
   requestItem.read = "true";
@@ -169,15 +176,12 @@ export function readRequest(requestItemId, userId, cb) {
 }
 
 
+//Resolved author and reciever in requestItems
 function getRequestItemSync(requestItemId) {
   var requestItem = readDocument('requestItems', requestItemId);
-  //requestItem.likeCounter =
-  //requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
-  // FeedItems in the DB, we would
-  // need to check the type and have logic for each type.
+
   requestItem.author = readDocument('users', requestItem.author).fullName;
   requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
-  // Resolve comment author.
 
   return requestItem;
 }
@@ -213,7 +217,7 @@ export function getRequestData(user, cb){
   return userR;
 }
 
-export function writeRequest(userId, recieverName, requestContent, cb){
+export function writeRequest(userId, recieverName, requestContent, titleEntry, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
   //Find the user id via user name
@@ -228,7 +232,7 @@ export function writeRequest(userId, recieverName, requestContent, cb){
     "reciever": recieverId,
     "createDate":time,
     "status": false,
-    "title":"random title",
+    "title":titleEntry,
     "content":requestContent,
     "read":false
   };

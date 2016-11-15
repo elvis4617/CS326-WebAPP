@@ -5,7 +5,8 @@ export default class MailEntry extends React.Component{
     super(props);
     this.state={
       reciever:"",
-      content:""
+      content:"",
+      title:""
     };
   }
 
@@ -15,10 +16,13 @@ export default class MailEntry extends React.Component{
      //Trim whitespace from beginning + end of entry.
      var statusUpdateText = this.state.content.trim();
      var recieverEntry = this.state.reciever.trim();
-     if (statusUpdateText !== "" && recieverEntry !==""){
-       this.props.onSend(statusUpdateText, recieverEntry);
+     var titleEntry = this.state.title.trim();
+     if (statusUpdateText !== "" && recieverEntry !=="" && titleEntry != ""){
+       this.props.onSend(statusUpdateText, recieverEntry, titleEntry);
        // Reset status update.
-       this.setState({reciever:"",content:""});
+       this.setState({reciever:"",
+                      content:"",
+                      title:""});
      }
    }
 
@@ -35,6 +39,11 @@ export default class MailEntry extends React.Component{
     e.preventDefault();
     this.setState({reciever: e.target.value});
  }
+
+ handleChangeTitle(e){
+   e.preventDefault();
+   this.setState({title: e.target.value});
+}
 
   render() {
     return (
@@ -55,6 +64,15 @@ export default class MailEntry extends React.Component{
                             placeholder="Write a comment.."
                             value={this.state.reciever}
                             onChange={(e) => this.handleChangeName(e)}/>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="titleEntry-1">Ttile:</label>
+                <input      type="text"
+                            className="form-control"
+                            placeholder="Write a title.."
+                            value={this.state.title}
+                            onChange={(e) => this.handleChangeTitle(e)}/>
               </div>
 
               <div className="form-group">

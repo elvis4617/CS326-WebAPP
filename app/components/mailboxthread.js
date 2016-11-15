@@ -23,9 +23,9 @@ export default class MailBoxThread extends React.Component{
     });
   }
 
-  onSend(requestContent, recieverEntry){
+  onSend(requestContent, recieverEntry, titleEntry){
 
-    writeRequest(1, recieverEntry, requestContent, () =>{
+    writeRequest(1, recieverEntry, requestContent, titleEntry, () =>{
       this.refresh();
     });
 
@@ -44,7 +44,7 @@ export default class MailBoxThread extends React.Component{
             <MailBoxTitle />
 
             <MailToolBar />
-            <MailEntry  onSend={(requestContent, recieverEntry) => this.onSend(requestContent, recieverEntry)}/>
+            <MailEntry  onSend={(requestContent, recieverEntry, titleEntry) => this.onSend(requestContent, recieverEntry, titleEntry)}/>
             <div className="row">
               <MailBox >
                {this.state.contents.map((requestItem, i) => {
