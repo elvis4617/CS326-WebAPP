@@ -313,3 +313,26 @@ export function getForumData(user, cb){
 
   emulateServerReturn(value, cb);
 }
+
+export function postThread(user, title, contents, cb){
+  var time = new Date().getTime();
+  var newThread = {
+    "author": user,
+    "title": title,
+    "postDate": time,
+    "contents": contents,
+    "viewCount": 0,
+    "replyCount": 0,
+    "lastReplyAuthor": user,
+    "lastReplyDate": time,
+    "commentThread": []
+  };
+  newThread = addDocument('postItem', newThread);
+  var userData = readDocument('users', user);
+
+  userData.postItem.unshift(newThread._id);
+
+  writeDocument('users', userData);
+
+  emulateServerReturn(newThread, cb);
+}
