@@ -6,7 +6,8 @@ export default class MailEntry extends React.Component{
     this.state={
       reciever:"",
       content:"",
-      title:""
+      title:"",
+      grooup:""
     };
   }
 
@@ -17,12 +18,14 @@ export default class MailEntry extends React.Component{
      var statusUpdateText = this.state.content.trim();
      var recieverEntry = this.state.reciever.trim();
      var titleEntry = this.state.title.trim();
-     if (statusUpdateText !== "" && recieverEntry !=="" && titleEntry != ""){
-       this.props.onSend(statusUpdateText, recieverEntry, titleEntry);
+     var groupEntry = this.state.group.trim();
+     if (statusUpdateText !== "" && recieverEntry !=="" && groupEntry != ""){
+       this.props.onSend(statusUpdateText, recieverEntry, titleEntry, groupEntry);
        // Reset status update.
        this.setState({reciever:"",
                       content:"",
-                      title:""});
+                      title:"",
+                      group:""});
      }
    }
 
@@ -45,6 +48,10 @@ export default class MailEntry extends React.Component{
    this.setState({title: e.target.value});
 }
 
+handleChangeGroup(e){
+  e.preventDefault();
+  this.setState({group: e.target.value});
+}
   render() {
     return (
 
@@ -73,6 +80,15 @@ export default class MailEntry extends React.Component{
                             placeholder="Write a title.."
                             value={this.state.title}
                             onChange={(e) => this.handleChangeTitle(e)}/>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="groupEntry-1">Group:</label>
+                <input      type="text"
+                            className="form-control"
+                            placeholder="Write a title.."
+                            value={this.state.group}
+                            onChange={(e) => this.handleChangeGroup(e)}/>
               </div>
 
               <div className="form-group">

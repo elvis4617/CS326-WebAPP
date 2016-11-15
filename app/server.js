@@ -204,34 +204,52 @@ export function getRequestData(user, cb){
 
  function getUser(userName){
   //var userList = readDocumentNoId('users');
-  var userBase = readDocument('userBase',1);
+  var userBase = readDocument('dataBase',1);
 
   var userR = -1;
   //var ll = userList.length;
-  userBase.userList.forEach((userId) => {
+  userBase.List.forEach((userId) => {
     var userData = readDocument('users', userId);
     if(userData.fullName === userName)
       userR = userId;
   });
-
-  return userR;
+    return userR;
 }
 
-export function writeRequest(userId, recieverName, requestContent, titleEntry, cb){
+  function getGroup(groupName){
+   //var userList = readDocumentNoId('users');
+   var groupBase = readDocument('dataBase');
+
+   var groupR = -1;
+   //var ll = userList.length;
+   groupBase.List.forEach((groupId) => {
+     var groupData = readDocument('groups', groupId);
+     if(groupData.groupName === groupName)
+       groupR = groupId;
+   });
+
+  return groupR;
+}
+
+export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
   //Find the user id via user name
   var recieverId=getUser(recieverName);
+  var groupId=getGroup(groupName);
+  //var groupId = 2;
   //recieverId=2;
   //If user/reciever name not found, abort mission
-  if (recieverId <= 0)
+  if (recieverId <= 0 || groupId <= 0)
     emulateServerReturn(null ,cb);
 
   var newRequest ={
+    "type":"request",
     "author": userId,
     "reciever": recieverId,
     "createDate":time,
     "status": false,
+    "group":groupId,
     "title":titleEntry,
     "content":requestContent,
     "read":false
