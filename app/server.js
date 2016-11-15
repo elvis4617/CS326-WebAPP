@@ -1,4 +1,4 @@
-import {readDocument, writeDocument} from './database.js';
+import {readDocument, writeDocument, addDocument} from './database.js';
 
 
 function emulateServerReturn(data, cb) {
@@ -183,6 +183,27 @@ export function getRequestData(user, cb){
 export function getUser(user, cb){
   var userData = readDocument('users',user);
   emulateServerReturn(userData, cb);
+}
+
+export function writeRequest(userId, recieverId, requestContent, cb){
+  var time = new Date().getTime();
+//  var requestItem = readDocument('requestItems', requestItemId);
+  var newRequest ={
+    "author": userId,
+    "reciever": recieverId,
+    "createDate":time,
+    "status": false,
+    "title":"random title",
+    "content":requestContent,
+    "read":false
+  };
+
+  newRequest = addDocument('requestItems',newRequest);
+  var userData = readDocument('users',userId);
+
+  userData.mailbox.unshift(newRequest._id);
+  writeDocument('users',userData)
+  emulateServerReturn(newRequest, cb);
 }
 
 // Works as long as messages / requests aren't deleted. Consider revising

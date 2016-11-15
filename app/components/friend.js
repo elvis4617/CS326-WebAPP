@@ -10,7 +10,7 @@ export default class friend extends React.Component {
   }
 
   render() {
-    var data = this.state;
+    //var data = this.state;
     return (
       <div className ="panel panel-default friends-panel">
         <div className ="panel-body">

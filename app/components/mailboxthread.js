@@ -4,7 +4,8 @@ import Mail from './mail';
 import MailToolBar from './mailtoolbar';
 import PageNav from './pagenav';
 import MailBoxTitle from './mailbox_title';
-import {getRequestData} from '../server';
+import {getRequestData, writeRequest} from '../server';
+import MailEntry from './mailentry';
 
 export default class MailBoxThread extends React.Component{
 
@@ -22,10 +23,18 @@ export default class MailBoxThread extends React.Component{
     });
   }
 
+  onSend(requestContent){
+
+    writeRequest(1, 3, requestContent, () =>{
+      this.refresh();
+    });
+
+  }
 
   componentDidMount(){
     this.refresh();
   }
+
 
   render(){
     return(
@@ -33,9 +42,9 @@ export default class MailBoxThread extends React.Component{
         <div className="row">
           <div className="col-md-8 col-md-offset-2">
             <MailBoxTitle />
-            <p>{this.state.contents.length}</p>
-            <MailToolBar />
 
+            <MailToolBar />
+            <MailEntry  onSend={(requestContent) => this.onSend(requestContent)}/>
             <div className="row">
               <MailBox >
                {this.state.contents.map((requestItem, i) => {
