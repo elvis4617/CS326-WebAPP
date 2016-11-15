@@ -2,7 +2,22 @@ import React from 'react';
 import ForumNumber from './forumnumber';
 import NewThreadBox from './newthread';
 import Post from './post';
+import {getForumData2} from '../server';
 export default class ForumItem extends React.Component{
+  constructor (props){
+    super(props);
+    this.state = {
+      contents: []
+    };
+  }
+
+   componentDidMount(){
+     getForumData2(this.props.user, (forumData) => {
+       //this.setState({contents:forumData});
+       this.setState(forumData);
+     });
+  }
+
   render(){
     return(
       <div className = "container">
@@ -24,7 +39,11 @@ export default class ForumItem extends React.Component{
                 </tr>
               </thead>
               <tbody>
-                <Post/>
+                {this.state.contents.map((postItem) => {
+                  return (
+                    <Post key={postItem._id} data={postItem} />
+                  );
+                })}
               </tbody>
             </table>
             <ForumNumber/>

@@ -164,6 +164,13 @@ export function getThreeMaxPost(postItemData){
   return recommend_list;
 }
 
+/*
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ */
 export function readRequest(requestItemId, userId, cb) {
   var requestItem = readDocument('requests', requestItemId);
   requestItem.read = "true";
@@ -179,16 +186,13 @@ export function readRequest(requestItemId, userId, cb) {
 }
 
 
+//Resolved author and reciever in requestItems
 function getRequestItemSync(requestItemId) {
   var requestItem = readDocument('requestItems', requestItemId);
-  //requestItem.likeCounter =
-  //requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
-  // FeedItems in the DB, we would
-  // need to check the type and have logic for each type.
+
   requestItem.author = readDocument('users', requestItem.author).fullName;
   requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
-  // Resolve comment author.
-
+  requestItem.group = readDocument('groups',requestItem.group).groupName;
   return requestItem;
 }
 
@@ -210,35 +214,54 @@ export function getRequestData(user, cb){
 
  function getUser(userName){
   //var userList = readDocumentNoId('users');
-  var userBase = readDocument('userBase',1);
+  var userBase = readDocument('dataBase',1);
 
   var userR = -1;
   //var ll = userList.length;
-  userBase.userList.forEach((userId) => {
+  userBase.List.forEach((userId) => {
     var userData = readDocument('users', userId);
     if(userData.fullName === userName)
       userR = userId;
   });
-
-  return userR;
+    return userR;
 }
 
-export function writeRequest(userId, recieverName, requestContent, cb){
+  function getGroup(groupName){
+   //var userList = readDocumentNoId('users');
+   var groupBase = readDocument('dataBase',2);
+
+   var groupR = -1;
+
+   //var ll = userList.length;
+   groupBase.List.forEach((groupId) => {
+     var groupData = readDocument('groups', groupId);
+     if(groupData.groupName === groupName)
+       groupR = groupId;
+   });
+
+  return groupR;
+}
+
+export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
   //Find the user id via user name
   var recieverId=getUser(recieverName);
+  var groupId=getGroup(groupName);
+  //var groupId = 2;
   //recieverId=2;
   //If user/reciever name not found, abort mission
-  if (recieverId <= 0)
+  if (recieverId <= 0 || groupId <= 0)
     emulateServerReturn(null ,cb);
 
   var newRequest ={
+    "type":"request",
     "author": userId,
     "reciever": recieverId,
     "createDate":time,
     "status": false,
-    "title":"random title",
+    "group":groupId,
+    "title":titleEntry,
     "content":requestContent,
     "read":false
   };
@@ -273,5 +296,41 @@ export function onMessage(message, authorId, recieverId) {
         break;
       }
     }
+}
 
+function getPostItemSync(postItemId){
+  var postItem = readDocument('postItem', postItemId);
+  postItem.author = readDocument('users', postItem.author);
+  postItem.lastReplyAuthor = readDocument('users', postItem.lastReplyAuthor);
+  postItem.commentThread.forEach((comment) => {
+    comment.author = readDocument('users', comment.author);
+  });
+  return postItem;
+}
+
+export function getForumData(user, cb){
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  postData.forEach((postId)=>{
+    postList.push(getPostItemSync(postId));
+  });
+  // postData.contents = postData.contents.map(getPostItemSync);
+  emulateServerReturn(postList, cb);
+}
+
+export function getForumData2(user, cb){
+
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  for (var item in postData){
+    var postItem = readDocument('postItem', postData[item]);
+    postItem.author = readDocument('users', postItem.author).fullName;
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor).fullName;
+    postList.push(postItem);
+  }
+  var value = {contents: postList};
+
+  emulateServerReturn(value, cb);
 }

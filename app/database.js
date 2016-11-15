@@ -78,6 +78,7 @@ var initialData = {
     // group with id = 1
     "1": {
       "_id": 1, // id of the group
+      "groupName":"DC CLUB",
       "icon": "icon",
       "memberList": [1,4], // list of the id's of the users in the group
       "memberCount": 2,
@@ -87,6 +88,7 @@ var initialData = {
     },
     "2": {
       "_id": 2,
+      "groupName":"MARVEL CLUB",
       "icon": "icon",
       "memberList": [2,3],
       "memberCount": 2,
@@ -100,20 +102,24 @@ var initialData = {
     // request with id = 1
     "1": {
       "_id": 1,
+      "type":"request",
       "author": 4, // id of the user who is the author
       "reciever": 1, // id of the user who is recieving the request
       "createDate": 1453690800000,
       "status": false,
+      "group":1,
       "title": "friendRequest01",
       "content": "Would you like to be friends? 01",
       "read": false // if the reciever has read the request
     },
     "2": {
       "_id": 2,
+      "type":"request",
       "author": 3, // id of the user who is the author
       "reciever": 1, // id of the user who is recieving the request
       "createDate": 1453590800000,
       "status": false,
+      "group":1,
       "title": "friendRequest02",
       "content": "Would you like to be friends? 02",
       "read": false // if the reciever has read the request
@@ -215,9 +221,16 @@ var initialData = {
       "contents": [1]
     }
   },
-  "userBase":{
+  "dataBase":{
     "1":{
-      "userList":[1,2,3,4]
+      "_id":1,
+      "type":"userbase",
+      "List":[1,2,3,4]
+    },
+    "2":{
+      "_id":2,
+      "type":"groupbase",
+      "List":[1,2]
     }
   }
 };
