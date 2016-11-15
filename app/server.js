@@ -1,6 +1,29 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
 
+export function getUserDataByName(userName, cb) {
+// Get the User object with the id "user".
+var userId = getUserId(userName);
+var userData = readDocument('users', userId);
+var value = {contents : userData};
+emulateServerReturn(value, cb);
+}
+
+export function getUserDataById(userId, cb) {
+// Get the User object with the id "user".
+var userData = readDocument('users', userId);
+var value = {contents : userData};
+emulateServerReturn(value, cb);
+}
+
+function getUserId(fullName){
+  for(var i = 1; readDocument('users', i); i++){
+    var user = readDocument('users', i);
+    if(user.fullName == fullName)
+      return user._id;
+  }
+}
+
 function emulateServerReturn(data, cb) {
   setTimeout(() => {
     cb(data);
@@ -131,6 +154,13 @@ export function getThreeMaxPost(postItemData){
   return recommend_list;
 }
 
+/*
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ */
 export function readRequest(requestItemId, userId, cb) {
   var requestItem = readDocument('requests', requestItemId);
   requestItem.read = "true";
@@ -146,16 +176,13 @@ export function readRequest(requestItemId, userId, cb) {
 }
 
 
+//Resolved author and reciever in requestItems
 function getRequestItemSync(requestItemId) {
   var requestItem = readDocument('requestItems', requestItemId);
-  //requestItem.likeCounter =
-  //requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
-  // FeedItems in the DB, we would
-  // need to check the type and have logic for each type.
+
   requestItem.author = readDocument('users', requestItem.author).fullName;
   requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
-  // Resolve comment author.
-
+  requestItem.group = readDocument('groups',requestItem.group).groupName;
   return requestItem;
 }
 
@@ -172,28 +199,59 @@ export function getRequestData(user, cb){
 
   });
 
-  //Return mailbox with parsed requests
-  //var requestItem = readDocument('requestItems', 1);
-//  var requestList=[];
-//  requestList.push(readDocument('requestItems',1));
-//  requestList.push(readDocument('requestItems',2));
   emulateServerReturn(requestList, cb);
 }
 
-export function getUser(user, cb){
-  var userData = readDocument('users',user);
-  emulateServerReturn(userData, cb);
+ function getUser(userName){
+  //var userList = readDocumentNoId('users');
+  var userBase = readDocument('dataBase',1);
+
+  var userR = -1;
+  //var ll = userList.length;
+  userBase.List.forEach((userId) => {
+    var userData = readDocument('users', userId);
+    if(userData.fullName === userName)
+      userR = userId;
+  });
+    return userR;
 }
 
-export function writeRequest(userId, recieverId, requestContent, cb){
+  function getGroup(groupName){
+   //var userList = readDocumentNoId('users');
+   var groupBase = readDocument('dataBase',2);
+
+   var groupR = -1;
+
+   //var ll = userList.length;
+   groupBase.List.forEach((groupId) => {
+     var groupData = readDocument('groups', groupId);
+     if(groupData.groupName === groupName)
+       groupR = groupId;
+   });
+
+  return groupR;
+}
+
+export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
+  //Find the user id via user name
+  var recieverId=getUser(recieverName);
+  var groupId=getGroup(groupName);
+  //var groupId = 2;
+  //recieverId=2;
+  //If user/reciever name not found, abort mission
+  if (recieverId <= 0 || groupId <= 0)
+    emulateServerReturn(null ,cb);
+
   var newRequest ={
+    "type":"request",
     "author": userId,
     "reciever": recieverId,
     "createDate":time,
     "status": false,
-    "title":"random title",
+    "group":groupId,
+    "title":titleEntry,
     "content":requestContent,
     "read":false
   };

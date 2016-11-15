@@ -6,8 +6,10 @@ var initialData = {
     // This user has id "1".
     "1": {
       "_id": 1, // id of the user
-      "fullName": "Someone",
+      "userName": "I am a userName of 1",
+      "fullName": "Some one",
       "school": "Umass",
+      "grade": "Freshman",
       "password": 123,
       "profilePic": "PIC",
       "email": "someone@something.com",
@@ -21,7 +23,9 @@ var initialData = {
     },
     "2": {
       "_id": 2,
+      "userName": "I am a userName of 2",
       "fullName": "Someone Else",
+      "grade": "Sophrmore",
       "school": "Umass",
       "password": 123,
       "profilePic": "PIC",
@@ -36,7 +40,9 @@ var initialData = {
     },
     "3": {
       "_id": 3,
+      "userName": "I am a userName of 3",
       "fullName": "Another Person",
+      "grade": "Junior",
       "school": "Umass",
       "password": 123,
       "profilePic": "PIC",
@@ -51,7 +57,9 @@ var initialData = {
     },
     "4": {
       "_id": 4,
+      "userName": "I am a userName of 4",
       "fullName": "This Guy",
+      "grade": "Senior",
       "school": "Umass",
       "password": 123,
       "profilePic": "PIC",
@@ -70,6 +78,7 @@ var initialData = {
     // group with id = 1
     "1": {
       "_id": 1, // id of the group
+      "groupName":"DC CLUB",
       "icon": "icon",
       "memberList": [1,4], // list of the id's of the users in the group
       "memberCount": 2,
@@ -79,6 +88,7 @@ var initialData = {
     },
     "2": {
       "_id": 2,
+      "groupName":"MARVEL CLUB",
       "icon": "icon",
       "memberList": [2,3],
       "memberCount": 2,
@@ -92,20 +102,24 @@ var initialData = {
     // request with id = 1
     "1": {
       "_id": 1,
+      "type":"request",
       "author": 4, // id of the user who is the author
       "reciever": 1, // id of the user who is recieving the request
       "createDate": 1453690800000,
       "status": false,
+      "group":1,
       "title": "friendRequest01",
       "content": "Would you like to be friends? 01",
       "read": false // if the reciever has read the request
     },
     "2": {
       "_id": 2,
+      "type":"request",
       "author": 3, // id of the user who is the author
       "reciever": 1, // id of the user who is recieving the request
       "createDate": 1453590800000,
       "status": false,
+      "group":1,
       "title": "friendRequest02",
       "content": "Would you like to be friends? 02",
       "read": false // if the reciever has read the request
@@ -206,6 +220,18 @@ var initialData = {
       "_id": 4,
       "contents": [1]
     }
+  },
+  "dataBase":{
+    "1":{
+      "_id":1,
+      "type":"userbase",
+      "List":[1,2,3,4]
+    },
+    "2":{
+      "_id":2,
+      "type":"groupbase",
+      "List":[1,2]
+    }
   }
 };
 
@@ -233,6 +259,9 @@ export function readDocument(collection, id) {
   return JSONClone(data[collection][id]);
 }
 
+export function readDocumentNoId(collection){
+  return JSONClone(data[collection])
+}
 /**
  * Emulates writing a "document" to a NoSQL database.
  */
