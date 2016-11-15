@@ -1,5 +1,7 @@
 import React from 'react';
 import Friend from './friend';
+import {getFriendDataById} from '../server';
+import { Link} from 'react-router';
 
 export default class friendsFeed extends React.Component {
   constructor(props) {
@@ -9,19 +11,33 @@ export default class friendsFeed extends React.Component {
     };
   }
 
+  refresh() {
+    getFriendDataById(this.props.user, (userData) => {
+    this.setState(userData);
+  });
+ }
+
+  componentDidMount() {
+    this.refresh();
+  }
+
   render() {
     return (
-      <div className = "col-md-7 col-md-offset-3">
-      <button type="button" className ="btn navbar-btn add-btn btn-friends btn-default">
-        <span className ="glyphicon glyphicon-plus" style="color:#337ab7"></span>
-        <a color = "#337ab7" href="friends_add_friend.html"> Add Friend </a>
-      </button>
-      <hr />
-      {this.state.contents.map((friend) => {
-          return (
-            <Friend key={friend._id} data={friend} />
-          )
-      })}
+      <div className="row friend-div">
+        <div className = "col-md-7 col-md-offset-3">
+        <button type="button" className ="btn navbar-btn add-btn btn-friends btn-default">
+          <span className ="glyphicon glyphicon-plus plus-icon"></span>
+          <Link to={"/AddFriend"}>
+            <span href="#"> Add Friend </span>
+          </Link>
+        </button>
+        <hr />
+        {this.state.contents.map((friend) => {
+            return (
+              <Friend key={friend._id} data={friend} />
+            )
+        })}
+        </div>
       </div>
     )
   }

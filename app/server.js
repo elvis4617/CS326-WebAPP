@@ -1,5 +1,15 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
+export function getFriendDataById(userId, cb){
+  var user = readDocument('users', userId);
+  var friends = user.friendList;
+  var friendList = [];
+  for(var i = 0; i<friends.length; i++){
+    friendList.push(readDocument('users', friends[i]));
+  }
+  var value = {contents : friendList};
+  emulateServerReturn(value, cb);
+}
 
 export function getUserDataByName(userName, cb) {
 // Get the User object with the id "user".
