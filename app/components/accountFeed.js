@@ -42,6 +42,7 @@ export default class AccountFeed extends React.Component {
   this.setState(updateUserInfo(this.props.user,this.state.value,this.state.update));
     // Reset status update.
   this.setState({value: ""});
+  this.refresh();
   }
 
 
