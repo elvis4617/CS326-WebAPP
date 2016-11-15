@@ -13,13 +13,13 @@ export default class Landing extends React.Component{
                           <hr className="intro-divider"/>
                           <ul className="list-inline intro-social-buttons">
                               <li>
-                                  <a href="#" className="btn btn-default btn-lg"><span className="start-btn">Start</span></a>
+                                  <a href="#" className="btn btn-default btn-lg index-btn"><span className="start-btn">Start</span></a>
                               </li>
                               <li>
-                                  <a href="#" className="btn btn-default btn-lg"><span className="start-btn">Login</span></a>
+                                  <a href="#" className="btn btn-default btn-lg index-btn"><span className="start-btn">Login</span></a>
                               </li>
                               <li>
-                                  <a href="#" className="btn btn-default btn-lg"><span className="start-btn">Signup</span></a>
+                                  <a href="#" className="btn btn-default btn-lg index-btn"><span className="start-btn">Signup</span></a>
                               </li>
                           </ul>
                       </div>

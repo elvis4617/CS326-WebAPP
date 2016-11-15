@@ -1,5 +1,15 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
+export function getFriendDataById(userId, cb){
+  var user = readDocument('users', userId);
+  var friends = user.friendList;
+  var friendList = [];
+  for(var i = 0; i<friends.length; i++){
+    friendList.push(readDocument('users', friends[i]));
+  }
+  var value = {contents : friendList};
+  emulateServerReturn(value, cb);
+}
 
 export function getUserDataByName(userName, cb) {
 // Get the User object with the id "user".
@@ -182,7 +192,7 @@ function getRequestItemSync(requestItemId) {
 
   requestItem.author = readDocument('users', requestItem.author).fullName;
   requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
-
+  requestItem.group = readDocument('groups',requestItem.group).groupName;
   return requestItem;
 }
 
@@ -204,43 +214,62 @@ export function getRequestData(user, cb){
 
  function getUser(userName){
   //var userList = readDocumentNoId('users');
-  var userBase = readDocument('userBase',1);
+  var userBase = readDocument('dataBase',1);
 
   var userR = -1;
   //var ll = userList.length;
-  userBase.userList.forEach((userId) => {
+  userBase.List.forEach((userId) => {
     var userData = readDocument('users', userId);
     if(userData.fullName === userName)
       userR = userId;
   });
+    return userR;
+}
 
-  return userR;
+  function getGroup(groupName){
+   //var userList = readDocumentNoId('users');
+   var groupBase = readDocument('dataBase',2);
+
+   var groupR = -1;
+
+   //var ll = userList.length;
+   groupBase.List.forEach((groupId) => {
+     var groupData = readDocument('groups', groupId);
+     if(groupData.groupName === groupName)
+       groupR = groupId;
+   });
+
+  return groupR;
 }
 
 export function updateUserInfo(user, value, updateInfo){
   var userData = readDocument('users', user);
   userData[updateInfo] = value;
   writeDocument('users', userData);
-  console.log(userData)
+  //console.log(userData)
   return userData;
 }
 
 
-export function writeRequest(userId, recieverName, requestContent, titleEntry, cb){
+export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
   //Find the user id via user name
   var recieverId=getUser(recieverName);
+  var groupId=getGroup(groupName);
+  //var groupId = 2;
   //recieverId=2;
   //If user/reciever name not found, abort mission
-  if (recieverId <= 0)
+  if (recieverId <= 0 || groupId <= 0)
     emulateServerReturn(null ,cb);
 
   var newRequest ={
+    "type":"request",
     "author": userId,
     "reciever": recieverId,
     "createDate":time,
     "status": false,
+    "group":groupId,
     "title":titleEntry,
     "content":requestContent,
     "read":false
@@ -276,5 +305,20 @@ export function onMessage(message, authorId, recieverId) {
         break;
       }
     }
+}
 
+export function getForumData(user, cb){
+
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  for (var item in postData){
+    var postItem = readDocument('postItem', postData[item]);
+    postItem.author = readDocument('users', postItem.author).fullName;
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor).fullName;
+    postList.push(postItem);
+  }
+  var value = {contents: postList};
+
+  emulateServerReturn(value, cb);
 }

@@ -38,7 +38,7 @@ export default class AccountFeed extends React.Component {
  // Prevent the event from "bubbling" up the DOM tree.
   e.preventDefault();
   // Trim whitespace from beginning + end of entry.
-  console.log(this.state.value)
+  //console.log(this.state.value)
   this.setState(updateUserInfo(this.props.user,this.state.value,this.state.update));
     // Reset status update.
   this.setState({value: ""});

@@ -52,6 +52,7 @@ h6 {
     width: 400px;
     border-top: 1px solid #f8f8f8;
     border-bottom: 1px solid rgba(0,0,0,0.2);
+    margin:0 auto;
 }
 
 .intro-message > h3 {
@@ -89,6 +90,9 @@ h6 {
     letter-spacing: 2px;
 }
 
+.index-btn{
+  margin-top: 20px;
+}
 .content-section-a {
     padding: 50px 0;
     background-color: #f8f8f8;
