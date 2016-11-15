@@ -140,7 +140,11 @@ export default class AccountFeed extends React.Component {
               <div className="col-md-8">
                 <form>
                   <label>Description:</label>
-                  <textarea className="description" type="text" name="description" draggable="false">
+                  <textarea className="description"
+                            type="text"
+                            name="description"
+                            draggable="false"
+                            onChange={(e) => this.handleChange(e,"description")}>
                   </textarea>
                 </form>
               </div>
