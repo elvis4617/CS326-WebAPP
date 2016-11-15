@@ -242,6 +242,15 @@ export function getRequestData(user, cb){
   return groupR;
 }
 
+export function updateUserInfo(user, value, updateInfo){
+  var userData = readDocument('users', user);
+  userData[updateInfo] = value;
+  writeDocument('users', userData);
+  //console.log(userData)
+  return userData;
+}
+
+
 export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
