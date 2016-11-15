@@ -8,6 +8,7 @@ import Recommend from './components/Recommend';
 //import Recommend_Right from './components/recommend_right';
 import Footer from './components/footer';
 import friendsFeed from './components/friendsFeed';
+import accountFeed from './components/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 
 class LandingPage extends React.Component {
@@ -45,6 +46,15 @@ class FriendsPage extends React.Component {
   }
 }
 
+class AccountPage extends React.Component {
+  render(){
+    return (
+      <div>
+        <accountFeed />
+      </div>
+    )
+  }
+}
 class App extends React.Component {
     render() {
       return (
@@ -64,6 +74,7 @@ class App extends React.Component {
         <Route path="/Index" component={LandingPage} />
         <Route path="/Notification" component={NotificationPage} />
         <Route path="/friends" component={FriendsPage} />
+        <Route path="/MyProfile" component={AccountPage}/>
         //some
       </Route>
     </Router>
