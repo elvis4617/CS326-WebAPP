@@ -16,7 +16,7 @@ export default class MailEntry extends React.Component{
      var statusUpdateText = this.state.content.trim();
      var recieverEntry = this.state.reciever.trim();
      if (statusUpdateText !== "" && recieverEntry !==""){
-       this.props.onSend(statusUpdateText);
+       this.props.onSend(statusUpdateText, recieverEntry);
        // Reset status update.
        this.setState({reciever:"",content:""});
      }

@@ -1,4 +1,4 @@
-import {readDocument, writeDocument, addDocument, readDocumentNoId} from './database.js';
+import {readDocument, writeDocument, addDocument} from './database.js';
 
 
 function emulateServerReturn(data, cb) {
@@ -176,19 +176,30 @@ export function getRequestData(user, cb){
 }
 
  function getUser(userName){
-  var userList = readDocumentNoId('users');
-  var userId = -1;
-  userList.forEach((userData) => {
+  //var userList = readDocumentNoId('users');
+  var userBase = readDocument('userBase',1);
+
+  var userR = -1;
+  //var ll = userList.length;
+  userBase.userList.forEach((userId) => {
+    var userData = readDocument('users', userId);
     if(userData.fullName === userName)
-      userId = userData._id;
+      userR = userId;
   });
-  return userId;
+
+  return userR;
 }
 
 export function writeRequest(userId, recieverName, requestContent, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
+  //Find the user id via user name
   var recieverId=getUser(recieverName);
+  //recieverId=2;
+  //If user/reciever name not found, abort mission
+  if (recieverId <= 0)
+    emulateServerReturn(null ,cb);
+
   var newRequest ={
     "author": userId,
     "reciever": recieverId,

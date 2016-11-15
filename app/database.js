@@ -206,6 +206,11 @@ var initialData = {
       "_id": 4,
       "contents": [1]
     }
+  },
+  "userBase":{
+    "1":{
+      "userList":[1,2,3,4]
+    }
   }
 };
 
