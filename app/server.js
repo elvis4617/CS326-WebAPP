@@ -171,3 +171,27 @@ export function readRequest(requestItemId, userId, cb) {
   // Return a resolved version of the likeCounter
   emulateServerReturn("true", cb);
 }
+
+// Works as long as messages / requests aren't deleted. Consider revising
+export function onMessage(message, authorId, recieverId) {
+  var reciever = readDocument('users', recieverId);
+    for(var i = 0; i < 100000000; i++) {
+      try {
+        var request = readDocument('requests', i);
+      }
+      catch(err) {
+        request._id = i;
+        request.author = authorId;
+        request.reciever = recieverId;
+        request.CreateDate = new Date();
+        request.status = "false";
+        request.title = "Message";
+        request.content = message;
+        request.read = "false";
+        writeDocument('requests', request);
+        reciever.mailbox.push(i)
+        writeDocument('users', reciever)
+        break;
+      }
+    }
+}
