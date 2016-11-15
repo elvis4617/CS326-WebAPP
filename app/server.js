@@ -7,9 +7,6 @@ function emulateServerReturn(data, cb) {
   }, 4);
 }
 
-
-
-
 export function getUnReadMsgs(user, cb){
   var userData = readDocument('users', user);
   var unReadList = [];
@@ -148,6 +145,7 @@ export function readRequest(requestItemId, userId, cb) {
   emulateServerReturn("true", cb);
 }
 
+
 function getRequestItemSync(requestItemId) {
   var requestItem = readDocument('requestItems', requestItemId);
   //requestItem.likeCounter =
@@ -185,4 +183,29 @@ export function getRequestData(user, cb){
 export function getUser(user, cb){
   var userData = readDocument('users',user);
   emulateServerReturn(userData, cb);
+}
+
+// Works as long as messages / requests aren't deleted. Consider revising
+export function onMessage(message, authorId, recieverId) {
+  var reciever = readDocument('users', recieverId);
+    for(var i = 0; i < 100000000; i++) {
+      try {
+        var request = readDocument('requests', i);
+      }
+      catch(err) {
+        request._id = i;
+        request.author = authorId;
+        request.reciever = recieverId;
+        request.CreateDate = new Date();
+        request.status = "false";
+        request.title = "Message";
+        request.content = message;
+        request.read = "false";
+        writeDocument('requests', request);
+        reciever.mailbox.push(i)
+        writeDocument('users', reciever)
+        break;
+      }
+    }
+
 }
