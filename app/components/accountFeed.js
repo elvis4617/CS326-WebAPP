@@ -73,14 +73,8 @@ export default class AccountFeed extends React.Component {
               <h4>Edit Information:</h4>
               <div className="col-md-8">
                 <form>
-                  <label>First name:</label>
+                  <label>Name:</label>
                   <input type="text" name="firstname"/>
-                </form>
-              </div>
-              <div className="col-md-8">
-                <form>
-                  <label>Last name:</label>
-                  <input type="text" name="lastname"/>
                 </form>
               </div>
             </div>
