@@ -228,5 +228,41 @@ export function onMessage(message, authorId, recieverId) {
         break;
       }
     }
+}
 
+function getPostItemSync(postItemId){
+  var postItem = readDocument('postItem', postItemId);
+  postItem.author = readDocument('users', postItem.author);
+  postItem.lastReplyAuthor = readDocument('users', postItem.lastReplyAuthor);
+  postItem.commentThread.forEach((comment) => {
+    comment.author = readDocument('users', comment.author);
+  });
+  return postItem;
+}
+
+export function getForumData(user, cb){
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  postData.forEach((postId)=>{
+    postList.push(getPostItemSync(postId));
+  });
+  // postData.contents = postData.contents.map(getPostItemSync);
+  emulateServerReturn(postList, cb);
+}
+
+export function getForumData2(user, cb){
+
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  for (var item in postData){
+    var postItem = readDocument('postItem', postData[item]);
+    postItem.author = readDocument('users', postItem.author).fullName;
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor).fullName;
+    postList.push(postItem);
+  }
+  var value = {contents: postList};
+
+  emulateServerReturn(value, cb);
 }
