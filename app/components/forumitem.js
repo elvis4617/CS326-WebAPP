@@ -2,7 +2,7 @@ import React from 'react';
 import ForumNumber from './forumnumber';
 import NewThreadBox from './newthread';
 import Post from './post';
-import {getForumData2} from '../server';
+import {getForumData} from '../server';
 export default class ForumItem extends React.Component{
   constructor (props){
     super(props);
@@ -12,7 +12,7 @@ export default class ForumItem extends React.Component{
   }
 
    componentDidMount(){
-     getForumData2(this.props.user, (forumData) => {
+     getForumData(this.props.user, (forumData) => {
        //this.setState({contents:forumData});
        this.setState(forumData);
      });
