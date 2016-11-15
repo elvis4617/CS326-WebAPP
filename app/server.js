@@ -172,22 +172,34 @@ export function getRequestData(user, cb){
 
   });
 
-  //Return mailbox with parsed requests
-  //var requestItem = readDocument('requestItems', 1);
-//  var requestList=[];
-//  requestList.push(readDocument('requestItems',1));
-//  requestList.push(readDocument('requestItems',2));
   emulateServerReturn(requestList, cb);
 }
 
-export function getUser(user, cb){
-  var userData = readDocument('users',user);
-  emulateServerReturn(userData, cb);
+ function getUser(userName){
+  //var userList = readDocumentNoId('users');
+  var userBase = readDocument('userBase',1);
+
+  var userR = -1;
+  //var ll = userList.length;
+  userBase.userList.forEach((userId) => {
+    var userData = readDocument('users', userId);
+    if(userData.fullName === userName)
+      userR = userId;
+  });
+
+  return userR;
 }
 
-export function writeRequest(userId, recieverId, requestContent, cb){
+export function writeRequest(userId, recieverName, requestContent, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
+  //Find the user id via user name
+  var recieverId=getUser(recieverName);
+  //recieverId=2;
+  //If user/reciever name not found, abort mission
+  if (recieverId <= 0)
+    emulateServerReturn(null ,cb);
+
   var newRequest ={
     "author": userId,
     "reciever": recieverId,

@@ -206,6 +206,11 @@ var initialData = {
       "_id": 4,
       "contents": [1]
     }
+  },
+  "userBase":{
+    "1":{
+      "userList":[1,2,3,4]
+    }
   }
 };
 
@@ -233,6 +238,9 @@ export function readDocument(collection, id) {
   return JSONClone(data[collection][id]);
 }
 
+export function readDocumentNoId(collection){
+  return JSONClone(data[collection])
+}
 /**
  * Emulates writing a "document" to a NoSQL database.
  */
