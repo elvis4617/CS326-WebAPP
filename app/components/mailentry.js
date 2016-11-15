@@ -4,7 +4,8 @@ export default class MailEntry extends React.Component{
   constructor(props) {
     super(props);
     this.state={
-      value:""
+      reciever:"",
+      content:""
     };
   }
 
@@ -12,11 +13,12 @@ export default class MailEntry extends React.Component{
      //Prevent the event from 'bubbling' up the DOM tree.
      e.preventDefault();
      //Trim whitespace from beginning + end of entry.
-     var statusUpdateText = this.state.value.trim();
-     if (statusUpdateText !==""){
+     var statusUpdateText = this.state.content.trim();
+     var recieverEntry = this.state.reciever.trim();
+     if (statusUpdateText !== "" && recieverEntry !==""){
        this.props.onSend(statusUpdateText);
        // Reset status update.
-       this.setState({value:""});
+       this.setState({reciever:"",content:""});
      }
    }
 
@@ -24,43 +26,55 @@ export default class MailEntry extends React.Component{
     * Called when the user types a character into the status update box.
     * @param e An Event object.
     */
-   handleChange(e){
+   handleChangeContent(e){
      e.preventDefault();
-     this.setState({value: e.target.value});
+     this.setState({content: e.target.value});
   }
+
+  handleChangeName(e){
+    e.preventDefault();
+    this.setState({reciever: e.target.value});
+ }
 
   render() {
     return (
-      <div className="fb-status-update-entry panel panel-default">
+      <div className=" panel panel-default">
         <div className="panel-body">
           <div className="media">
-            <div className="media-left media-top">
-              PIC
-            </div>
+
             <div className="media-body">
+
+              <div className="form-group">
+                <label htmlFor="recieverEntry-1">To:</label>
+                <input      type="text"
+                            className="form-control"
+                            placeholder="Write a comment.."
+                            value={this.state.reciever}
+                            onChange={(e) => this.handleChangeName(e)}/>
+              </div>
+
               <div className="form-group">
                 <textarea className="form-control"
                           rows="2"
                           placeholder="What's on your mind?"
-                          value ={this.state.value}
-                          onChange = {(e) => this.handleChange(e)}/>
+                          value ={this.state.content}
+                          onChange = {(e) => this.handleChangeContent(e)}/>
               </div>
+
             </div>
           </div>
+
           <div className="row">
             <div className="col-md-6">
 
             </div>
             <div className="col-md-6">
               <div className="pull-right">
-                <button type="button" className="btn btn-default">
-                  <span className="glyphicon glyphicon-user"></span>
-                    Friends <span className="caret"></span>
-                </button>
+
                 <button type="button"
                         className="btn btn-default"
                         onClick={(e) => this.handlePost(e)}>
-                  Post
+                  Send
                 </button>
               </div>
             </div>

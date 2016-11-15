@@ -233,6 +233,9 @@ export function readDocument(collection, id) {
   return JSONClone(data[collection][id]);
 }
 
+export function readDocumentNoId(collection){
+  return JSONClone(data[collection])
+}
 /**
  * Emulates writing a "document" to a NoSQL database.
  */

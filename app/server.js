@@ -1,4 +1,4 @@
-import {readDocument, writeDocument, addDocument} from './database.js';
+import {readDocument, writeDocument, addDocument, readDocumentNoId} from './database.js';
 
 
 function emulateServerReturn(data, cb) {
@@ -172,22 +172,23 @@ export function getRequestData(user, cb){
 
   });
 
-  //Return mailbox with parsed requests
-  //var requestItem = readDocument('requestItems', 1);
-//  var requestList=[];
-//  requestList.push(readDocument('requestItems',1));
-//  requestList.push(readDocument('requestItems',2));
   emulateServerReturn(requestList, cb);
 }
 
-export function getUser(user, cb){
-  var userData = readDocument('users',user);
-  emulateServerReturn(userData, cb);
+ function getUser(userName){
+  var userList = readDocumentNoId('users');
+  var userId = -1;
+  userList.forEach((userData) => {
+    if(userData.fullName === userName)
+      userId = userData._id;
+  });
+  return userId;
 }
 
-export function writeRequest(userId, recieverId, requestContent, cb){
+export function writeRequest(userId, recieverName, requestContent, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
+  var recieverId=getUser(recieverName);
   var newRequest ={
     "author": userId,
     "reciever": recieverId,

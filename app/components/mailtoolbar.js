@@ -9,6 +9,7 @@ export default class MailToolBar extends React.Component {
             <button type="button" className="btn btn-info">Participating</button>
             <button type="button" className="btn btn-primary active">All Notifications</button>
             <button type="button" className="btn btn-primary">Write</button>
+
           </div>
         </div>
     )
