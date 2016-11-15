@@ -8,7 +8,8 @@ import Footer from './components/footer';
 import FriendsFeed from './components/friendsFeed';
 import AccountFeed from './components/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
-import ForumItem from './components/forumitem'
+import ForumItem from './components/forumitem';
+import AddFriendPage from './components/addFriend';
 
 class LandingPage extends React.Component {
   render() {
@@ -56,6 +57,16 @@ class AccountPage extends React.Component {
   }
 }
 
+class AddFriend extends React.Component{
+  render(){
+    return(
+      <div>
+        <AddFriendPage />
+        <Footer />
+      </div>
+    )
+  }
+}
 class App extends React.Component {
     render() {
       return (
@@ -88,6 +99,7 @@ class App extends React.Component {
         <Route path="/Forum" component = {ForumPage} />
         <Route path="/MyFriend" component={FriendsPage} />
         <Route path="/MyProfile" component={AccountPage}/>
+        <Route path="/AddFriend" component={AddFriend} />
       </Route>
     </Router>
   ),

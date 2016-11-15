@@ -11,20 +11,20 @@ export default class Footer extends React.Component{
                       <ul className="list-inline">
                           <li>
                               <Link to="/Index">
-                                <span href="#">Home</span>
+                                <span className = "footer-nav" href="#">Home</span>
                               </Link>
                           </li>
                           <li className="footer-menu-divider">&sdot;</li>
                           <li>
-                              <span href="#about">About</span>
+                              <span className = "footer-nav" href="#about">About</span>
                           </li>
                           <li className="footer-menu-divider">&sdot;</li>
                           <li>
-                              <span href="#services">Services</span>
+                              <span className = "footer-nav" href="#services">Services</span>
                           </li>
                           <li className="footer-menu-divider">&sdot;</li>
                           <li>
-                              <span href="#contact">Contact</span>
+                              <span className = "footer-nav" href="#contact">Contact</span>
                           </li>
                       </ul>
                   </div>
