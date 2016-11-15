@@ -4,7 +4,7 @@ import Mail from './mail';
 import MailToolBar from './mailtoolbar';
 import PageNav from './pagenav';
 import MailBoxTitle from './mailbox_title';
-import {getRequestData, getRecommendPostItem, getUser} from '../server';
+import {getRequestData} from '../server';
 
 export default class MailBoxThread extends React.Component{
 
@@ -43,7 +43,8 @@ export default class MailBoxThread extends React.Component{
                    <Mail key={i} author={requestItem.author}
                                  reciever={requestItem.reciever}
                                  createDate={requestItem.createDate}
-                                 title={requestItem.title}>
+                                 title={requestItem.title}
+                                 mailId={requestItem._id}>
                                  {requestItem.content}
                   </Mail>
                  );
