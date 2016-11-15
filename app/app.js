@@ -4,8 +4,8 @@ import MailBoxThread from './components/mailboxthread';
 import NavBar from './components/navbar';
 import Landing from './components/landing';
 import Recommend from './components/Recommend';
-import Recommend_Left from './components/recommend_left';
-import Recommend_Right from './components/recommend_right';
+//import Recommend_Left from './components/recommend_left';
+//import Recommend_Right from './components/recommend_right';
 import Footer from './components/footer';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 

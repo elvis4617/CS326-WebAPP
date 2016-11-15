@@ -6,7 +6,7 @@ import UnReadMsg from './unreadmsg'
 export default class NavBar extends React.Component{
 
   render(){
-    var data = this.state;
+    //var data = this.state;
     return (
       <nav className="navbar navbar-default navbar-fixed-top topnav" role="navigation">
           <div className="container topnav">

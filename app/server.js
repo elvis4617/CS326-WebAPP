@@ -1,32 +1,14 @@
-import {readDocument, readDocumentNoId, writeDocument, addDocument} from './database.js';
+import {readDocument, writeDocument} from './database.js';
 
-/**
- * Given a feed item ID, returns a FeedItem object with references resolved.
- * Internal to the server, since it's synchronous.
- */
-function getRequestItemSync(requestItemId) {
-  var requestItem = readDocument('requestItem', requestItemId);
-  requestItem.likeCounter =
-  requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
-  // FeedItems in the DB, we would
-  // need to check the type and have logic for each type.
-  requestItem.author = readDocument('users', requestItem.author);
-  requestItem.reciever = readDocument('users', requestItem.reciever);
-  // Resolve comment author.
 
-  return requestItem;
+function emulateServerReturn(data, cb) {
+  setTimeout(() => {
+    cb(data);
+  }, 4);
 }
 
-export function getRequestData(user, cb){
 
-  //Get the user
-  var userData = readDocument('users',user);
-  //Read user's mailbox and parse it
-  userData.mailbox.map((requestId) => getRequestItemSync(requestId));
 
-  //Return mailbox with parsed requests
-  emulateServerReturn(userData.mailbox,cb);
-}
 
 export function getUnReadMsgs(user, cb){
   var userData = readDocument('users', user);
@@ -78,12 +60,6 @@ emulateServerReturn(value, cb);
  * Emulates how a REST call is *asynchronous* -- it calls your function back
  * some time in the future with data.
  */
-function emulateServerReturn(data, cb) {
-  setTimeout(() => {
-    cb(data);
-  }, 4);
-}
-
 export function getRecommendPostItemFriend(user) {
   var userData = readDocument('users', user);
   var friendList = userData.friendList;
@@ -170,4 +146,43 @@ export function readRequest(requestItemId, userId, cb) {
   }
   // Return a resolved version of the likeCounter
   emulateServerReturn("true", cb);
+}
+
+function getRequestItemSync(requestItemId) {
+  var requestItem = readDocument('requestItems', requestItemId);
+  //requestItem.likeCounter =
+  //requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
+  // FeedItems in the DB, we would
+  // need to check the type and have logic for each type.
+  requestItem.author = readDocument('users', requestItem.author).fullName;
+  requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
+  // Resolve comment author.
+
+  return requestItem;
+}
+
+export function getRequestData(user, cb){
+
+  //Get the user
+  var userData = readDocument('users',user);
+  var mailboxData = userData.mailbox;
+  //Read user's mailbox and parse it
+  var requestList=[];
+  mailboxData.forEach((requestId) =>{
+
+    requestList.push(getRequestItemSync(requestId));
+
+  });
+
+  //Return mailbox with parsed requests
+  //var requestItem = readDocument('requestItems', 1);
+//  var requestList=[];
+//  requestList.push(readDocument('requestItems',1));
+//  requestList.push(readDocument('requestItems',2));
+  emulateServerReturn(requestList, cb);
+}
+
+export function getUser(user, cb){
+  var userData = readDocument('users',user);
+  emulateServerReturn(userData, cb);
 }
