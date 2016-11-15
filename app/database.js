@@ -6,8 +6,10 @@ var initialData = {
     // This user has id "1".
     "1": {
       "_id": 1, // id of the user
-      "fullName": "Someone",
+      "userName": "I am a userName of 1",
+      "fullName": "Some one",
       "school": "Umass",
+      "grade": "Freshman",
       "password": 123,
       "profilePic": "PIC",
       "email": "someone@something.com",
@@ -21,7 +23,9 @@ var initialData = {
     },
     "2": {
       "_id": 2,
+      "userName": "I am a userName of 2",
       "fullName": "Someone Else",
+      "grade": "Sophrmore",
       "school": "Umass",
       "password": 123,
       "profilePic": "PIC",
@@ -36,7 +40,9 @@ var initialData = {
     },
     "3": {
       "_id": 3,
+      "userName": "I am a userName of 3",
       "fullName": "Another Person",
+      "grade": "Junior",
       "school": "Umass",
       "password": 123,
       "profilePic": "PIC",
@@ -51,7 +57,9 @@ var initialData = {
     },
     "4": {
       "_id": 4,
+      "userName": "I am a userName of 4",
       "fullName": "This Guy",
+      "grade": "Senior",
       "school": "Umass",
       "password": 123,
       "profilePic": "PIC",

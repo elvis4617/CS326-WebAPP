@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import MailBoxThread from './components/mailboxthread';
 import NavBar from './components/navbar';
 import Landing from './components/landing';
-import Recommend from './components/Recommend';
+import Recommend from './components/recommend';
 import Footer from './components/footer';
-import friendsFeed from './components/friendsFeed';
-import accountFeed from './components/accountFeed';
+import FriendsFeed from './components/friendsFeed';
+import AccountFeed from './components/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 import ForumItem from './components/forumitem'
 
@@ -38,7 +38,7 @@ class FriendsPage extends React.Component {
   render() {
     return (
       <div>
-        <friendsFeed user={2} />
+        <FriendsFeed user={2} />
       </div>
     )
   }
@@ -48,11 +48,12 @@ class AccountPage extends React.Component {
   render(){
     return (
       <div>
-        <accountFeed />
+        <AccountFeed />
       </div>
     )
   }
 }
+
 class App extends React.Component {
     render() {
       return (
