@@ -8,6 +8,7 @@ import Recommend_Left from './components/recommend_left';
 import Recommend_Right from './components/recommend_right';
 import Footer from './components/footer';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
+import ForumItem from './components/forumitem'
 
 class LandingPage extends React.Component {
   render() {
@@ -44,6 +45,16 @@ class App extends React.Component {
     }
   }
 
+  class ForumPage extends React.Component{
+    render(){
+      return(
+        <div>
+          <ForumItem />
+        </div>
+      )
+    }
+  }
+
 
   ReactDOM.render((
     <Router history={hashHistory}>
@@ -51,6 +62,7 @@ class App extends React.Component {
         <IndexRoute component={LandingPage} />
         <Route path="/Index" component={LandingPage} />
         <Route path="/Notification" component={NotificationPage} />
+        <Route path="/Forum" component = {ForumPage} />
         //some
       </Route>
     </Router>
