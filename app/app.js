@@ -4,9 +4,11 @@ import MailBoxThread from './components/mailboxthread';
 import NavBar from './components/navbar';
 import Landing from './components/landing';
 import Recommend from './components/Recommend';
-import Recommend_Left from './components/recommend_left';
-import Recommend_Right from './components/recommend_right';
+//import Recommend_Left from './components/recommend_left';
+//import Recommend_Right from './components/recommend_right';
 import Footer from './components/footer';
+import friendsFeed from './components/friendsFeed';
+import accountFeed from './components/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 import ForumItem from './components/forumitem'
 
@@ -34,6 +36,26 @@ class NotificationPage extends React.Component {
   }
 }
 
+class FriendsPage extends React.Component {
+  render() {
+    return (
+      <div>
+        <NavBar />;
+        <friendsFeed />
+      </div>
+    )
+  }
+}
+
+class AccountPage extends React.Component {
+  render(){
+    return (
+      <div>
+        <accountFeed />
+      </div>
+    )
+  }
+}
 class App extends React.Component {
     render() {
       return (
@@ -63,6 +85,8 @@ class App extends React.Component {
         <Route path="/Index" component={LandingPage} />
         <Route path="/Notification" component={NotificationPage} />
         <Route path="/Forum" component = {ForumPage} />
+        <Route path="/friends" component={FriendsPage} />
+        <Route path="/MyProfile" component={AccountPage}/>
         //some
       </Route>
     </Router>

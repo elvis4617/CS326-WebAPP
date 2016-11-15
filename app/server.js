@@ -1,31 +1,10 @@
-import {readDocument, readDocumentNoId, writeDocument, addDocument} from './database.js';
+import {readDocument, writeDocument, addDocument} from './database.js';
 
-/**
- * Given a feed item ID, returns a FeedItem object with references resolved.
- * Internal to the server, since it's synchronous.
- */
-function getRequestItemSync(requestItemId) {
-  var requestItem = readDocument('requestItem', requestItemId);
-  requestItem.likeCounter =
-  requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
-  // FeedItems in the DB, we would
-  // need to check the type and have logic for each type.
-  requestItem.author = readDocument('users', requestItem.author);
-  requestItem.reciever = readDocument('users', requestItem.reciever);
-  // Resolve comment author.
 
-  return requestItem;
-}
-
-export function getRequestData(user, cb){
-
-  //Get the user
-  var userData = readDocument('users',user);
-  //Read user's mailbox and parse it
-  userData.mailbox.map((requestId) => getRequestItemSync(requestId));
-
-  //Return mailbox with parsed requests
-  emulateServerReturn(userData.mailbox,cb);
+function emulateServerReturn(data, cb) {
+  setTimeout(() => {
+    cb(data);
+  }, 4);
 }
 
 export function getUnReadMsgs(user, cb){
@@ -78,12 +57,6 @@ emulateServerReturn(value, cb);
  * Emulates how a REST call is *asynchronous* -- it calls your function back
  * some time in the future with data.
  */
-function emulateServerReturn(data, cb) {
-  setTimeout(() => {
-    cb(data);
-  }, 4);
-}
-
 export function getRecommendPostItemFriend(user) {
   var userData = readDocument('users', user);
   var friendList = userData.friendList;
@@ -170,4 +143,90 @@ export function readRequest(requestItemId, userId, cb) {
   }
   // Return a resolved version of the likeCounter
   emulateServerReturn("true", cb);
+}
+
+
+function getRequestItemSync(requestItemId) {
+  var requestItem = readDocument('requestItems', requestItemId);
+  //requestItem.likeCounter =
+  //requestItem.likeCounter.map((id) => readDocument('users', id)); // Assuming a StatusUpdate. If we had other types of
+  // FeedItems in the DB, we would
+  // need to check the type and have logic for each type.
+  requestItem.author = readDocument('users', requestItem.author).fullName;
+  requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
+  // Resolve comment author.
+
+  return requestItem;
+}
+
+export function getRequestData(user, cb){
+
+  //Get the user
+  var userData = readDocument('users',user);
+  var mailboxData = userData.mailbox;
+  //Read user's mailbox and parse it
+  var requestList=[];
+  mailboxData.forEach((requestId) =>{
+
+    requestList.push(getRequestItemSync(requestId));
+
+  });
+
+  //Return mailbox with parsed requests
+  //var requestItem = readDocument('requestItems', 1);
+//  var requestList=[];
+//  requestList.push(readDocument('requestItems',1));
+//  requestList.push(readDocument('requestItems',2));
+  emulateServerReturn(requestList, cb);
+}
+
+export function getUser(user, cb){
+  var userData = readDocument('users',user);
+  emulateServerReturn(userData, cb);
+}
+
+export function writeRequest(userId, recieverId, requestContent, cb){
+  var time = new Date().getTime();
+//  var requestItem = readDocument('requestItems', requestItemId);
+  var newRequest ={
+    "author": userId,
+    "reciever": recieverId,
+    "createDate":time,
+    "status": false,
+    "title":"random title",
+    "content":requestContent,
+    "read":false
+  };
+
+  newRequest = addDocument('requestItems',newRequest);
+  var userData = readDocument('users',userId);
+
+  userData.mailbox.unshift(newRequest._id);
+  writeDocument('users',userData)
+  emulateServerReturn(newRequest, cb);
+}
+
+// Works as long as messages / requests aren't deleted. Consider revising
+export function onMessage(message, authorId, recieverId) {
+  var reciever = readDocument('users', recieverId);
+    for(var i = 0; i < 100000000; i++) {
+      try {
+        var request = readDocument('requests', i);
+      }
+      catch(err) {
+        request._id = i;
+        request.author = authorId;
+        request.reciever = recieverId;
+        request.CreateDate = new Date();
+        request.status = "false";
+        request.title = "Message";
+        request.content = message;
+        request.read = "false";
+        writeDocument('requests', request);
+        reciever.mailbox.push(i)
+        writeDocument('users', reciever)
+        break;
+      }
+    }
+
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Request from './request';
-import { Link} from 'react-router';
+//import {Link} from 'react-router';
 import {getUnReadMsgs} from '../server'
 
 export default class UnReadMsg extends React.Component{
