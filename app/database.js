@@ -230,7 +230,7 @@ var initialData = {
     "2":{
       "_id":2,
       "type":"groupbase",
-      "List":[1,2,3,4]
+      "List":[1,2]
     }
   }
 };

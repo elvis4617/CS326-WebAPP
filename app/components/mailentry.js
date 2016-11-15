@@ -67,6 +67,7 @@ handleChangeGroup(e){
               <div className="form-group">
                 <label htmlFor="recieverEntry-1">To:</label>
                 <input      type="text"
+                            id = "recieverEntry-1"
                             className="form-control"
                             placeholder="Write a comment.."
                             value={this.state.reciever}
@@ -76,6 +77,7 @@ handleChangeGroup(e){
               <div className="form-group">
                 <label htmlFor="titleEntry-1">Ttile:</label>
                 <input      type="text"
+                            id="titleEntry-1"
                             className="form-control"
                             placeholder="Write a title.."
                             value={this.state.title}
@@ -85,14 +87,17 @@ handleChangeGroup(e){
               <div className="form-group">
                 <label htmlFor="groupEntry-1">Group:</label>
                 <input      type="text"
+                            id="groupEntry-1"
                             className="form-control"
-                            placeholder="Write a title.."
+                            placeholder="Write a group name.."
                             value={this.state.group}
                             onChange={(e) => this.handleChangeGroup(e)}/>
               </div>
 
               <div className="form-group">
+                <label htmlFor="messageEntry-1">Message:</label>
                 <textarea className="form-control"
+                          id="messageEntry-1"
                           rows="2"
                           placeholder="What's on your mind?"
                           value ={this.state.content}

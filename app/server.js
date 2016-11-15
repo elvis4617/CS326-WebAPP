@@ -182,7 +182,7 @@ function getRequestItemSync(requestItemId) {
 
   requestItem.author = readDocument('users', requestItem.author).fullName;
   requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
-
+  requestItem.group = readDocument('groups',requestItem.group).groupName;
   return requestItem;
 }
 
@@ -218,9 +218,10 @@ export function getRequestData(user, cb){
 
   function getGroup(groupName){
    //var userList = readDocumentNoId('users');
-   var groupBase = readDocument('dataBase');
+   var groupBase = readDocument('dataBase',2);
 
    var groupR = -1;
+
    //var ll = userList.length;
    groupBase.List.forEach((groupId) => {
      var groupData = readDocument('groups', groupId);
