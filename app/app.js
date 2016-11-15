@@ -4,8 +4,6 @@ import MailBoxThread from './components/mailboxthread';
 import NavBar from './components/navbar';
 import Landing from './components/landing';
 import Recommend from './components/Recommend';
-//import Recommend_Left from './components/recommend_left';
-//import Recommend_Right from './components/recommend_right';
 import Footer from './components/footer';
 import friendsFeed from './components/friendsFeed';
 import accountFeed from './components/accountFeed';
@@ -29,7 +27,7 @@ class NotificationPage extends React.Component {
   render() {
     return (
       <div>
-        <MailBoxThread />;
+        <MailBoxThread />
         <Footer />
       </div>
     )
@@ -40,8 +38,7 @@ class FriendsPage extends React.Component {
   render() {
     return (
       <div>
-        <NavBar />;
-        <friendsFeed />
+        <friendsFeed user={2} />
       </div>
     )
   }
@@ -85,9 +82,8 @@ class App extends React.Component {
         <Route path="/Index" component={LandingPage} />
         <Route path="/Notification" component={NotificationPage} />
         <Route path="/Forum" component = {ForumPage} />
-        <Route path="/friends" component={FriendsPage} />
+        <Route path="/MyFriend" component={FriendsPage} />
         <Route path="/MyProfile" component={AccountPage}/>
-        //some
       </Route>
     </Router>
   ),

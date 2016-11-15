@@ -1,5 +1,5 @@
 import React from 'react';
-import friend from './friend';
+import Friend from './friend';
 
 export default class friendsFeed extends React.Component {
   constructor(props) {

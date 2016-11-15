@@ -25,7 +25,6 @@ export default class Recommend extends React.Component{
   render(){
     return(
       <div>
-        <p>{this.state.contents.length}</p>
         {this.state.contents.map((recommendItem) => {
             if(recommendItem._id % 2 == 1)
               return (
