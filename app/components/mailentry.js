@@ -38,11 +38,15 @@ export default class MailEntry extends React.Component{
 
   render() {
     return (
-      <div className=" panel panel-default">
-        <div className="panel-body">
-          <div className="media">
 
-            <div className="media-body">
+      <div className="modal fade" id="entry-modal-1" role="dialog">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" data-dismiss="modal">&times;</button>
+              <h4 className="modal-title">Send <small>say something I am giving up on you</small></h4>
+            </div>
+            <div className="modal-body">
 
               <div className="form-group">
                 <label htmlFor="recieverEntry-1">To:</label>
@@ -60,23 +64,10 @@ export default class MailEntry extends React.Component{
                           value ={this.state.content}
                           onChange = {(e) => this.handleChangeContent(e)}/>
               </div>
-
             </div>
-          </div>
 
-          <div className="row">
-            <div className="col-md-6">
-
-            </div>
-            <div className="col-md-6">
-              <div className="pull-right">
-
-                <button type="button"
-                        className="btn btn-default"
-                        onClick={(e) => this.handlePost(e)}>
-                  Send
-                </button>
-              </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-default" data-dismiss="modal" onClick={(e) => this.handlePost(e)}>Send</button>
             </div>
           </div>
         </div>
