@@ -1,9 +1,16 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
 
-export function getUserData(user, cb) {
+export function getUserDataByName(userName, cb) {
 // Get the User object with the id "user".
-var userId = getUserId(user);
+var userId = getUserId(userName);
+var userData = readDocument('users', userId);
+var value = {contents : userData};
+emulateServerReturn(value, cb);
+}
+
+export function getUserDataById(userId, cb) {
+// Get the User object with the id "user".
 var userData = readDocument('users', userId);
 var value = {contents : userData};
 emulateServerReturn(value, cb);

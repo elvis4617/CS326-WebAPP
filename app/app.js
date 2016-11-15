@@ -39,6 +39,7 @@ class FriendsPage extends React.Component {
     return (
       <div>
         <FriendsFeed user={2} />
+        <Footer />
       </div>
     )
   }
@@ -48,7 +49,8 @@ class AccountPage extends React.Component {
   render(){
     return (
       <div>
-        <AccountFeed />
+        <AccountFeed user={2}/>
+        <Footer />
       </div>
     )
   }
@@ -58,7 +60,7 @@ class App extends React.Component {
     render() {
       return (
         <div>
-        <NavBar user={2 } />
+        <NavBar user={2} />
         {this.props.children}
         </div>
       );
@@ -70,6 +72,7 @@ class App extends React.Component {
       return(
         <div>
           <ForumItem />
+          <Footer />
         </div>
       )
     }

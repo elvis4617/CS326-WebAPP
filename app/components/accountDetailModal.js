@@ -1,5 +1,5 @@
 import React from 'react';
-import {getUserData} from '../server';
+import {getUserDataByName} from '../server';
 
 export default class AccountDetailModal extends React.Component {
 
@@ -11,7 +11,7 @@ export default class AccountDetailModal extends React.Component {
   }
 
   refresh() {
-    getUserData(this.props.author, (userData) => {
+    getUserDataByName(this.props.author, (userData) => {
     this.setState(userData);
   });
  }

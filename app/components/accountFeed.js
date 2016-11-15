@@ -1,6 +1,24 @@
 import React from 'react';
+import {getUserDataById} from '../server';
 
 export default class AccountFeed extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      contents: []
+    };
+  }
+
+  refresh() {
+    getUserDataById(this.props.user, (userData) => {
+    this.setState(userData);
+  });
+ }
+
+  componentDidMount() {
+    this.refresh();
+  }
 
   render() {
     return (
@@ -18,7 +36,7 @@ export default class AccountFeed extends React.Component {
                     <img className="profpic" src = "img/testProfilePic.jpg"/>
                   </div>
                   <div className="media-body">
-                    <h2>Username</h2>
+                    <h2>{this.state.contents.userName}</h2>
                   </div>
                 </div>
               </div>
@@ -28,25 +46,25 @@ export default class AccountFeed extends React.Component {
             <div className="row info">
               <h4>User Information:</h4>
               <div className="col-md-12">
-                <label>Username:</label>John Doe
+                <label>Full Name:</label>{this.state.contents.fullName}
               </div>
             </div>
             <div className="row text">
               <div className="col-md-12">
-                <label>E-mail</label>jdoe@example.com
+                <label>E-mail:</label>{this.state.contents.email}
               </div>
             </div>
             <div className="row text">
               <div className="col-md-4">
-                <label>Grade</label>Senior
+                <label>Grade:</label>{this.state.contents.grade}
               </div>
               <div className="col-md-8">
-                <label>Major</label>Computer Science
+                <label>Major:</label>{this.state.contents.major}
               </div>
             </div>
             <div className="row text">
               <div className="col-md-12">
-                <label>Description</label>This is me.
+                <label>Description</label>{this.state.contents.description}
               </div>
             </div>
             <br/>
