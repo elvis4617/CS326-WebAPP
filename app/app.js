@@ -70,7 +70,7 @@ class App extends React.Component {
   class ForumPage extends React.Component{
     render(){
       return(
-        <div
+        <div>
           <ForumItem user={2}/>
           <Footer />
         </div>
