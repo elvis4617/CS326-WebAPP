@@ -57,6 +57,7 @@ export default class ForumItem extends React.Component{
               </tbody>
             </table>
             <ForumNumber/>
+            <br/>
             <hr id = "bottom" />
             <NewThreadBox
               onPost={(threadTitle, threadContent)=> this.onPost(threadTitle, threadContent)}/>
