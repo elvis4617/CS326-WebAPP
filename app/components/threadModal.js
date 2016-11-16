@@ -2,7 +2,6 @@ import React from 'react';
 import {getForumData} from '../server';
 import ThreadBody from './threadbody';
 import ForumNumber from './forumnumber';
-import {getRecommendPostItem} from '../server';
 
 export default class ThreadModal extends React.Component {
 
@@ -14,7 +13,7 @@ export default class ThreadModal extends React.Component {
   }
 
   refresh() {
-    getRecommendPostItem(this.props.author, (forumData) => {
+    getForumData(this.props.author, (forumData) => {
     this.setState(forumData);
   });
  }
