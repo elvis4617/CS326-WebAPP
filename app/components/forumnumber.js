@@ -4,11 +4,7 @@ export default class ForumNumber extends React.Component{
   render(){
     return(
       <div className = "top-bar">
-        <a href = "#bottom">
-          <button type = "button" className = "btn btn-primary">
-            <span className = "glyphicon glyphicon-pencil"></span>New Thread
-          </button>
-        </a>
+
         <div className = "page-number pull-right">
           <strong>1</strong>
           <a href = "#">2</a>
