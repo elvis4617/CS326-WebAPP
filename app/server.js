@@ -314,8 +314,8 @@ export function getForumData(user, cb){
   var postList = [];
   for (var item in postData){
     var postItem = readDocument('postItem', postData[item]);
-    postItem.author = readDocument('users', postItem.author).fullName;
-    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor).fullName;
+    postItem.author = readDocument('users', postItem.author);
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
     postList.push(postItem);
   }
   var value = {contents: postList};
