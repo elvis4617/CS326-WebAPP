@@ -283,18 +283,22 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   emulateServerReturn(newRequest, cb);
 }
 
-  export function joinGroup(userName, groupName){
+  export function joinGroup(userName, groupName, requestId, cb){
 
     var userId=getUser(userName);
     var groupId=getGroup(groupName);
     var groupData=readDocument('groups',groupId);
     var joined = groupData.memberList.indexOf(userId);
+    var requestData = readDocument('requestItems',requestId);
+    requestData.status = true;
+
+    writeDocument('requestItems',requestData);
 
     if(joined === -1){
       groupData.memberList.push(userId);
       writeDocument('groups',groupData);
     }
-    
+    emulateServerReturn(requestData, cb);
 
   }
 

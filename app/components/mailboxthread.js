@@ -4,7 +4,7 @@ import Mail from './mail';
 import MailToolBar from './mailtoolbar';
 //import PageNav from './pagenav';
 import MailBoxTitle from './mailbox_title';
-import {getRequestData, writeRequest} from '../server';
+import {getRequestData, writeRequest, joinGroup} from '../server';
 import MailEntry from './mailentry';
 
 export default class MailBoxThread extends React.Component{
@@ -32,6 +32,11 @@ export default class MailBoxThread extends React.Component{
 
   }
 
+  onAccept(userName, groupName, requestId){
+    joinGroup(userName,groupName, requestId,() =>{
+      this.refresh();
+    });
+  }
   componentDidMount(){
     this.refresh();
   }
@@ -79,7 +84,8 @@ export default class MailBoxThread extends React.Component{
                                  mailId={requestItem._id}
                                  group={requestItem.group}
                                  type={requestItem.type}
-                                 status={requestItem.status}>
+                                 status={requestItem.status}
+                                 onAccept={(userName, groupName, requestId) => this.onAccept(userName, groupName, requestId)}>
                                  {requestItem.content}
                   </Mail>
                  );
@@ -89,7 +95,7 @@ export default class MailBoxThread extends React.Component{
               </MailBox>
             </div>
 
-            
+
           </div>
         </div>
       </div>
