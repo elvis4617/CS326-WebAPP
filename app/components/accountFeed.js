@@ -106,10 +106,12 @@ export default class AccountFeed extends React.Component {
               </div>
             </div>
             <div className="row text">
-              <div className="col-md-4">
+              <div className="col-md-12">
                 <label>Grade:</label>{this.state.contents.grade}
               </div>
-              <div className="col-md-8">
+            </div>
+            <div className="row text">
+              <div className="col-md-12">
                 <label>Major:</label>{this.state.contents.major}
               </div>
             </div>
