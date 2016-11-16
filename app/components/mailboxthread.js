@@ -36,19 +36,10 @@ export default class MailBoxThread extends React.Component{
     this.refresh();
   }
 
-  handleChangeOutBox(e){
+  //Filter
+  handleChangeMailBox(e){
     e.preventDefault();
-    this.setState({mailBoxType:"outbox"});
-  }
-
-  handleChangeInBox(e){
-    e.preventDefault();
-    this.setState({mailBoxType:"inbox"});
-  }
-
-  handleChangeAllBox(e){
-    e.preventDefault();
-    this.setState({mailBoxType:"all"});
+    this.setState({mailBoxType:e.target.value});
   }
 
   filterMail(author, reciever){
@@ -63,7 +54,27 @@ export default class MailBoxThread extends React.Component{
   }
 
   render(){
+    var inboxActive ="";
+    var outboxActive ="";
+    var allActive="";
+
+    if(this.state.mailBoxType === "inbox"){
+      inboxActive = "active";
+      outboxActive ="";
+      allActive="";
+    }
+    else if(this.state.mailBoxType === "outbox"){
+      inboxActive = "";
+      outboxActive ="active";
+      allActive="";
+    }
+    else{
+      inboxActive = "";
+      outboxActive ="";
+      allActive="active";
+    }
     return(
+
       <div className="container">
         <div className="row">
           <div className="col-md-8 col-md-offset-2">
@@ -72,18 +83,21 @@ export default class MailBoxThread extends React.Component{
             <div className="row">
                 <div className="btn-group pull-left n-toolbar" role="group" aria-label="...">
                   <button type="button"
-                          className="btn "
-                          onClick={(e) => this.handleChangeInBox(e)}>
+                          className={"btn "+inboxActive}
+                          value ="inbox"
+                          onClick={(e) => this.handleChangeMailBox(e)}>
                           Inbox
                   </button>
                   <button type="button"
-                          className="btn "
-                          onClick={(e) => this.handleChangeOutBox(e)}>
+                          className={"btn "+outboxActive}
+                          value = "outbox"
+                          onClick={(e) => this.handleChangeMailBox(e)}>
                           Outbox
                   </button>
                   <button type="button"
-                          className="btn "
-                          onClick={(e) => this.handleChangeAllBox(e)}>
+                          className={"btn "+allActive}
+                          value="all"
+                          onClick={(e) => this.handleChangeMailBox(e)}>
                           All Notification
                   </button>
                   <button type="button" className="btn " data-toggle="modal" data-target="#entry-modal-1">Write</button>
@@ -103,7 +117,8 @@ export default class MailBoxThread extends React.Component{
                                  title={requestItem.title}
                                  mailId={requestItem._id}
                                  group={requestItem.group}
-                                 type={requestItem.type}>
+                                 type={requestItem.type}
+                                 status={requestItem.status}>
                                  {requestItem.content}
                   </Mail>
                  );

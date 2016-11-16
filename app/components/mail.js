@@ -8,8 +8,8 @@ export default class Mail extends React.Component {
 
   render(){
     var acceptStatus = "Accept"
-    if(this.props.mailType === "invite")
-      acceptStatus = "";
+    if(this.props.status)
+      acceptStatus = "Accepted";
     return(
       <div>
       <div className="media">
@@ -23,6 +23,7 @@ export default class Mail extends React.Component {
               <AccountDetailModal mailId={this.props.mailId}
                          author={this.props.author}>
               </AccountDetailModal>
+              
               <br /> {this.props.title}
               <br /><span className="pull-right"><a href="#" >{acceptStatus}</a> · <a type="button" data-toggle="modal" data-target={"#modal-content"+this.props.mailId}>Details</a> · {unixTimeToString(this.props.createDate)}</span>
                 <MailModal mailId={this.props.mailId}

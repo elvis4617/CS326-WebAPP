@@ -261,7 +261,7 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   //recieverId=2;
   //If user/reciever name not found, abort mission
   if (recieverId <= 0 || groupId <= 0)
-    emulateServerReturn(null ,cb);
+    return null;
 
   var newRequest ={
     "type":typeEntry,
