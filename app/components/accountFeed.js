@@ -1,12 +1,15 @@
 import React from 'react';
 import {getUserDataById} from '../server';
+import {updateUserInfo} from '../server';
 
 export default class AccountFeed extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      contents: []
+      contents: [],
+      value: "",
+      update: ""
     };
   }
 
@@ -19,6 +22,31 @@ export default class AccountFeed extends React.Component {
   componentDidMount() {
     this.refresh();
   }
+
+  handleChange(e,name) {
+  // Prevent the event from "bubbling" up the DOM tree.
+  e.preventDefault();
+  // e.target is the React Virtual DOM target of the
+  // input event -- the <textarea> element. The textarea's
+  // `value` is the entire contents of what the user has
+  // typed in so far.
+  this.setState({value: e.target.value,
+                 update: name});
+  }
+
+  handlePost(e) {
+ // Prevent the event from "bubbling" up the DOM tree.
+  e.preventDefault();
+  // Trim whitespace from beginning + end of entry.
+  //console.log(this.state.value)
+  this.setState(updateUserInfo(this.props.user,this.state.value,this.state.update));
+    // Reset status update.
+  this.setState({value: ""});
+  this.refresh();
+  }
+
+
+
 
   render() {
     return (
@@ -74,7 +102,9 @@ export default class AccountFeed extends React.Component {
               <div className="col-md-8">
                 <form>
                   <label>Name:</label>
-                  <input type="text" name="firstname"/>
+                  <input type="text"
+                         name="fullName"
+                         onChange={(e) => this.handleChange(e,"fullName")}/>
                 </form>
               </div>
             </div>
@@ -82,7 +112,9 @@ export default class AccountFeed extends React.Component {
               <div className="col-md-8">
                 <form>
                   <label>E-mail:</label>
-                  <input type="text" name="e-mail"/>
+                  <input type="text"
+                         name="email"
+                         onChange={(e) => this.handleChange(e,"email")}/>
                 </form>
               </div>
             </div>
@@ -90,13 +122,17 @@ export default class AccountFeed extends React.Component {
               <div className="col-md-8">
                 <form>
                   <label>Grade:</label>
-                  <input type="text" name="grade"/>
+                  <input type="text"
+                         name="grade"
+                         onChange={(e) => this.handleChange(e,"grade")}/>
                 </form>
               </div>
               <div className="col-md-8">
                 <form>
                   <label>Major:</label>
-                  <input type="text" name="major"/>
+                  <input type="text"
+                         name="major"
+                         onChange={(e) => this.handleChange(e,"major")}/>
                 </form>
               </div>
             </div>
@@ -104,14 +140,20 @@ export default class AccountFeed extends React.Component {
               <div className="col-md-8">
                 <form>
                   <label>Description:</label>
-                  <textarea className="description" type="text" name="description" draggable="false">
+                  <textarea className="description"
+                            type="text"
+                            name="description"
+                            draggable="false"
+                            onChange={(e) => this.handleChange(e,"description")}>
                   </textarea>
                 </form>
               </div>
             </div>
             <div className="row submit">
               <div className="col-md-12">
-                <button type="button">Submit</button>
+                <button type="button"
+                  onClick={(e) => this.handlePost(e)}>
+                  Submit</button>
               </div>
             </div>
 

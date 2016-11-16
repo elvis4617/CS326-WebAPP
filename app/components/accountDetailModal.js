@@ -60,10 +60,10 @@ export default class AccountDetailModal extends React.Component {
                         </div>
 
                         <div className="row text">
-                          <div className="col-md-4">
+                          <div className="col-md-5">
                             <label>Grade:</label>{this.state.contents.grade}
                           </div>
-                          <div className="col-md-8">
+                          <div className="col-md-7">
                             <label>Major:</label>{this.state.contents.major}
                           </div>
                         </div>

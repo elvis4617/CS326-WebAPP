@@ -12,6 +12,7 @@ export default class MailModal extends React.Component {
                         <h4 className="modal-title">{this.props.title} <small>{this.props.author}</small></h4>
                       </div>
                       <div className="modal-body">
+                        <p> The {this.props.mailType} to join {this.props.group} </p>
                         <p>
                           {this.props.children}
                         </p>

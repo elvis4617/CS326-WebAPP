@@ -21,6 +21,10 @@
   width: 8em;
 }
 
+.forum.table th.cell-stat-2x {
+    width: 14em;
+}
+
 .small-letters{
   font-size:80%;
 }

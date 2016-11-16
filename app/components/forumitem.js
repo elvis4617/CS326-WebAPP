@@ -2,7 +2,7 @@ import React from 'react';
 import ForumNumber from './forumnumber';
 import NewThreadBox from './newthread';
 import Post from './post';
-import {getForumData2} from '../server';
+import {getForumData, postThread} from '../server';
 export default class ForumItem extends React.Component{
   constructor (props){
     super(props);
@@ -11,11 +11,21 @@ export default class ForumItem extends React.Component{
     };
   }
 
+  refresh(){
+    getForumData(this.props.user, (forumData) => {
+      //this.setState({contents:forumData});
+      this.setState(forumData);
+    });
+  }
+
+  onPost(threadTitle, threadContent){
+    postThread(this.props.user, threadTitle, threadContent, ()=>{
+      this.refresh();
+    });
+  }
+
    componentDidMount(){
-     getForumData2(this.props.user, (forumData) => {
-       //this.setState({contents:forumData});
-       this.setState(forumData);
-     });
+     this.refresh();
   }
 
   render(){
@@ -35,7 +45,7 @@ export default class ForumItem extends React.Component{
                   <th colSpan = "2" className = "cell-stat text-left">Thread</th>
                   <th className = "cell-stat text-center">Author/Date</th>
                   <th className = "cell-stat text-center">Reply/View</th>
-                  <th className = "cell-stat text-center">Last Replied</th>
+                  <th className = "cell-stat text-center">Last Message</th>
                 </tr>
               </thead>
               <tbody>
@@ -47,8 +57,10 @@ export default class ForumItem extends React.Component{
               </tbody>
             </table>
             <ForumNumber/>
+            <br/>
             <hr id = "bottom" />
-            <NewThreadBox/>
+            <NewThreadBox
+              onPost={(threadTitle, threadContent)=> this.onPost(threadTitle, threadContent)}/>
             </div>
           </div>
         </div>

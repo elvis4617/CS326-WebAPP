@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link} from 'react-router';
+import {onRequest} from '../server';
+import RequestEntry from './requestEntry';
 
 export default class AddFriendPage extends React.Component {
   constructor(props) {
@@ -21,30 +23,10 @@ export default class AddFriendPage extends React.Component {
               </Link>
             </button>
             <hr/>
-            <div className="panel panel-default friends-panel">
-              <div className="panel-body">
-                <div className="input-group friend-request">
-                  <input type="text" className="form-control add-freind-input" placeholder="Send Request via Username"/>
-                  <span className="input-group-btn">
-                    <button type="submit" className="btn btn-default">
-                      <span className="glyphicon glyphicon-plus plus-icon"></span>
-                    </button>
-                  </span>
-                </div>
-                <hr/>
-                <div className="input-group friend-request">
-                  <input type="text" className="form-control add-friend-input" placeholder="Send Request via Email"/>
-                  <span className="input-group-btn">
-                    <button type="submit" className="btn btn-default">
-                      <span className="glyphicon glyphicon-plus plus-icon"></span>
-                    </button>
-                  </span>
-                </div>
-            </div>
+            <RequestEntry sendRequest = {(username, email) => onRequest(username, email, 2)}/>
           </div>
         </div>
       </div>
-    </div>
     )
   }
 }

@@ -260,7 +260,16 @@ export function getRequestData(user, cb){
   return groupR;
 }
 
-export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, cb){
+export function updateUserInfo(user, value, updateInfo){
+  var userData = readDocument('users', user);
+  userData[updateInfo] = value;
+  writeDocument('users', userData);
+  //console.log(userData)
+  return userData;
+}
+
+
+export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
   //Find the user id via user name
@@ -270,10 +279,10 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   //recieverId=2;
   //If user/reciever name not found, abort mission
   if (recieverId <= 0 || groupId <= 0)
-    emulateServerReturn(null ,cb);
+    return null;
 
   var newRequest ={
-    "type":"request",
+    "type":typeEntry,
     "author": userId,
     "reciever": recieverId,
     "createDate":time,
@@ -291,6 +300,27 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   writeDocument('users',userData)
   emulateServerReturn(newRequest, cb);
 }
+
+
+  export function joinGroup(userName, groupName, requestId, cb){
+
+    var userId=getUser(userName);
+    var groupId=getGroup(groupName);
+    var groupData=readDocument('groups',groupId);
+    var joined = groupData.memberList.indexOf(userId);
+    var requestData = readDocument('requestItems',requestId);
+    requestData.status = true;
+
+    writeDocument('requestItems',requestData);
+
+    if(joined === -1){
+      groupData.memberList.push(userId);
+      writeDocument('groups',groupData);
+    }
+    emulateServerReturn(requestData, cb);
+
+  }
+
 
 // Works as long as messages / requests aren't deleted. Consider revising
 export function onMessage(message, authorId, recieverId) {
@@ -316,39 +346,82 @@ export function onMessage(message, authorId, recieverId) {
     }
 }
 
-function getPostItemSync(postItemId){
-  var postItem = readDocument('postItem', postItemId);
-  postItem.author = readDocument('users', postItem.author);
-  postItem.lastReplyAuthor = readDocument('users', postItem.lastReplyAuthor);
-  postItem.commentThread.forEach((comment) => {
-    comment.author = readDocument('users', comment.author);
+function getUserE(email) {
+  //var userList = readDocumentNoId('users');
+  var userBase = readDocument('dataBase',1);
+
+  var userR = -1;
+  //var ll = userList.length;
+  userBase.List.forEach((userId) => {
+    var userData = readDocument('users', userId);
+    if(userData.email === email)
+      userR = userId;
   });
-  return postItem;
+    return userR;
+}
+// Works as long as messages / requests aren't deleted. Consider revising
+export function onRequest(username, email, authorId) {
+  var reciever;
+  if (username === "") {
+    reciever = getUserE(email); }
+  else {
+    reciever = getUser(username); }
+  for(var i = 0; i < 100000000; i++) {
+    try {
+      var request = readDocument('requests', i);
+    }
+    catch(err) {
+      request._id = i;
+      request.author = authorId;
+      request.reciever = reciever._id;
+      request.CreateDate = new Date();
+      request.status = "false";
+      request.title = "Friend Request";
+      request.content = "Will you be my friend?";
+      request.read = "false";
+      writeDocument('requests', request);
+      reciever.mailbox.push(i)
+      writeDocument('users', reciever)
+      break;
+    }
+  }
 }
 
 export function getForumData(user, cb){
-  var userData = readDocument('users', user);
-  var postData = userData.postItem;
-  var postList = [];
-  postData.forEach((postId)=>{
-    postList.push(getPostItemSync(postId));
-  });
-  // postData.contents = postData.contents.map(getPostItemSync);
-  emulateServerReturn(postList, cb);
-}
-
-export function getForumData2(user, cb){
 
   var userData = readDocument('users', user);
   var postData = userData.postItem;
   var postList = [];
   for (var item in postData){
     var postItem = readDocument('postItem', postData[item]);
-    postItem.author = readDocument('users', postItem.author).fullName;
-    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor).fullName;
+    postItem.author = readDocument('users', postItem.author);
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
     postList.push(postItem);
   }
   var value = {contents: postList};
 
   emulateServerReturn(value, cb);
+}
+
+export function postThread(user, title, contents, cb){
+  var time = new Date().getTime();
+  var newThread = {
+    "author": user,
+    "title": title,
+    "postDate": time,
+    "contents": contents,
+    "viewCount": 0,
+    "replyCount": 0,
+    "lastReplyAuthor": user,
+    "lastReplyDate": time,
+    "commentThread": []
+  };
+  newThread = addDocument('postItem', newThread);
+  var userData = readDocument('users', user);
+
+  userData.postItem.unshift(newThread._id);
+
+  writeDocument('users', userData);
+
+  emulateServerReturn(newThread, cb);
 }

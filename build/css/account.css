@@ -7,6 +7,7 @@
 .info{
   padding-top: 20px;
   border-top: 1px solid lightgrey;
+  text-align: left;
 }
 
 label{
@@ -21,6 +22,7 @@ label{
 
 .text {
   padding-top: 5px;
+  text-align:left;
 }
 
 .submit {

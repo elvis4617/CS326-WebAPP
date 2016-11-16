@@ -1,5 +1,5 @@
 import React from 'react';
-import messageEntry from './messageEntry';
+import MessageEntry from './messageEntry';
 import FriendDetailModal from './friendDetailModal';
 import {onMessage} from '../server';
 
@@ -33,8 +33,8 @@ export default class friend extends React.Component {
               </div>
             </div>
           </div>
+          <MessageEntry sendMessage = {(message) => onMessage(message, 2, this._id)}/>
           <hr/>
-          <messageEntry sendMessage = {(message) => onMessage(message, 2, this._id)}/>
         </div>
       </div>
     )
