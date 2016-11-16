@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link} from 'react-router';
-import {onRequest} from '../server';
+import {onRequest} from '../../server';
 import RequestEntry from './requestEntry';
 
 export default class AddFriendPage extends React.Component {

@@ -1,16 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MailBoxThread from './components/mailboxthread';
-import NavBar from './components/navbar';
-import Landing from './components/landing';
-import Recommend from './components/recommend';
-import Footer from './components/footer';
-import FriendsFeed from './components/friendsFeed';
-import AccountFeed from './components/accountFeed';
+import MailBoxThread from './components/mail/mailboxthread';
+import NavBar from './components/index/navbar';
+import Landing from './components/index/landing';
+import Recommend from './components/index/recommend';
+import Footer from './components/index/footer';
+import FriendsFeed from './components/friend/friendsFeed';
+import AccountFeed from './components/account/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
-import ForumItem from './components/forumitem';
-import AddFriendPage from './components/addFriend';
-import SearchResultPage from './components/searchresultpage';
+import ForumItem from './components/forum/forumitem';
+import AddFriendPage from './components/friend/addFriend';
+import SearchResultPage from './components/index/searchresultpage';
 
 class LandingPage extends React.Component {
   render() {

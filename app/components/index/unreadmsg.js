@@ -1,6 +1,6 @@
 import React from 'react';
 import Request from './request';
-import {getUnReadMsgs} from '../server'
+import {getUnReadMsgs} from '../../server'
 
 export default class UnReadMsg extends React.Component{
   constructor(props) {

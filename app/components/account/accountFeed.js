@@ -1,6 +1,5 @@
 import React from 'react';
-import {getUserDataById} from '../server';
-import {updateUserInfo} from '../server';
+import {getUserDataById, updateUserInfo} from '../../server';
 
 export default class AccountFeed extends React.Component {
 
@@ -49,13 +48,13 @@ export default class AccountFeed extends React.Component {
 
   handleUpdateUserInfo(e) {
   e.preventDefault();
-  if(!this.props.name ||
-      !this.props.email ||
-      !this.props.grade ||
-      !this.props.major ||
-      !this.props.description)
+  /*if(typeof this.props.name == 'undefined' ||
+      typeof this.props.email == 'undefined' ||
+      typeof this.props.grade == 'undefined' ||
+      typeof this.props.major == 'undefined' ||
+      typeof this.props.description == 'undefined')
       alert("You must fill in all fields before commit any changes.");
-  else
+  else*/
     updateUserInfo(this.props.user,
                   this.state.name,
                   this.state.email,

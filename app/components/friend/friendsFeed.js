@@ -1,6 +1,6 @@
 import React from 'react';
 import Friend from './friend';
-import {getFriendDataById} from '../server';
+import {getFriendDataById} from '../../server';
 import { Link} from 'react-router';
 
 export default class friendsFeed extends React.Component {

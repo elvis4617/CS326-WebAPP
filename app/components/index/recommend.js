@@ -1,7 +1,7 @@
 import React from 'react';
 import Recommend_Left from './recommend_left';
 import Recommend_Right from './recommend_right';
-import {getRecommendPostItem} from '../server';
+import {getRecommendPostItem} from '../../server';
 
 export default class Recommend extends React.Component{
 

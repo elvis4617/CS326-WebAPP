@@ -1,5 +1,5 @@
 import React from 'react';
-import {resetDatabase} from '../database'
+import {resetDatabase} from '../../database'
 
 export default class Reset_DB extends React.Component{
   render(){

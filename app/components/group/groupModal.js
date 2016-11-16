@@ -1,5 +1,5 @@
 import React from 'react';
-import {unixTimeToString} from '../util';
+import {unixTimeToString} from '../../util';
 //import {writeRequest, joinGroup, getUserDataById, getRequestItem} from '../server';
 
 export default class GroupModal extends React.Component{

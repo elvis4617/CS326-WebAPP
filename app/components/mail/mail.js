@@ -1,7 +1,7 @@
 import React from 'react';
 import MailModal from './mailmodal';
-import AccountDetailModal from './accountDetailModal';
-import {unixTimeToString} from '../util';
+import AccountDetailModal from '../account/accountDetailModal';
+import {unixTimeToString} from '../../util';
 
 //import { Link} from 'react-router';
 

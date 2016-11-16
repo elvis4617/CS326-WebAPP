@@ -1,5 +1,5 @@
 import React from 'react';
-import {getUserDataByName} from '../server';
+import {getUserDataByName} from '../../server';
 
 export default class AccountDetailModal extends React.Component {
 

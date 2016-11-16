@@ -1,7 +1,7 @@
 import React from 'react';
-import GroupItem from './groupItem';
+import GroupItem from '../group/groupItem';
 import { Link} from 'react-router';
-import {getMatchGroup} from '../server';
+import {getMatchGroup} from '../../server';
 
 
 export default class SearchResultPage extends React.Component{

@@ -2,7 +2,8 @@ import React from 'react';
 import ForumNumber from './forumnumber';
 import NewThreadBox from './newthread';
 import Post from './post';
-import {getForumData, postThread} from '../server';
+import {getForumData, postThread} from '../../server';
+
 export default class ForumItem extends React.Component{
   constructor (props){
     super(props);

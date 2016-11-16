@@ -1,5 +1,5 @@
 import React from 'react';
-import {readRequest} from '../server';
+import {readRequest} from '../../server';
 
 export default class Request extends React.Component{
 

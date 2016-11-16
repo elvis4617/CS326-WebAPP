@@ -1,7 +1,6 @@
 import React from 'react';
-import {unixTimeToString} from '../util'
-import AccountDetailModal from './accountDetailModal';
-import ThreadModal from './threadmodal';
+import {unixTimeToString} from '../../util'
+import AccountDetailModal from '../account/accountDetailModal';
 
 export default class Post extends React.Component{
   constructor(props){
@@ -13,7 +12,7 @@ export default class Post extends React.Component{
     return(
       <tr>
         <th colSpan = "2" className = "thread text-left"><a href="#">{this.state.title}</a>
-          
+
         </th>
         <th className = "cell-stat text-center"><a className = "name" data-toggle="modal" data-target={"#account-modal"+this.state._id} href = "#">{this.state.author.fullName}</a>
           <AccountDetailModal mailId = {this.state._id}

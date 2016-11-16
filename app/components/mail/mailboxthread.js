@@ -4,7 +4,7 @@ import Mail from './mail';
 import MailToolBar from './mailtoolbar';
 //import PageNav from './pagenav';
 import MailBoxTitle from './mailbox_title';
-import {getRequestData, writeRequest, joinGroup, getUserById} from '../server';
+import {getRequestData, writeRequest, joinGroup, getUserById} from '../../server';
 import MailEntry from './mailentry';
 
 export default class MailBoxThread extends React.Component{

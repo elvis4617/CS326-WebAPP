@@ -1,5 +1,5 @@
 import React from 'react';
-import {getForumData} from '../server';
+import {getForumData} from '../../server';
 import ThreadBody from './threadbody';
 import ForumNumber from './forumnumber';
 
