@@ -14,7 +14,7 @@ export default class Mail extends React.Component {
         <div className="media-body">
           <div className="media-body">
 
-              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId} href="#">{this.props.author}</a> to <a> {this.props.reciever}</a> <span> Group {this.props.group} </ span>
+              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId} href="#">{this.props.author}</a> to <a> {this.props.reciever}</a> <span> Group {this.props.group} </ span> <span> {this.props.type}</span>
               <AccountDetailModal mailId={this.props.mailId}
                          author={this.props.author}>
               </AccountDetailModal>

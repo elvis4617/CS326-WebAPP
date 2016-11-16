@@ -7,7 +7,8 @@ export default class MailEntry extends React.Component{
       reciever:"",
       content:"",
       title:"",
-      grooup:""
+      grooup:"",
+      mailType:""
     };
   }
 
@@ -19,13 +20,18 @@ export default class MailEntry extends React.Component{
      var recieverEntry = this.state.reciever.trim();
      var titleEntry = this.state.title.trim();
      var groupEntry = this.state.group.trim();
-     if (statusUpdateText !== "" && recieverEntry !=="" && groupEntry != ""){
-       this.props.onSend(statusUpdateText, recieverEntry, titleEntry, groupEntry);
+     var typeEntry = this.state.mailType.trim();
+
+     if (statusUpdateText !== "" && recieverEntry !=="" && groupEntry != "" && typeEntry != ""){
+       this.props.onSend(statusUpdateText, recieverEntry, titleEntry, groupEntry,typeEntry);
+
        // Reset status update.
        this.setState({reciever:"",
                       content:"",
                       title:"",
-                      group:""});
+                      group:"",
+                      mailType:""}
+                    );
      }
    }
 
@@ -43,16 +49,41 @@ export default class MailEntry extends React.Component{
     this.setState({reciever: e.target.value});
  }
 
- handleChangeTitle(e){
+  handleChangeTitle(e){
    e.preventDefault();
    this.setState({title: e.target.value});
-}
+ }
 
-handleChangeGroup(e){
+  handleChangeGroup(e){
   e.preventDefault();
   this.setState({group: e.target.value});
-}
+  }
+
+  handleChangeRadio(e){
+  e.preventDefault();
+  this.setState({mailType:e.target.value});
+  }
+
+  didUserCheckRequest(){
+    if( this.state.mailType === "request")
+      return true;
+
+    return false;
+  }
+
+  didUserCheckInvite(){
+    if( this.state.mailType === "invite")
+      return true;
+
+    return false;
+  }
+
   render() {
+
+    var requestChecked = this.didUserCheckRequest();
+    //requestChecked += "aaaaaa";
+    var inviteChecked = this.didUserCheckInvite();
+
     return (
 
       <div className="modal fade" id="entry-modal-1" role="dialog">
@@ -63,6 +94,34 @@ handleChangeGroup(e){
               <h4 className="modal-title">Send <small>say something I am giving up on you</small></h4>
             </div>
             <div className="modal-body">
+
+              <div className="form-group" >
+                <legend>Invitation or Request</legend>
+                  <div className="form-check">
+                    <label className="form-check-label">
+                      <input type="radio"
+                             className="form-check-input"
+                             value="invite"
+                             checked= {inviteChecked}
+                             onChange={(e) => this.handleChangeRadio(e)}
+                             />
+                           <small>  Invite </small>
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <label className="form-check-label">
+                      <input type="radio"
+                             className="form-check-input"
+                             value="request"
+                             checked={requestChecked}
+                             onChange={(e) => this.handleChangeRadio(e)}
+                             />
+                           <small>Request </small>
+                    </label>
+                  </div>
+              </div>
+
+              <p> {this.state.mailType}</p>
 
               <div className="form-group">
                 <label htmlFor="recieverEntry-1">To:</label>
@@ -83,6 +142,8 @@ handleChangeGroup(e){
                             value={this.state.title}
                             onChange={(e) => this.handleChangeTitle(e)}/>
               </div>
+
+
 
               <div className="form-group">
                 <label htmlFor="groupEntry-1">Group:</label>
