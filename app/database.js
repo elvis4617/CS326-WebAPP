@@ -19,7 +19,7 @@ var initialData = {
       "friendList": [2,3], // list of id's of friends
       "groupList": [1], // list of id's of goups the user belongs to
       "mailbox": [1,2], // list of request id's in the users mailbox
-      "postItem":  [] //list of postItem in the
+      "postItem":  [1,2,3] //list of postItem in the
     },
     "2": {
       "_id": 2,
