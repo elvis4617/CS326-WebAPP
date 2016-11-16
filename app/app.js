@@ -29,7 +29,7 @@ class NotificationPage extends React.Component {
   render() {
     return (
       <div>
-        <MailBoxThread />
+        <MailBoxThread user={1} />
         <Footer />
       </div>
     )
@@ -73,7 +73,9 @@ class App extends React.Component {
     render() {
       return (
         <div>
+
         <NavBar user={1} />
+
         {this.props.children}
         </div>
       );

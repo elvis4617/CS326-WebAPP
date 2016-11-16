@@ -9,8 +9,12 @@ export default class Mail extends React.Component {
 
   handleAccept(e){
     e.preventDefault();
-    if(!this.props.status)
-      this.props.onAccept(this.props.author, this.props.group, this.props.mailId);
+    if(!this.props.status){
+      if(this.props.type == "invite")
+        this.props.onAccept(this.props.reciever, this.props.group, this.props.mailId);
+      else
+        this.props.onAccept(this.props.author, this.props.group, this.props.mailId);
+    }
   }
 
   render(){
@@ -19,6 +23,7 @@ export default class Mail extends React.Component {
       acceptStatus = "Accepted";
     if(this.props.author === "Someone")
       acceptStatus ="";
+
     return(
       <div>
       <div className="media">
