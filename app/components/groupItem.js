@@ -5,18 +5,22 @@ export default class GroupItem extends React.Component{
 
   constructor(props) {
     super(props);
-    this.state = this.props.data;
+    this.state = {
+      data: this.props.data,
+      userId: this.props.userId
+    };
   }
 
   render(){
     return(
       <li>
-        <a type="button" data-toggle="modal" data-target={"#group-modal"+this.state._id} href="#">{this.state.groupName}</a>
-          <GroupModal groupID={this.state._id}
-                     data={this.state}>
+        <a type="button" data-toggle="modal" data-target={"#group-modal"+this.state.data._id} href="#">{this.state.data.groupName}</a>
+          <GroupModal groupID={this.state.data._id}
+                     data={this.state.data}
+                     userId={this.state.userId}>
           </GroupModal>
         <br/>
-        {this.state.description}
+        {this.state.data.description}
       </li>
     )
   }

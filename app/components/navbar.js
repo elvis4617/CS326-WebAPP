@@ -38,7 +38,7 @@ export default class NavBar extends React.Component{
                     <div className= "input-group">
                       <input ref="key" type ="text" className= "form-control" placeholder="Search ToGather" onChange={(e) => this.handleSearchChange(e)}/>
                       <span className= "input-group-btn">
-                        <Link to={"/SearchResult/" + this.state.key}>
+                        <Link to={"/SearchResult/" + this.props.user + "/"+ this.state.key}>
                           <button type = "button" className= "btn btn-default" >
                             <span className= "glyphicon glyphicon-search"></span>
                           </button>

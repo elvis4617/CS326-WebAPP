@@ -1,5 +1,11 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
+export function getRequestItem(reqId, cb){
+  var req = readDocument('requestItems', reqId);
+  var value = {log : req};
+  emulateServerReturn(value, cb);
+}
+
 export function getMatchGroup(search_key, cb){
   var groupList = [];
   var keys = search_key.toLowerCase().split(" ");

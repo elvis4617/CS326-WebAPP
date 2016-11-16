@@ -80,6 +80,7 @@ var initialData = {
       "_id": 1, // id of the group
       "groupName":"DC CLUB",
       "icon": "icon",
+      "owner": 1,
       "memberList": [1,4], // list of the id's of the users in the group
       "memberCount": 2,
       "location": "Umass",
@@ -90,6 +91,7 @@ var initialData = {
       "_id": 2,
       "groupName":"MARVEL CLUB",
       "icon": "icon",
+      "owner": 2,
       "memberList": [2,3],
       "memberCount": 2,
       "location": "Umass",

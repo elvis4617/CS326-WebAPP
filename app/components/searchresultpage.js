@@ -1,5 +1,5 @@
 import React from 'react';
-import GroupPage from './groupItem';
+import GroupItem from './groupItem';
 import { Link} from 'react-router';
 import {getMatchGroup} from '../server';
 
@@ -10,7 +10,8 @@ export default class SearchResultPage extends React.Component{
     super(props);
     this.state = {
       contents: [],
-      key: this.props.params.key
+      key: this.props.params.key,
+      userId: this.props.params.userId
     };
   }
 
@@ -44,7 +45,9 @@ export default class SearchResultPage extends React.Component{
                 <ul className="results">
                   {this.state.contents.map((groupItem) => {
                       return(
-                        <GroupPage key={groupItem._id} data={groupItem}/>
+                        <GroupItem key={groupItem._id}
+                                    data={groupItem}
+                                    userId={this.state.userId}/>
                       )
                     }
                   )}

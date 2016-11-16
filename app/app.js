@@ -102,7 +102,7 @@ class App extends React.Component {
         <Route path="/MyFriend" component={FriendsPage} />
         <Route path="/MyProfile" component={AccountPage}/>
         <Route path="/AddFriend" component={AddFriend} />
-        <Route path="SearchResult/:key" component={SearchResultPage}/>
+        <Route path="SearchResult/:userId/:key" component={SearchResultPage}/>
       </Route>
     </Router>
   ),
