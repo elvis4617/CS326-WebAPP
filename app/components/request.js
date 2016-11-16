@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link} from 'react-router';
 import {readRequest} from '../server';
 
 export default class Request extends React.Component{

@@ -63,7 +63,9 @@ export function getUnReadMsgs(user, cb){
   var unReadList = [];
   if(userData.unread.length != 0){
     for(var i = 0; i<userData.unread.length; i++){
-      unReadList.push(readDocument('requests', userData.unread[i]));
+      var request = readDocument('requestItems', userData.unread[i]);
+      if(!request.read)
+        unReadList.push(request);
     }
   }
   var value = {contents : unReadList};
@@ -184,9 +186,9 @@ export function getThreeMaxPost(postItemData){
 
 
 export function readRequest(requestItemId, userId, cb) {
-  var requestItem = readDocument('requests', requestItemId);
-  requestItem.read = "true";
-  writeDocument('requests', requestItem);
+  var requestItem = readDocument('requestItems', requestItemId);
+  requestItem.read = true;
+  writeDocument('requestItems', requestItem);
   var user = readDocument('users', userId);
   var unRead = user.unread;
   if(unRead.indexOf(requestItemId) != -1){
@@ -367,6 +369,7 @@ function getUserE(email) {
   });
     return userR;
 }
+
 // Works as long as messages / requests aren't deleted. Consider revising
 export function onRequest(username, email, authorId) {
   var reciever;
