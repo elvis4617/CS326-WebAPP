@@ -48,7 +48,7 @@ export default class GroupModal extends React.Component{
               </div>
               <div className="row button">
                 <div className="col-md-12">
-                  <button>Join Group</button>
+                  <p>THIS IS THE OWNER: {this.state.groupOwner}, CONTACT THE OWNER IF YOU WANT IN</p>
                 </div>
               </div>
             </div>
