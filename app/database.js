@@ -35,7 +35,7 @@ var initialData = {
       "description": "I'm a human",
       "friendList": [1,3,4],
       "groupList": [1],
-      "mailbox": [],
+      "mailbox": [3,4],
       "postItem": [1,2,3]
     },
     "3": {
@@ -121,6 +121,30 @@ var initialData = {
       "status": false,
       "group":1,
       "title": "friendRequest02",
+      "content": "Would you like to be friends? 02",
+      "read": false // if the reciever has read the request
+    },
+    "3": {
+      "_id": 3,
+      "type":"request",
+      "author": 4, // id of the user who is the author
+      "reciever": 2, // id of the user who is recieving the request
+      "createDate": 1454690800000,
+      "status": false,
+      "group":2,
+      "title": "friendRequest01000",
+      "content": "Would you like to be friends? 01",
+      "read": false // if the reciever has read the request
+    },
+    "4": {
+      "_id": 4,
+      "type":"request",
+      "author": 3, // id of the user who is the author
+      "reciever": 2, // id of the user who is recieving the request
+      "createDate": 1553590800000,
+      "status": false,
+      "group":1,
+      "title": "friendRequest02000",
       "content": "Would you like to be friends? 02",
       "read": false // if the reciever has read the request
     }

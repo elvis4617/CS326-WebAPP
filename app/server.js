@@ -182,13 +182,7 @@ export function getThreeMaxPost(postItemData){
   return recommend_list;
 }
 
-/*
- *Andy, Andy is here
- *Andy, Andy is here
- *Andy, Andy is here
- *Andy, Andy is here
- *Andy, Andy is here
- */
+
 export function readRequest(requestItemId, userId, cb) {
   var requestItem = readDocument('requests', requestItemId);
   requestItem.read = "true";
@@ -203,6 +197,13 @@ export function readRequest(requestItemId, userId, cb) {
   emulateServerReturn("true", cb);
 }
 
+/*
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ */
 
 //Resolved author and reciever in requestItems
 function getRequestItemSync(requestItemId) {
@@ -227,6 +228,8 @@ export function getRequestData(user, cb){
 
   });
 
+//  requestList.push(getRequestItemSync(3));
+//  requestList.push(getRequestItemSync(4));
   emulateServerReturn(requestList, cb);
 }
 
@@ -243,6 +246,11 @@ export function getRequestData(user, cb){
   });
     return userR;
 }
+
+  export function getUserById(userId, cb){
+
+    emulateServerReturn( readDocument('users',userId), cb);
+  }
 
   function getGroup(groupName){
    //var userList = readDocumentNoId('users');
