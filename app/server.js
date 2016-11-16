@@ -251,7 +251,7 @@ export function updateUserInfo(user, value, updateInfo){
 }
 
 
-export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, cb){
+export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry, cb){
   var time = new Date().getTime();
 //  var requestItem = readDocument('requestItems', requestItemId);
   //Find the user id via user name
@@ -261,10 +261,10 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   //recieverId=2;
   //If user/reciever name not found, abort mission
   if (recieverId <= 0 || groupId <= 0)
-    emulateServerReturn(null ,cb);
+    return null;
 
   var newRequest ={
-    "type":"request",
+    "type":typeEntry,
     "author": userId,
     "reciever": recieverId,
     "createDate":time,
