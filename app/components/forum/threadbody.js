@@ -3,10 +3,10 @@ import React from 'react';
 
 export default class ThreadBody extends React.Component{
 
-  // constructor(props){
-  //   super(props);
-  //   this.state = this.props.data;
-  // }
+  constructor(props){
+    super(props);
+    this.state = this.props.data;
+  }
 
   render(){
     return(
@@ -14,11 +14,11 @@ export default class ThreadBody extends React.Component{
         <tr>
           <td>
             <img src = "img/testProfilePic.jpg" alt/>
-              <a className = "name" href = "#"> John Smith</a>
+              <a className = "name" href = "#"> {this.state.author}</a>
           </td>
           <td>
-              <span>time</span>
-            <p>content</p>
+              <span>{unixTimeToString(this.state.postDate)}</span>
+            <p>{this.state.content}</p>
           </td>
         </tr>
       </tbody>

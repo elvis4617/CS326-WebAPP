@@ -429,6 +429,9 @@ export function getForumData(user, cb){
     var postItem = readDocument('postItem', postData[item]);
     postItem.author = readDocument('users', postItem.author);
     postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
+    postItem.commentThread.forEach((comment) => {
+      comment.author = readDocument('users', comment.author);
+    });
     postList.push(postItem);
   }
   var value = {contents: postList};
@@ -457,4 +460,11 @@ export function postThread(user, title, contents, cb){
   writeDocument('users', userData);
 
   emulateServerReturn(newThread, cb);
+}
+
+export function getPostDataById(Id, cb) {
+  var postData = readDocument('postItem', Id);
+  postData.author = readDocument('users', postData.author).fullName;
+  var value = {contents : postData};
+  emulateServerReturn(value, cb);
 }

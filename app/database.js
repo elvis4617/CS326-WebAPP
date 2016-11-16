@@ -224,9 +224,6 @@ var initialData = {
           "postDate": 1453690800000
         }
       ]
-    },
-    "4":{
-      "totalNumOfPost": 3
     }
   },
   // forum collection

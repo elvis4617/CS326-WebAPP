@@ -1,7 +1,8 @@
 import React from 'react';
-import {getForumData} from '../../server';
-import ThreadBody from './threadbody';
 import ForumNumber from './forumnumber';
+import {getPostDataById} from '../server';
+import {unixTimeToString} from '../util';
+//import ThreadBody from './threadbody'
 
 export default class ThreadModal extends React.Component {
 
@@ -13,10 +14,10 @@ export default class ThreadModal extends React.Component {
   }
 
   refresh() {
-    getForumData(this.props.author, (forumData) => {
-    this.setState(forumData);
+    getPostDataById(this.props.id, (postData) => {
+    this.setState(postData);
   });
- }
+  }
 
   componentDidMount() {
     this.refresh();
@@ -29,7 +30,7 @@ export default class ThreadModal extends React.Component {
           <div className="modal-content">
             <div className="modal-header">
             <button type="button" className="close" data-dismiss="modal">&times;</button>
-              <h1>test</h1>
+              <h1>{this.state.contents.title}</h1>
             </div>
             <div className="modal-body">
             <table className = "table forum table-striped">
@@ -39,7 +40,18 @@ export default class ThreadModal extends React.Component {
                   <th >Reply</th>
                 </tr>
               </thead>
-              <ThreadBody/>
+              <tbody>
+                <tr>
+                  <td>
+                    <img src = "img/testProfilePic.jpg" alt/>
+                      <a className = "name" href = "#"> {this.state.contents.author}</a>
+                  </td>
+                  <td>
+                      <span>{unixTimeToString(this.state.contents.postDate)}</span>
+                    <p>{this.state.contents.content}</p>
+                  </td>
+                </tr>
+              </tbody>
             </table>
             </div>
             <div className="modal-footer">
