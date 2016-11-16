@@ -119,6 +119,9 @@ footer {
     background-color: #FFFFFF;
 }
 
+.footer-nav{
+  margin: 105px;
+}
 .search-btn{
   color: black;
 }

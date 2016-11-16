@@ -1,5 +1,37 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
+export function getRequestItem(reqId, cb){
+  var req = readDocument('requestItems', reqId);
+  var value = {log : req};
+  emulateServerReturn(value, cb);
+}
+
+export function getMatchGroup(search_key, cb){
+  var groupList = [];
+  var keys = search_key.toLowerCase().split(" ");
+  for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
+    var group = readDocument('groups', i);
+    var groupNameArr = group.groupName.toLowerCase().split(" ");
+    var index,index1;
+    for(index in groupNameArr){
+      for(index1 in keys){
+        if(groupNameArr[index].indexOf(keys[index1]) != -1){
+          groupList.push(group);
+          break;
+        }
+      }
+    }
+  }
+  var value = {contents : groupList};
+  emulateServerReturn(value, cb);
+}
+/*function getGroupByIdSync(groupId){
+  var groupData = readDocument('groups', groupId);
+  var userId = groupData.groupOwner;
+  groupData.groupOwner = readDocument('users',userId).fullName;
+  return groupData;
+
+}*/
 export function getFriendDataById(userId, cb){
   var user = readDocument('users', userId);
   var friends = user.friendList;
@@ -45,7 +77,9 @@ export function getUnReadMsgs(user, cb){
   var unReadList = [];
   if(userData.unread.length != 0){
     for(var i = 0; i<userData.unread.length; i++){
-      unReadList.push(readDocument('requests', userData.unread[i]));
+      var request = readDocument('requestItems', userData.unread[i]);
+      if(!request.read)
+        unReadList.push(request);
     }
   }
   var value = {contents : unReadList};
@@ -164,17 +198,11 @@ export function getThreeMaxPost(postItemData){
   return recommend_list;
 }
 
-/*
- *Andy, Andy is here
- *Andy, Andy is here
- *Andy, Andy is here
- *Andy, Andy is here
- *Andy, Andy is here
- */
+
 export function readRequest(requestItemId, userId, cb) {
-  var requestItem = readDocument('requests', requestItemId);
-  requestItem.read = "true";
-  writeDocument('requests', requestItem);
+  var requestItem = readDocument('requestItems', requestItemId);
+  requestItem.read = true;
+  writeDocument('requestItems', requestItem);
   var user = readDocument('users', userId);
   var unRead = user.unread;
   if(unRead.indexOf(requestItemId) != -1){
@@ -185,6 +213,13 @@ export function readRequest(requestItemId, userId, cb) {
   emulateServerReturn("true", cb);
 }
 
+/*
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ *Andy, Andy is here
+ */
 
 //Resolved author and reciever in requestItems
 function getRequestItemSync(requestItemId) {
@@ -209,6 +244,8 @@ export function getRequestData(user, cb){
 
   });
 
+//  requestList.push(getRequestItemSync(3));
+//  requestList.push(getRequestItemSync(4));
   emulateServerReturn(requestList, cb);
 }
 
@@ -226,6 +263,11 @@ export function getRequestData(user, cb){
     return userR;
 }
 
+  export function getUserById(userId, cb){
+
+    emulateServerReturn( readDocument('users',userId), cb);
+  }
+
   function getGroup(groupName){
    //var userList = readDocumentNoId('users');
    var groupBase = readDocument('dataBase',2);
@@ -242,12 +284,16 @@ export function getRequestData(user, cb){
   return groupR;
 }
 
-export function updateUserInfo(user, value, updateInfo){
-  var userData = readDocument('users', user);
-  userData[updateInfo] = value;
+export function updateUserInfo(userId, name, email, grade, major, description, cb){
+  var userData = readDocument('users', userId);
+  userData.fullName = name;
+  userData.email = email;
+  userData.grade = grade;
+  userData.major = major;
+  userData.description = description;
   writeDocument('users', userData);
-  //console.log(userData)
-  return userData;
+  var value = {contents: userData};
+  emulateServerReturn(value, cb);
 }
 
 
@@ -282,6 +328,31 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   writeDocument('users',userData)
   emulateServerReturn(newRequest, cb);
 }
+
+
+  export function joinGroup(userName, groupName, requestId, cb){
+
+    var userId=getUser(userName);
+    var groupId=getGroup(groupName);
+    var groupData=readDocument('groups',groupId);
+    var userData=readDocument('users',userId);
+    var joined = groupData.memberList.indexOf(userId);
+    var requestData = readDocument('requestItems',requestId);
+    requestData.status = true;
+
+    writeDocument('requestItems',requestData);
+
+
+    if(joined === -1){
+      groupData.memberList.push(userId);
+      writeDocument('groups',groupData);
+      userData.groupList.push(groupId);
+      writeDocument("users",userData);
+    }
+    emulateServerReturn(requestData, cb);
+
+  }
+
 
 // Works as long as messages / requests aren't deleted. Consider revising
 export function onMessage(message, authorId, recieverId) {
@@ -320,6 +391,7 @@ function getUserE(email) {
   });
     return userR;
 }
+
 // Works as long as messages / requests aren't deleted. Consider revising
 export function onRequest(username, email, authorId) {
   var reciever;

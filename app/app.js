@@ -10,13 +10,14 @@ import AccountFeed from './components/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 import ForumItem from './components/forumitem';
 import AddFriendPage from './components/addFriend';
+import SearchResultPage from './components/searchresultpage';
 
 class LandingPage extends React.Component {
   render() {
     return (
       <div>
         <Landing />
-        <Recommend user={2} />
+        <Recommend user={1} />
         <Footer />
       </div>
     );
@@ -28,7 +29,7 @@ class NotificationPage extends React.Component {
   render() {
     return (
       <div>
-        <MailBoxThread />
+        <MailBoxThread user={1} />
         <Footer />
       </div>
     )
@@ -39,7 +40,7 @@ class FriendsPage extends React.Component {
   render() {
     return (
       <div>
-        <FriendsFeed user={2} />
+        <FriendsFeed user={1} />
         <Footer />
       </div>
     )
@@ -50,7 +51,7 @@ class AccountPage extends React.Component {
   render(){
     return (
       <div>
-        <AccountFeed user={2}/>
+        <AccountFeed user={1}/>
         <Footer />
       </div>
     )
@@ -67,11 +68,14 @@ class AddFriend extends React.Component{
     )
   }
 }
+
 class App extends React.Component {
     render() {
       return (
         <div>
-        <NavBar user={2} />
+
+        <NavBar user={1} />
+
         {this.props.children}
         </div>
       );
@@ -82,7 +86,7 @@ class App extends React.Component {
     render(){
       return(
         <div>
-          <ForumItem user={2}/>
+          <ForumItem user={1}/>
           <Footer />
         </div>
       )
@@ -100,6 +104,7 @@ class App extends React.Component {
         <Route path="/MyFriend" component={FriendsPage} />
         <Route path="/MyProfile" component={AccountPage}/>
         <Route path="/AddFriend" component={AddFriend} />
+        <Route path="SearchResult/:userId/:key" component={SearchResultPage}/>
       </Route>
     </Router>
   ),

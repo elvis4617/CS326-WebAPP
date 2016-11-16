@@ -5,8 +5,22 @@ import UnReadMsg from './unreadmsg'
 
 export default class NavBar extends React.Component{
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      key: ""
+    };
+  }
+
+  handleSearchChange(event){
+    event.preventDefault();
+    // Callback function for both the like and unlike cases.
+    var search_key = this.refs.key.value;
+    this.setState({"key": search_key});
+  }
+
   render(){
-    //var data = this.state;
+    //var data = this.state
     return (
       <nav className="navbar navbar-default navbar-fixed-top topnav" role="navigation">
           <div className="container topnav">
@@ -22,12 +36,14 @@ export default class NavBar extends React.Component{
                   </Link>
                   <form className= "navbar-form navbar-left" role ="search">
                     <div className= "input-group">
-                      <input type ="text" className= "form-control" placeholder="Search ToGather" />
-                        <span className= "input-group-btn">
-                          <button type = "button" className= "btn btn-default">
+                      <input ref="key" type ="text" className= "form-control" placeholder="Search ToGather" onChange={(e) => this.handleSearchChange(e)}/>
+                      <span className= "input-group-btn">
+                        <Link to={"/SearchResult/" + this.props.user + "/"+ this.state.key}>
+                          <button type = "button" className= "btn btn-default" >
                             <span className= "glyphicon glyphicon-search"></span>
                           </button>
-                        </span>
+                        </Link>
+                      </span>
                     </div>
                   </form>
               </div>
