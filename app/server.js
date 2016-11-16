@@ -10,7 +10,7 @@ export function getMatchGroup(search_key, cb){
   var groupList = [];
   var keys = search_key.toLowerCase().split(" ");
   for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
-    var group = readDocument('groups', i);
+    var group = getGroupByIdSync(i);
     var groupNameArr = group.groupName.toLowerCase().split(" ");
     var index;
     for(index in groupNameArr){
@@ -23,7 +23,14 @@ export function getMatchGroup(search_key, cb){
   var value = {contents : groupList};
   emulateServerReturn(value, cb);
 }
+function getGroupByIdSync(groupId){
+  var groupData = readDocument('groups', groupId);
+  var userId = groupData.groupOwner;
+  groupData.groupOwner = readDocument('users',userId).fullName;
+  //groupData.groupOwner = "aaaaaaa";
+  return groupData;
 
+}
 export function getFriendDataById(userId, cb){
   var user = readDocument('users', userId);
   var friends = user.friendList;
