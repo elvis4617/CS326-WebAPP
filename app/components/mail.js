@@ -5,7 +5,11 @@ import {unixTimeToString} from '../util';
 //import { Link} from 'react-router';
 
 export default class Mail extends React.Component {
+
   render(){
+    var acceptStatus = "Accept"
+    if(this.props.mailType === "invite")
+      acceptStatus = "";
     return(
       <div>
       <div className="media">
@@ -20,7 +24,7 @@ export default class Mail extends React.Component {
                          author={this.props.author}>
               </AccountDetailModal>
               <br /> {this.props.title}
-              <br /><span className="pull-right"><a href="#" >Accepted</a> · <a href="#" >Peace Out</a> · <a type="button" data-toggle="modal" data-target={"#modal-content"+this.props.mailId}>Details</a> · {unixTimeToString(this.props.createDate)}</span>
+              <br /><span className="pull-right"><a href="#" >{acceptStatus}</a> · <a type="button" data-toggle="modal" data-target={"#modal-content"+this.props.mailId}>Details</a> · {unixTimeToString(this.props.createDate)}</span>
                 <MailModal mailId={this.props.mailId}
                            author={this.props.author}
                            title={this.props.title}
