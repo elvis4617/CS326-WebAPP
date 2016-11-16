@@ -9,14 +9,26 @@ export function getRequestItem(reqId, cb){
 export function getMatchGroup(search_key, cb){
   var groupList = [];
   var keys = search_key.toLowerCase().split(" ");
+  console.log('keys');
+  console.log(keys);
   for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
-    var group = getGroupByIdSync(i);
+    console.log(i);
+    var group = readDocument('groups', i);
+    console.log(group);
     var groupNameArr = group.groupName.toLowerCase().split(" ");
-    var index;
+    console.log('groupNameArr');
+    console.log(groupNameArr);
+    var index,index1;
     for(index in groupNameArr){
-      if(keys.indexOf(groupNameArr[index]) != -1){
-        groupList.push(group);
-        break;
+      for(index1 in keys){
+        console.log('groupNameArr[index]');
+        console.log(groupNameArr[index]);
+        console.log('keys[index1]');
+        console.log(keys[index1]);
+        if(groupNameArr[index].indexOf(keys[index1]) != -1){
+          groupList.push(group);
+          break;
+        }
       }
     }
   }
@@ -27,7 +39,6 @@ function getGroupByIdSync(groupId){
   var groupData = readDocument('groups', groupId);
   var userId = groupData.groupOwner;
   groupData.groupOwner = readDocument('users',userId).fullName;
-  //groupData.groupOwner = "aaaaaaa";
   return groupData;
 
 }
