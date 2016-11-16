@@ -7,7 +7,7 @@ var initialData = {
     "1": {
       "_id": 1, // id of the user
       "userName": "I am a userName of 1",
-      "fullName": "Some one",
+      "fullName": "Someone",
       "school": "Umass",
       "grade": "Freshman",
       "password": 123,
