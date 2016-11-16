@@ -307,6 +307,47 @@ export function onMessage(message, authorId, recieverId) {
     }
 }
 
+function getUserE(email) {
+  //var userList = readDocumentNoId('users');
+  var userBase = readDocument('dataBase',1);
+
+  var userR = -1;
+  //var ll = userList.length;
+  userBase.List.forEach((userId) => {
+    var userData = readDocument('users', userId);
+    if(userData.email === email)
+      userR = userId;
+  });
+    return userR;
+}
+// Works as long as messages / requests aren't deleted. Consider revising
+export function onRequest(username, email, authorId) {
+  var reciever;
+  if (username === "") {
+    reciever = getUserE(email); }
+  else {
+    reciever = getUser(username); }
+  for(var i = 0; i < 100000000; i++) {
+    try {
+      var request = readDocument('requests', i);
+    }
+    catch(err) {
+      request._id = i;
+      request.author = authorId;
+      request.reciever = reciever._id;
+      request.CreateDate = new Date();
+      request.status = "false";
+      request.title = "Friend Request";
+      request.content = "Will you be my friend?";
+      request.read = "false";
+      writeDocument('requests', request);
+      reciever.mailbox.push(i)
+      writeDocument('users', reciever)
+      break;
+    }
+  }
+}
+
 export function getForumData(user, cb){
 
   var userData = readDocument('users', user);

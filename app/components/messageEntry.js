@@ -28,18 +28,18 @@ export default class MessageEntry extends React.Component {
         <li className ="media">
           <div className ="media-body">
             Send Message:
-            <div className ="form-group">
-                <textarea className ="form-control"
-                    rows = "1"
+            <div className ="input-group">
+                <input className = "form-control"
+                    type = "text"
                     placeholder="Text"
                     value = {this.state.value}
                     onChange = {(e) => this.handleChange(e)} >
                     <div className ="input-group-btn">
                         <button type="submit" className="btn btn-default" onClick = {(e) => this.handleMessage(e)}>
-                          <span className="glyphicon glyphicon-envelope" style="color:#337ab7"></span>
+                          <span className="glyphicon glyphicon-envelope" ></span>
                         </button>
                     </div>
-                </textarea>
+                </input>
             </div>
           </div>
         </li>
