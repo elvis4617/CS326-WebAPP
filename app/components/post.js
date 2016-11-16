@@ -12,8 +12,9 @@ export default class Post extends React.Component{
   render(){
     return(
       <tr>
-        <th colSpan = "2" className = "thread text-left"><a href="#">{this.state.title}</a>
-          
+        <th colSpan = "2" className = "thread text-left"><a data-toggle = "modal" data-target={"#thread-modal"+this.state._id} href="#">{this.state.title}</a>
+          <ThreadModal id = {this.state._id}>
+          </ThreadModal>
         </th>
         <th className = "cell-stat text-center"><a className = "name" data-toggle="modal" data-target={"#account-modal"+this.state._id} href = "#">{this.state.author.fullName}</a>
           <AccountDetailModal mailId = {this.state._id}

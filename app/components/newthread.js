@@ -15,7 +15,8 @@ export default class NewThreadBox extends React.Component{
     var threadContent = this.state.value2.trim();
     if (threadTitle !== "" && threadContent !== ""){
       this.props.onPost(threadTitle, threadContent);
-      this.setState({value1: "", value2:""});
+      this.setState({value1: ""});
+      this.setState({value2: ""});
     }
   }
 
