@@ -1,6 +1,7 @@
 import React from 'react';
 import {unixTimeToString} from '../../util'
 import AccountDetailModal from '../account/accountDetailModal';
+import ThreadModal from './threadModal';
 
 export default class Post extends React.Component{
   constructor(props){

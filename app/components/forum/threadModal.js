@@ -1,7 +1,7 @@
 import React from 'react';
 import ForumNumber from './forumnumber';
-import {getPostDataById} from '../server';
-import {unixTimeToString} from '../util';
+import {getPostDataById} from '../../server';
+import {unixTimeToString} from '../../util';
 //import ThreadBody from './threadbody'
 
 export default class ThreadModal extends React.Component {
