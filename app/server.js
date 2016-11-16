@@ -9,22 +9,12 @@ export function getRequestItem(reqId, cb){
 export function getMatchGroup(search_key, cb){
   var groupList = [];
   var keys = search_key.toLowerCase().split(" ");
-  console.log('keys');
-  console.log(keys);
   for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
-    console.log(i);
     var group = readDocument('groups', i);
-    console.log(group);
     var groupNameArr = group.groupName.toLowerCase().split(" ");
-    console.log('groupNameArr');
-    console.log(groupNameArr);
     var index,index1;
     for(index in groupNameArr){
       for(index1 in keys){
-        console.log('groupNameArr[index]');
-        console.log(groupNameArr[index]);
-        console.log('keys[index1]');
-        console.log(keys[index1]);
         if(groupNameArr[index].indexOf(keys[index1]) != -1){
           groupList.push(group);
           break;
@@ -35,13 +25,13 @@ export function getMatchGroup(search_key, cb){
   var value = {contents : groupList};
   emulateServerReturn(value, cb);
 }
-function getGroupByIdSync(groupId){
+/*function getGroupByIdSync(groupId){
   var groupData = readDocument('groups', groupId);
   var userId = groupData.groupOwner;
   groupData.groupOwner = readDocument('users',userId).fullName;
   return groupData;
 
-}
+}*/
 export function getFriendDataById(userId, cb){
   var user = readDocument('users', userId);
   var friends = user.friendList;

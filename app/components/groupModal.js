@@ -1,6 +1,6 @@
 import React from 'react';
 import {unixTimeToString} from '../util';
-import {writeRequest, joinGroup, getUserDataById, getRequestItem} from '../server';
+//import {writeRequest, joinGroup, getUserDataById, getRequestItem} from '../server';
 
 export default class GroupModal extends React.Component{
 
@@ -13,7 +13,7 @@ export default class GroupModal extends React.Component{
   }
 
   handleJoinGroup(){
-    writeRequest(this.state.userId,
+    /*writeRequest(this.state.userId,
                   this.state.data.owner,
                 "I wanna join your group to study.",
                 "Join Group Request",
@@ -24,20 +24,16 @@ export default class GroupModal extends React.Component{
                 });
     getRequestItem(3, (log) => {
       this.setState(log);
-    });
-    console.log('state1');
-    console.log(this.state);
+    });*/
     /*joinGroup(getUserDataById(this.state.userId, (userData) => {this.setState({user: userData});}),
               this.state.data.groupName, this.state.request._id,
               (newReq) => {
                 this.setState({request: newReq});
               });*/
-    alert("request was send ...");
+    //alert("request was send ...");
   }
 
   render(){
-    console.log('state2');
-    console.log(this.state);
     return(
       <div className="modal fade" id={"group-modal"+this.props.groupID} role="dialog">
         <div className="modal-dialog">
