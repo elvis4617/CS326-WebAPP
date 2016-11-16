@@ -13,7 +13,7 @@ var initialData = {
       "password": 123,
       "profilePic": "PIC",
       "email": "someone@something.com",
-      "unread": [1], // list of id's of unread requests
+      "unread": [1,2], // list of id's of unread requests
       "major": "Computer Science",
       "description": "I'm a person",
       "friendList": [2,3], // list of id's of friends

@@ -17,7 +17,7 @@ class LandingPage extends React.Component {
     return (
       <div>
         <Landing />
-        <Recommend user={2} />
+        <Recommend user={1} />
         <Footer />
       </div>
     );
@@ -40,7 +40,7 @@ class FriendsPage extends React.Component {
   render() {
     return (
       <div>
-        <FriendsFeed user={2} />
+        <FriendsFeed user={1} />
         <Footer />
       </div>
     )
@@ -51,7 +51,7 @@ class AccountPage extends React.Component {
   render(){
     return (
       <div>
-        <AccountFeed user={2}/>
+        <AccountFeed user={1}/>
         <Footer />
       </div>
     )
@@ -73,7 +73,7 @@ class App extends React.Component {
     render() {
       return (
         <div>
-        <NavBar user={2} />
+        <NavBar user={1} />
         {this.props.children}
         </div>
       );
@@ -84,7 +84,7 @@ class App extends React.Component {
     render(){
       return(
         <div>
-          <ForumItem user={2}/>
+          <ForumItem user={1}/>
           <Footer />
         </div>
       )

@@ -33,13 +33,12 @@ export default class MessageEntry extends React.Component {
                     type = "text"
                     placeholder="Text"
                     value = {this.state.value}
-                    onChange = {(e) => this.handleChange(e)} >
+                    onChange = {(e) => this.handleChange(e)} />
                     <div className ="input-group-btn">
                         <button type="submit" className="btn btn-default" onClick = {(e) => this.handleMessage(e)}>
                           <span className="glyphicon glyphicon-envelope" ></span>
                         </button>
                     </div>
-                </input>
             </div>
           </div>
         </li>

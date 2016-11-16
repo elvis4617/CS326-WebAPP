@@ -1,6 +1,5 @@
 import React from 'react';
 import Request from './request';
-//import {Link} from 'react-router';
 import {getUnReadMsgs} from '../server'
 
 export default class UnReadMsg extends React.Component{
@@ -14,6 +13,7 @@ export default class UnReadMsg extends React.Component{
   refresh() {
     getUnReadMsgs(this.props.user, (unReadList) => {
     this.setState(unReadList);
+    console.log(this.state);
   });
  }
 
