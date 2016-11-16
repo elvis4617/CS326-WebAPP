@@ -276,12 +276,16 @@ export function getRequestData(user, cb){
   return groupR;
 }
 
-export function updateUserInfo(user, value, updateInfo){
-  var userData = readDocument('users', user);
-  userData[updateInfo] = value;
+export function updateUserInfo(userId, name, email, grade, major, description, cb){
+  var userData = readDocument('users', userId);
+  userData.fullName = name;
+  userData.email = email;
+  userData.grade = grade;
+  userData.major = major;
+  userData.description = description;
   writeDocument('users', userData);
-  //console.log(userData)
-  return userData;
+  var value = {contents: userData};
+  emulateServerReturn(value, cb);
 }
 
 

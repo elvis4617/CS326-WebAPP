@@ -13,6 +13,7 @@ export default class Recommend extends React.Component{
   }
 
   refresh() {
+    //hardcode for user 2 who has the post
     getRecommendPostItem(2, (maxList) => {
     this.setState(maxList);
   });

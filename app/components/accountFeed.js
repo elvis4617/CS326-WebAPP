@@ -8,8 +8,11 @@ export default class AccountFeed extends React.Component {
     super(props);
     this.state = {
       contents: [],
-      value: "",
-      update: ""
+      name: "",
+      email: "",
+      grade: "",
+      major: "",
+      description: ""
     };
   }
 
@@ -23,26 +26,46 @@ export default class AccountFeed extends React.Component {
     this.refresh();
   }
 
-  handleChange(e,name) {
-  // Prevent the event from "bubbling" up the DOM tree.
+  handleChangeName(e) {
   e.preventDefault();
-  // e.target is the React Virtual DOM target of the
-  // input event -- the <textarea> element. The textarea's
-  // `value` is the entire contents of what the user has
-  // typed in so far.
-  this.setState({value: e.target.value,
-                 update: name});
+  this.setState({name: e.target.value});
+  }
+  handleChangeEmail(e) {
+  e.preventDefault();
+  this.setState({email: e.target.value});
+  }
+  handleChangeGrade(e) {
+  e.preventDefault();
+  this.setState({grade: e.target.value});
+  }
+  handleChangeMajor(e) {
+  e.preventDefault();
+  this.setState({major: e.target.value});
+  }
+  handleChangeDescription(e) {
+  e.preventDefault();
+  this.setState({description: e.target.value});
   }
 
-  handlePost(e) {
- // Prevent the event from "bubbling" up the DOM tree.
+  handleUpdateUserInfo(e) {
   e.preventDefault();
-  // Trim whitespace from beginning + end of entry.
-  //console.log(this.state.value)
-  this.setState(updateUserInfo(this.props.user,this.state.value,this.state.update));
-    // Reset status update.
-  this.setState({value: ""});
-  this.refresh();
+  if(this.props.name == "" ||
+      this.props.email == "" ||
+      this.props.grade == "" ||
+      this.props.major == "" ||
+      this.props.description == "")
+      alert("You must fill in all fields before commit any changes.");
+  else
+    updateUserInfo(this.props.user,
+                  this.state.name,
+                  this.state.email,
+                  this.state.grade,
+                  this.state.major,
+                  this.state.description,
+                  (userData) => {
+                  this.setState(userData);
+                });
+    this.refresh();
   }
 
 
@@ -106,50 +129,50 @@ export default class AccountFeed extends React.Component {
               <h4>Edit Information:</h4>
               <div className="col-md-8">
                 <form>
-                  <label>Name:</label>
+                  <label>*Name:</label>
                   <input type="text"
                          name="fullName"
-                         onChange={(e) => this.handleChange(e,"fullName")}/>
+                         onChange={(e) => this.handleChangeName(e)}/>
                 </form>
               </div>
             </div>
             <div className="row text">
               <div className="col-md-8">
                 <form>
-                  <label>E-mail:</label>
+                  <label>*E-mail:</label>
                   <input type="text"
                          name="email"
-                         onChange={(e) => this.handleChange(e,"email")}/>
+                         onChange={(e) => this.handleChangeEmail(e)}/>
                 </form>
               </div>
             </div>
             <div className="row text">
               <div className="col-md-8">
                 <form>
-                  <label>Grade:</label>
+                  <label>*Grade:</label>
                   <input type="text"
                          name="grade"
-                         onChange={(e) => this.handleChange(e,"grade")}/>
+                         onChange={(e) => this.handleChangeGrade(e)}/>
                 </form>
               </div>
               <div className="col-md-8">
                 <form>
-                  <label>Major:</label>
+                  <label>*Major:</label>
                   <input type="text"
                          name="major"
-                         onChange={(e) => this.handleChange(e,"major")}/>
+                         onChange={(e) => this.handleChangeMajor(e)}/>
                 </form>
               </div>
             </div>
             <div className="row text">
               <div className="col-md-8">
                 <form>
-                  <label>Description:</label>
+                  <label>*Description:</label>
                   <textarea className="description"
                             type="text"
                             name="description"
                             draggable="false"
-                            onChange={(e) => this.handleChange(e,"description")}>
+                            onChange={(e) => this.handleChangeDescription(e)}>
                   </textarea>
                 </form>
               </div>
@@ -157,7 +180,7 @@ export default class AccountFeed extends React.Component {
             <div className="row submit">
               <div className="col-md-12">
                 <button type="button"
-                  onClick={(e) => this.handlePost(e)}>
+                  onClick={(e) => this.handleUpdateUserInfo(e)}>
                   Submit</button>
               </div>
             </div>
