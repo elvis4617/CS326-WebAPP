@@ -283,6 +283,7 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   emulateServerReturn(newRequest, cb);
 }
 
+
   export function joinGroup(userName, groupName, requestId, cb){
 
     var userId=getUser(userName);
@@ -301,6 +302,7 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
     emulateServerReturn(requestData, cb);
 
   }
+
 
 // Works as long as messages / requests aren't deleted. Consider revising
 export function onMessage(message, authorId, recieverId) {
@@ -325,8 +327,6 @@ export function onMessage(message, authorId, recieverId) {
       }
     }
 }
-
-
 
 function getUserE(email) {
   //var userList = readDocumentNoId('users');
