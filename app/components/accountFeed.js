@@ -49,11 +49,11 @@ export default class AccountFeed extends React.Component {
 
   handleUpdateUserInfo(e) {
   e.preventDefault();
-  if(this.props.name == "" ||
-      this.props.email == "" ||
-      this.props.grade == "" ||
-      this.props.major == "" ||
-      this.props.description == "")
+  if(!this.props.name ||
+      !this.props.email ||
+      !this.props.grade ||
+      !this.props.major ||
+      !this.props.description)
       alert("You must fill in all fields before commit any changes.");
   else
     updateUserInfo(this.props.user,
