@@ -283,6 +283,21 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   emulateServerReturn(newRequest, cb);
 }
 
+  export function joinGroup(userName, groupName){
+
+    var userId=getUser(userName);
+    var groupId=getGroup(groupName);
+    var groupData=readDocument('groups',groupId);
+    var joined = groupData.memberList.indexOf(userId);
+
+    if(joined === -1){
+      groupData.memberList.push(userId);
+      writeDocument('groups',groupData);
+    }
+    
+
+  }
+
 // Works as long as messages / requests aren't deleted. Consider revising
 export function onMessage(message, authorId, recieverId) {
   var reciever = readDocument('users', recieverId);
@@ -306,6 +321,8 @@ export function onMessage(message, authorId, recieverId) {
       }
     }
 }
+
+
 
 function getUserE(email) {
   //var userList = readDocumentNoId('users');
