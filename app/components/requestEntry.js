@@ -11,7 +11,7 @@ export default class RequestEntry extends React.Component {
   handleRequestU(e) {
     e.preventDefault();
     // Trim whitespace from beginning + end of entry.
-    var request = this.state.value.trim();
+    var request = this.state.valueU.trim();
     if (request !== "") {
       this.props.sendRequest(request, "");
       // Reset status update.
@@ -21,7 +21,7 @@ export default class RequestEntry extends React.Component {
   handleRequestE(e) {
     e.preventDefault();
     // Trim whitespace from beginning + end of entry.
-    var request = this.state.value.trim();
+    var request = this.state.valueE.trim();
     if (request !== "") {
       this.props.sendRequest("", request);
       // Reset status update.
@@ -30,11 +30,11 @@ export default class RequestEntry extends React.Component {
   }
   handleChangeU(e) {
     e.preventDefault();
-    this.setState({ valueU: e.target.value });
+    this.setState({ valueU: e.target.valueU });
   }
   handleChangeE(e) {
     e.preventDefault();
-    this.setState({ valueE: e.target.value });
+    this.setState({ valueE: e.target.valueE });
   }
   render() {
     return (

@@ -1,8 +1,8 @@
 import React from 'react';
 import MailBox from './mailbox';
 import Mail from './mail';
-//import MailToolBar from './mailtoolbar';
-import PageNav from './pagenav';
+import MailToolBar from './mailtoolbar';
+//import PageNav from './pagenav';
 import MailBoxTitle from './mailbox_title';
 import {getRequestData, writeRequest} from '../server';
 import MailEntry from './mailentry';
@@ -54,25 +54,7 @@ export default class MailBoxThread extends React.Component{
   }
 
   render(){
-    var inboxActive ="";
-    var outboxActive ="";
-    var allActive="";
 
-    if(this.state.mailBoxType === "inbox"){
-      inboxActive = "active";
-      outboxActive ="";
-      allActive="";
-    }
-    else if(this.state.mailBoxType === "outbox"){
-      inboxActive = "";
-      outboxActive ="active";
-      allActive="";
-    }
-    else{
-      inboxActive = "";
-      outboxActive ="";
-      allActive="active";
-    }
     return(
 
       <div className="container">
@@ -80,31 +62,10 @@ export default class MailBoxThread extends React.Component{
           <div className="col-md-8 col-md-offset-2">
             <MailBoxTitle />
 
-            <div className="row">
-                <div className="btn-group pull-left n-toolbar" role="group" aria-label="...">
-                  <button type="button"
-                          className={"btn "+inboxActive}
-                          value ="inbox"
-                          onClick={(e) => this.handleChangeMailBox(e)}>
-                          Inbox
-                  </button>
-                  <button type="button"
-                          className={"btn "+outboxActive}
-                          value = "outbox"
-                          onClick={(e) => this.handleChangeMailBox(e)}>
-                          Outbox
-                  </button>
-                  <button type="button"
-                          className={"btn "+allActive}
-                          value="all"
-                          onClick={(e) => this.handleChangeMailBox(e)}>
-                          All Notification
-                  </button>
-                  <button type="button" className="btn " data-toggle="modal" data-target="#entry-modal-1">Write</button>
 
-                </div>
-            </div>
-            <p>{this.state.mailBoxType}</p>
+            <MailToolBar onApply={(e) => this.handleChangeMailBox(e)}
+                         mailBoxType = {this.state.mailBoxType}/>
+
             <MailEntry  onSend={(requestContent, recieverEntry, titleEntry, groupEntry, typeEntry) => this.onSend(requestContent, recieverEntry, titleEntry, groupEntry, typeEntry)}/>
             <div className="row">
               <MailBox >
@@ -128,9 +89,7 @@ export default class MailBoxThread extends React.Component{
               </MailBox>
             </div>
 
-            <div className="row">
-              <PageNav />
-            </div>
+            
           </div>
         </div>
       </div>

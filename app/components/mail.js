@@ -10,6 +10,8 @@ export default class Mail extends React.Component {
     var acceptStatus = "Accept"
     if(this.props.status)
       acceptStatus = "Accepted";
+    if(this.props.author === "Someone")
+      acceptStatus ="";
     return(
       <div>
       <div className="media">
@@ -19,11 +21,15 @@ export default class Mail extends React.Component {
         <div className="media-body">
           <div className="media-body">
 
-              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId} href="#">{this.props.author}</a> to <a> {this.props.reciever}</a>
-              <AccountDetailModal mailId={this.props.mailId}
+              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"1"}>{this.props.author}</a>&lsquo;s {this.props.type} to
+              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"2"}> {this.props.reciever}</a>
+              <AccountDetailModal mailId={this.props.mailId + "1"}
                          author={this.props.author}>
               </AccountDetailModal>
-              
+              <AccountDetailModal mailId={this.props.mailId + "2"}
+                         author={this.props.reciever}>
+              </AccountDetailModal>
+
               <br /> {this.props.title}
               <br /><span className="pull-right"><a href="#" >{acceptStatus}</a> · <a type="button" data-toggle="modal" data-target={"#modal-content"+this.props.mailId}>Details</a> · {unixTimeToString(this.props.createDate)}</span>
                 <MailModal mailId={this.props.mailId}
