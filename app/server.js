@@ -317,15 +317,19 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
     var userId=getUser(userName);
     var groupId=getGroup(groupName);
     var groupData=readDocument('groups',groupId);
+    var userData=readDocument('users',userId);
     var joined = groupData.memberList.indexOf(userId);
     var requestData = readDocument('requestItems',requestId);
     requestData.status = true;
 
     writeDocument('requestItems',requestData);
 
+
     if(joined === -1){
       groupData.memberList.push(userId);
       writeDocument('groups',groupData);
+      userData.groupList.push(groupId);
+      writeDocument("users",userData);
     }
     emulateServerReturn(requestData, cb);
 

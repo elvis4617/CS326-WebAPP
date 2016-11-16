@@ -29,7 +29,7 @@ class NotificationPage extends React.Component {
   render() {
     return (
       <div>
-        <MailBoxThread user={2} />
+        <MailBoxThread user={1} />
         <Footer />
       </div>
     )
