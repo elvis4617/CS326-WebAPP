@@ -10,6 +10,7 @@ import AccountFeed from './components/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 import ForumItem from './components/forumitem';
 import AddFriendPage from './components/addFriend';
+import SearchResultPage from './components/searchresultpage';
 
 class LandingPage extends React.Component {
   render() {
@@ -67,6 +68,7 @@ class AddFriend extends React.Component{
     )
   }
 }
+
 class App extends React.Component {
     render() {
       return (
@@ -100,6 +102,7 @@ class App extends React.Component {
         <Route path="/MyFriend" component={FriendsPage} />
         <Route path="/MyProfile" component={AccountPage}/>
         <Route path="/AddFriend" component={AddFriend} />
+        <Route path="SearchResult/:key" component={SearchResultPage}/>
       </Route>
     </Router>
   ),

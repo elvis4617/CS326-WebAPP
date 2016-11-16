@@ -1,5 +1,23 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
+export function getMatchGroup(search_key, cb){
+  var groupList = [];
+  var keys = search_key.toLowerCase().split(" ");
+  for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
+    var group = readDocument('groups', i);
+    var groupNameArr = group.groupName.toLowerCase().split(" ");
+    var index;
+    for(index in groupNameArr){
+      if(keys.indexOf(groupNameArr[index]) != -1){
+        groupList.push(group);
+        break;
+      }
+    }
+  }
+  var value = {contents : groupList};
+  emulateServerReturn(value, cb);
+}
+
 export function getFriendDataById(userId, cb){
   var user = readDocument('users', userId);
   var friends = user.friendList;

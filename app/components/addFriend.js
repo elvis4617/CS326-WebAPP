@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link} from 'react-router';
 
 export default class AddFriendPage extends React.Component {
   constructor(props) {
@@ -15,7 +16,9 @@ export default class AddFriendPage extends React.Component {
           <div className = "col-md-7 col-md-offset-3">
             <button type="button" className="btn navbar-btn add-btn btn-friends btn-default">
               <span className="glyphicon glyphicon-user plus-icon"></span>
-              <a color = "#337ab7" href="friends_my_friends.html">My Friends</a>
+              <Link to={"/MyFriend"}>
+                <span color = "#337ab7" href="friends_my_friends.html">My Friends</span>
+              </Link>
             </button>
             <hr/>
             <div className="panel panel-default friends-panel">
