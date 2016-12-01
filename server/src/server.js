@@ -79,15 +79,8 @@ app.get('/user/:userid', function(req, res){
 
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-<<<<<<< HEAD
   if(true){
     res.send(readDocument('users', userId));
-=======
-  if(userId == fromUser){
-    var userData = readDocument('users', userId);
-    var value = {contents: userData};
-    res.send(value);
->>>>>>> 1a029b8d29268924f1662e7636a06fd05897fc22
   } else {
     res.status(401).end();
   }
