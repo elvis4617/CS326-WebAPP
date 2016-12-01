@@ -166,6 +166,40 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
     res.status(401).end();
   }
 });
+
+app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, res){
+  var groupName = req.params.groupname;
+  var userName = req.params.username;
+  var requestId = req.params.requestid;
+  var userId=getUser(userName);
+
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(userId  == fromUser){
+
+    var groupId=getGroup(groupName);
+    var groupData=readDocument('groups',groupId);
+    var userData=readDocument('users',userId);
+    var joined = groupData.memberList.indexOf(userId);
+    var requestData = readDocument('requestItems',requestId);
+    requestData.status = true;
+
+    writeDocument('requestItems',requestData);
+
+
+    if(joined === -1){
+      groupData.memberList.push(userId);
+      writeDocument('groups',groupData);
+      userData.groupList.push(groupId);
+      writeDocument("users",userData);
+  }
+  } else {
+    res.status(401).end();
+  }
+
+
+});
+
+
 /**
 * Translate JSON Schema Validation failures into error 400s.
 */

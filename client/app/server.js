@@ -320,24 +320,6 @@ export function getRequestData(userId, cb){
     });
   }
 
-//Dont use this function
-  function getGroup(groupName){
-   //var userList = readDocumentNoId('users');
-   var groupBase = readDocument('dataBase',2);
-
-
-   var groupR = -1;
-
-   //var ll = userList.length;
-   groupBase.List.forEach((groupId) => {
-     var groupData = readDocument('groups', groupId);
-     if(groupData.groupName === groupName)
-       groupR = groupId;
-   });
-
-  return groupR;
-}
-
 export function updateUserInfo(userId, name, email, grade, major, description, cb){
   var userData = readDocument('users', userId);
   userData.fullName = name;
@@ -368,25 +350,11 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
 
   export function joinGroup(userName, groupName, requestId, cb){
 
-    var userId=getUser(userName);
-    var groupId=getGroup(groupName);
-    var groupData=readDocument('groups',groupId);
-    var userData=readDocument('users',userId);
-    var joined = groupData.memberList.indexOf(userId);
-    var requestData = readDocument('requestItems',requestId);
-    requestData.status = true;
-
-    writeDocument('requestItems',requestData);
-
-
-    if(joined === -1){
-      groupData.memberList.push(userId);
-      writeDocument('groups',groupData);
-      userData.groupList.push(groupId);
-      writeDocument("users",userData);
-    }
-    emulateServerReturn(requestData, cb);
-
+    sendXHR('PUT', '/group/'+groupName+'/user/'+userName+'/requestitem/'+requestId,
+            undefined,
+            (xhr) =>{
+              cb(JSON.parse(xhr.responseText));
+            });
   }
 
 
