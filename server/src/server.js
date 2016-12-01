@@ -78,7 +78,9 @@ app.get('/user/:userid/mailbox', function(req, res){
 app.get('/user/:userid', function(req, res){
 
   var userId = parseInt(req.params.userid, 10);
+
   //var fromUser = getUserIdFromToken(req.get('Authorization'));
+
   if(true){
     res.send(readDocument('users', userId));
   } else {
@@ -96,7 +98,6 @@ app.put('/user/:userid', function(req, res) {
   userData.major = req.body.major;
   userData.description = req.body.description;
   writeDocument('users', userData);
-  var value = {contents: userData};
   res.send(readDocument('users', userId));
 });
 var getCollection = database.getCollection;
@@ -144,7 +145,7 @@ function onMessage(message, authorId, recieverId){
   var userData = readDocument('users',recieverId);
   userData.mailbox.unshift(newMessage._id);
   writeDocument('users',userData);
-  return newRequest;
+  return newMessage;
 }
 
 function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
@@ -384,6 +385,70 @@ app.use(function(err, req, res, next) {
   app.get('/postItem', function(req, res){
     res.send(getRecommendPostItem());
   });
+
+  function getUnReadMsgs(user){
+    var userData = readDocument('users', user);
+    var unReadList = [];
+    if(userData.unread.length != 0){
+      for(var i = 0; i<userData.unread.length; i++){
+        var request = readDocument('requestItems', userData.unread[i]);
+        if(!request.read)
+          unReadList.push(request);
+      }
+    }
+    var value = {contents : unReadList};
+    return value;
+  }
+
+
+  function readRequest(requestItemId, userId) {
+    var requestItem = readDocument('requestItems', requestItemId);
+    requestItem.read = true;
+    writeDocument('requestItems', requestItem);
+    var user = readDocument('users', userId);
+    var unRead = user.unread;
+    if(unRead.indexOf(requestItemId) != -1){
+      user.unread.splice(unRead.indexOf(requestItemId),1);
+      writeDocument('users', user);
+    }
+    return "true";
+  }
+
+  app.post('/unReadReq', function(req, res) {
+    var userid = req.body;
+    var fromUser = getUserIdFromToken(req.get('Authorization'));
+    // Parameters are always strings.
+    var useridNumber = parseInt(userid, 10);
+    if (fromUser === useridNumber) {
+      // Send response.
+      res.send(getUnReadMsgs(userid));
+    } else {
+      // 401: Unauthorized request.
+      res.status(401).end();
+    }
+  });
+
+  app.put('/readRequest/:requestItemId:/:userId', function(req, res) {
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  var requestItemId = req.params.requestItemId;
+  var userid = req.params.userid;
+  var requestItems = readDocument('requestItems', requestItemId);
+  // Check that the requester is the author of this feed item.
+  if (fromUser === requestItems.receiver) {
+    // Check that the body is a string, and not something like a JSON object.
+    // We can't use JSON validation here, since the body is simply text!
+    if (typeof(req.body) !== 'string') {
+      // 400: Bad request.
+      res.status(400).end();
+      return;
+    }// Update text content of update.
+    readRequest(requestItemId, userid);
+    res.send("true");
+  } else {
+    // 401: Unauthorized.
+    res.status(401).end();
+  }
+});
 //Elvis not here
 //Elvis not here
 //Elvis not here

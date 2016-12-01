@@ -83,6 +83,19 @@ export function getRecommendPostItem(user, cb) {
   });
 }
 
+export function getUnReadMsgs(user, cb){
+  sendXHR('POST', '/unReadReq', user, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
+}
+
+
+export function readRequest(requestItemId, userId, cb) {
+  sendXHR('PUT', '/readRequest/' + requestItemId +"/" +userId ,undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
+}
+
 //not Elvis
 //not Elvis
 //not Elvis
@@ -119,34 +132,7 @@ function emulateServerReturn(data, cb) {
   }, 4);
 }
 
-export function getUnReadMsgs(user, cb){
-  var userData = readDocument('users', user);
-  var unReadList = [];
-  if(userData.unread.length != 0){
-    for(var i = 0; i<userData.unread.length; i++){
-      var request = readDocument('requestItems', userData.unread[i]);
-      if(!request.read)
-        unReadList.push(request);
-    }
-  }
-  var value = {contents : unReadList};
-  emulateServerReturn(value, cb);
-}
 
-
-export function readRequest(requestItemId, userId, cb) {
-  var requestItem = readDocument('requestItems', requestItemId);
-  requestItem.read = true;
-  writeDocument('requestItems', requestItem);
-  var user = readDocument('users', userId);
-  var unRead = user.unread;
-  if(unRead.indexOf(requestItemId) != -1){
-    user.unread.splice(unRead.indexOf(requestItemId),1);
-    writeDocument('users', user);
-  }
-  // Return a resolved version of the likeCounter
-  emulateServerReturn("true", cb);
-}
 
 /*
  *Andy, Andy is here
