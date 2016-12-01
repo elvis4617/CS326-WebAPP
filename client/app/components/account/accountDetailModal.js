@@ -73,6 +73,12 @@ export default class AccountDetailModal extends React.Component {
                             <label>Description:</label>{this.state.contents.description}
                           </div>
                         </div>
+
+                        <div className="row text">
+                          <div className="col-md-12">
+                            <label>Group:</label>{this.state.contents.groupList}
+                          </div>
+                        </div>
                       </div>
 
                       <div className="modal-footer">

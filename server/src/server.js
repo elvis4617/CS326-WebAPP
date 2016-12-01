@@ -79,10 +79,15 @@ app.get('/user/:userid', function(req, res){
 
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
+<<<<<<< HEAD
+  if(true){
+    res.send(readDocument('users', userId));
+=======
   if(userId == fromUser){
     var userData = readDocument('users', userId);
     var value = {contents: userData};
     res.send(value);
+>>>>>>> 1a029b8d29268924f1662e7636a06fd05897fc22
   } else {
     res.status(401).end();
   }
@@ -219,18 +224,19 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
   var userName = req.params.username;
   var requestId = req.params.requestid;
   var userId=getUser(userName);
+  var requestData = readDocument('requestItems',requestId);
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId  == fromUser){
+  if(requestData.author  == fromUser || requestData.reciever == fromUser){
 
     var groupId=getGroup(groupName);
     var groupData=readDocument('groups',groupId);
     var userData=readDocument('users',userId);
     var joined = groupData.memberList.indexOf(userId);
-    var requestData = readDocument('requestItems',requestId);
+
     requestData.status = true;
 
-    writeDocument('requestItems',requestData);
+     writeDocument('requestItems',requestData);
 
 
     if(joined === -1){
@@ -238,12 +244,22 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
       writeDocument('groups',groupData);
       userData.groupList.push(groupId);
       writeDocument("users",userData);
-  }
+    }
+
+  res.send(requestData);
   } else {
     res.status(401).end();
   }
 
 
+});
+
+app.get('/username/:name', function(req, res){
+  var userName = req.params.name;
+
+  var userId = getUser(userName);
+
+  res.send(readDocument('users', userId));
 });
 
 
