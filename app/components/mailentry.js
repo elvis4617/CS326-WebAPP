@@ -62,6 +62,8 @@ export default class MailEntry extends React.Component{
   handleChangeRadio(e){
   e.preventDefault();
   this.setState({mailType:e.target.value});
+  e.target.checked=true;
+
   }
 
   didUserCheckRequest(){
@@ -80,9 +82,9 @@ export default class MailEntry extends React.Component{
 
   render() {
 
-    var requestChecked = this.didUserCheckRequest();
+  //  var requestChecked = this.didUserCheckRequest();
     //requestChecked += "aaaaaa";
-    var inviteChecked = this.didUserCheckInvite();
+  //  var inviteChecked = this.didUserCheckInvite();
 
     return (
 
@@ -102,19 +104,21 @@ export default class MailEntry extends React.Component{
                       <input type="radio"
                              className="form-check-input"
                              value="invite"
-                             checked= {inviteChecked}
-                             onChange={(e) => this.handleChangeRadio(e)}
+
+                             onClick={(e) => this.handleChangeRadio(e)}
+                             checked= {this.state.mailType === "invite"}
                              />
                            <small>  Invite </small>
                     </label>
                   </div>
-                  <div className="form-check">
+                  <div className="form-check" >
                     <label className="form-check-label">
                       <input type="radio"
                              className="form-check-input"
                              value="request"
-                             checked={requestChecked}
-                             onChange={(e) => this.handleChangeRadio(e)}
+
+                            onClick={(e) => this.handleChangeRadio(e)}
+                             checked={this.state.mailType === "request"}
                              />
                            <small>Request </small>
                     </label>

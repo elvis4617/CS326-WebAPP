@@ -13,7 +13,7 @@ export default class UnReadMsg extends React.Component{
   refresh() {
     getUnReadMsgs(this.props.user, (unReadList) => {
     this.setState(unReadList);
-    console.log(this.state);
+  //  console.log(this.state);
   });
  }
 
