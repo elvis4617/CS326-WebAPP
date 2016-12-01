@@ -298,6 +298,7 @@ export function getRequestData(userId, cb){
   });
 }
 
+// Dont use this function
  function getUser(userName){
   //var userList = readDocumentNoId('users');
   var userBase = readDocument('dataBase',1);
@@ -319,6 +320,7 @@ export function getRequestData(userId, cb){
     });
   }
 
+//Dont use this function
   function getGroup(groupName){
    //var userList = readDocumentNoId('users');
    var groupBase = readDocument('dataBase',2);
@@ -358,7 +360,7 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
     groupName: groupName,
     typeEntry: typeEntry
   },
-  (xhr) => { 
+  (xhr) => {
       cb(JSON.parse(xhr.responseText));
     });
 }

@@ -156,10 +156,10 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
   if(body.userId  == fromUser){
-    var newRequest = writeRequest(body.userId, body.recieverName, body.requestContent, body.title,
+    var newRequest = writeRequest(body.userId, body.recieverName, body.contents, body.title,
                                   body.groupName, body.typeEntry);
     res.status(201);
-    res.set('Location','/user/'+ body.userId);
+    res.set('Location','/requestitem/'+ newRequest._id);
 
     res.send(newRequest);
   } else {
