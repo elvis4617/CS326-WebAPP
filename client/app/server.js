@@ -68,40 +68,24 @@ function sendXHR(verb, resource, body, cb) {
     throw new Error('Unknown body type: ' + typeof(body));
   }
 }
-
-
-export function getRequestItem(reqId, cb){
-  var req = readDocument('requestItems', reqId);
-  var value = {log : req};
-  emulateServerReturn(value, cb);
-}
-
+//Elvis here
+//Elvis here
+//Elvis here
 export function getMatchGroup(search_key, cb){
-  var groupList = [];
-  var keys = search_key.toLowerCase().split(" ");
-  for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
-    var group = readDocument('groups', i);
-    var groupNameArr = group.groupName.toLowerCase().split(" ");
-    var index,index1;
-    for(index in groupNameArr){
-      for(index1 in keys){
-        if(groupNameArr[index].indexOf(keys[index1]) != -1){
-          groupList.push(group);
-          break;
-        }
-      }
-    }
-  }
-  var value = {contents : groupList};
-  emulateServerReturn(value, cb);
+  sendXHR('POST', '/search', search_key, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
 }
-/*function getGroupByIdSync(groupId){
-  var groupData = readDocument('groups', groupId);
-  var userId = groupData.groupOwner;
-  groupData.groupOwner = readDocument('users',userId).fullName;
-  return groupData;
 
-}*/
+export function getRecommendPostItem(user, cb) {
+  sendXHR('GET', '/postItem', undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
+}
+
+//not Elvis
+//not Elvis
+//not Elvis
 export function getFriendDataById(userId, cb){
   var user = readDocument('users', userId);
   var friends = user.friendList;
@@ -122,11 +106,11 @@ export function getUserDataByName(userName, cb) {
 
 export function getUserDataById(userId, cb) {
 // Get the User object with the id "user".
- sendXHR('GET','/user/'+userId, undefined,
-          (xhr)=>{cb(JSON.parse(xhr.responseText))
-
-          });
+sendXHR('GET', '/user/' + userId, undefined, (xhr) => {
+  cb(JSON.parse(xhr.responseText));
+});
 }
+
 
 
 function emulateServerReturn(data, cb) {
@@ -147,118 +131,6 @@ export function getUnReadMsgs(user, cb){
   }
   var value = {contents : unReadList};
   emulateServerReturn(value, cb);
-}
-
-/**
-* Emulates a REST call to get the feed data for a particular user.
-* @param user The ID of the user whose feed we are requesting.
-* @param cb A Function object, which we will invoke when the Feed's data is available. */
-export function getRecommendPostItem(user, cb) {
-// Get the User object with the id "user".
-var userData = readDocument('users', user);
-var userMaxList = getThreeMaxPost(userData.postItem);
-var friendMaxList = getRecommendPostItemFriend(user);
-
-if(friendMaxList[0] != -1){
-  for(var j = 0; j < friendMaxList.length; j++){
-    if(friendMaxList[j] > userMaxList[0]){
-      userMaxList[2] = userMaxList[1];
-      userMaxList[1] = userMaxList[0];
-      userMaxList[0] = friendMaxList[j];
-    }else if(friendMaxList[j] > userMaxList[1]){
-      userMaxList[2] = userMaxList[1];
-      userMaxList[1] = friendMaxList[j];
-    }else if(friendMaxList[j] > userMaxList[2]){
-      userMaxList[2] = friendMaxList[j];
-    }
-  }
-}
-while(userMaxList.indexOf(-1) != -1){
-  userMaxList.splice(-1, 1);
-}
-
-var value = {contents : userMaxList};
-//value.contents. = feedData.contents.map(getFeedItemSync);
-// emulateServerReturn will emulate an asynchronous server operation, which // invokes (calls) the "cb" function some time in the future.
-emulateServerReturn(value, cb);
-}
-
-/**
- * Emulates how a REST call is *asynchronous* -- it calls your function back
- * some time in the future with data.
- */
-export function getRecommendPostItemFriend(user) {
-  var userData = readDocument('users', user);
-  var friendList = userData.friendList;
-  var maxList = [-1, -1, -1];
-  var index;
-  for (index in friendList){
-    var friend = readDocument('users', friendList[index]);
-    var postItemData = friend.postItem;
-    var tempMaxList = [-1, -1, -1];
-    if(postItemData.length != 0 ){
-      tempMaxList = getThreeMaxPost(postItemData);
-        for(var j = 0; j < tempMaxList.length; j++){
-          if(tempMaxList[j] > maxList[0]){
-            maxList[2] = maxList[1];
-            maxList[1] = maxList[0];
-            maxList[0] = tempMaxList[j];
-          }else if(tempMaxList[j] > maxList[1]){
-            maxList[2] = maxList[1];
-            maxList[1] = tempMaxList[j];
-          }else if(tempMaxList[j] > maxList[2]){
-            maxList[2] = tempMaxList[j];
-          }
-        }
-      }
-  }
-  return maxList;
-}
-
-export function getThreeMaxPost(postItemData){
-  var recommend_list = [];
-  var item;
-  var maxViewCount = -1;
-  var secondMaxViewCount = -1;
-  var thirdMaxViewCount = -1;
-  var maxPostIndex = -1;
-  var secondMaxPostIndex = -1;
-  var thirdMaxPostIndex = -1;
-  for (item in postItemData){
-    var postItem = readDocument('postItem', postItemData[item]);
-    if(postItem.viewCount > maxViewCount){
-      thirdMaxViewCount = secondMaxViewCount;
-      thirdMaxPostIndex = secondMaxPostIndex;
-      secondMaxViewCount = maxViewCount;
-      secondMaxPostIndex = maxPostIndex;
-      maxViewCount = postItem.viewCount;
-      maxPostIndex = item;
-    }else if(postItem.viewCount > secondMaxViewCount){
-      thirdMaxViewCount = secondMaxViewCount;
-      thirdMaxPostIndex = secondMaxPostIndex;
-      secondMaxViewCount = postItem.viewCount;
-      secondMaxPostIndex = item;
-    }else if(postItem.viewCount > thirdMaxViewCount){
-      thirdMaxViewCount = postItem.viewCount;
-      thirdMaxPostIndex = item;
-    }
-  }
-  if(maxPostIndex != -1)
-    recommend_list.push(readDocument('postItem', postItemData[maxPostIndex]));
-  else {
-    recommend_list.push(maxPostIndex);
-  }
-  if(secondMaxPostIndex != -1)
-    recommend_list.push(readDocument('postItem', postItemData[secondMaxPostIndex]));
-  else {
-    recommend_list.push(secondMaxPostIndex);
-  }
-  if(thirdMaxPostIndex != -1)
-    recommend_list.push(readDocument('postItem', postItemData[thirdMaxPostIndex]));
-  else {
-    recommend_list.push(thirdMaxPostIndex);
-  }
-  return recommend_list;
 }
 
 
@@ -314,15 +186,16 @@ export function getRequestData(userId, cb){
   }
 
 export function updateUserInfo(userId, name, email, grade, major, description, cb){
-  var userData = readDocument('users', userId);
-  userData.fullName = name;
-  userData.email = email;
-  userData.grade = grade;
-  userData.major = major;
-  userData.description = description;
-  writeDocument('users', userData);
-  var value = {contents: userData};
-  emulateServerReturn(value, cb);
+  sendXHR('PUT', '/user/' + userId, {
+    userId: userId,
+    name: name,
+    email: email,
+    grade: grade,
+    major: major,
+    description: description
+  }, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
 }
 
 
@@ -351,28 +224,16 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   }
 
 
-// Works as long as messages / requests aren't deleted. Consider revising
+// Send a Message
 export function onMessage(message, authorId, recieverId) {
-  var reciever = readDocument('users', recieverId);
-    for(var i = 0; i < 100000000; i++) {
-      try {
-        var request = readDocument('requests', i);
-      }
-      catch(err) {
-        request._id = i;
-        request.author = authorId;
-        request.reciever = recieverId;
-        request.CreateDate = new Date();
-        request.status = "false";
-        request.title = "Message";
-        request.content = message;
-        request.read = "false";
-        writeDocument('requests', request);
-        reciever.mailbox.push(i)
-        writeDocument('users', reciever)
-        break;
-      }
-    }
+  sendXHR('POST', '/message', {
+    Message: message,
+    AuthorId: authorId,
+    RecieverId: recieverId
+  },
+  (xhr) => {
+      cb(JSON.parse(xhr.responseText));
+  });
 }
 
 function getUserE(email) {

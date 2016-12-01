@@ -12,8 +12,6 @@ var app = express();
 
 app.use(bodyParser.text());
 // Support receiving text in HTTP request bodies
-app.use(bodyParser.text());
-// Support receiving JSON in HTTP request bodies
 app.use(bodyParser.json());
 // You run the server from `server`, so `../client/build` is `server/../client/build`.
 // '..' means "go up one directory", so this translates into `client/build`!
@@ -81,13 +79,33 @@ app.get('/user/:userid', function(req, res){
 
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
+<<<<<<< HEAD
   if(true){
     res.send(readDocument('users', userId));
+=======
+  if(userId == fromUser){
+    var userData = readDocument('users', userId);
+    var value = {contents: userData};
+    res.send(value);
+>>>>>>> 1a029b8d29268924f1662e7636a06fd05897fc22
   } else {
     res.status(401).end();
   }
 });
 
+app.put('/user/:userid', function(req, res) {
+  userId = parseInt(req.params.userid, 10);
+  var userData = readDocument('users', userId);
+  console.log(userData);
+  userData.fullName = req.body.name;
+  userData.email = req.body.email;
+  userData.grade = req.body.grade;
+  userData.major = req.body.major;
+  userData.description = req.body.description;
+  writeDocument('users', userData);
+  var value = {contents: userData};
+  res.send(readDocument('users', userId));
+});
 var getCollection = database.getCollection;
 
 function getUser(userName){
@@ -115,7 +133,26 @@ function getGroup(groupName){
   return targetId;
 }
 
-
+// onMessage ********************************************************************
+function onMessage(message, authorId, recieverId){
+  var date = new Date().getTime();
+  var newMessage = {
+    "Type": "Message",
+    "author": authorId,
+    "reciever": recieverId,
+    "createDate": date,
+    "status": false,
+    "group":0,
+    "title": "Message",
+    "content": message,
+    "read": false
+  }
+  newMessage = addDocument('requestItems',newMessage);
+  var userData = readDocument('users',recieverId);
+  userData.mailbox.unshift(newMessage._id);
+  writeDocument('users',userData);
+  return newRequest;
+}
 
 function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
   var time = new Date().getTime();
@@ -163,6 +200,22 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
 
     res.send(newRequest);
   } else {
+    res.status(401).end();
+  }
+});
+
+var MessageSchema = require('./schemas/message.json');
+
+app.post('/message', validate({body: MessageSchema}), function(req, res){
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.authorId == fromUser){
+    var newMessage = onMessage(body.message, body.authorId, body.recieverId);
+    res.status(201);
+    res.set('Location', '/message/' + newMessage._id);
+    res.send(newMessage);
+  }
+  else {
     res.status(401).end();
   }
 });
@@ -232,6 +285,111 @@ app.use(function(err, req, res, next) {
   // res.send() sends an empty response with status code 200
   res.send();
   });
+
+  //Elvis here
+  //Elvis here
+  //Elvis here
+
+  function getMatchGroup(search_key){
+    var groupList = [];
+    var keys = search_key.toLowerCase().split(" ");
+    for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
+      var group = readDocument('groups', i);
+      var groupNameArr = group.groupName.toLowerCase().split(" ");
+      var index,index1;
+      for(index in groupNameArr){
+        for(index1 in keys){
+          if(groupNameArr[index].indexOf(keys[index1]) != -1){
+            groupList.push(group);
+            break;
+          }
+        }
+      }
+    }
+    var value = {contents : groupList};
+    return value;
+  }
+
+  app.post('/search', function(req, res){
+    if (typeof(req.body) === 'string') {
+      var queryText = req.body;
+      res.send(getMatchGroup(queryText));
+    }else{
+      res.status(400).end();
+    }
+  });
+
+  function getRecommendPostItem() {
+    // Get the User object with the id "user".
+    var postItem = [];
+    for(var i = 1; ; i++){
+      try{
+        postItem.push(readDocument('postItem', i));
+      }catch(e){
+        break;
+      }
+    }
+    var userMaxList = getThreeMaxPost(postItem);
+    while(userMaxList.indexOf(-1) != -1){
+      userMaxList.splice(-1, 1);
+    }
+
+    var value = {contents : userMaxList};
+    return value;
+  }
+
+  function getThreeMaxPost(postItemData){
+    var recommend_list =  [];
+    var item;
+    var maxViewCount = -1;
+    var secondMaxViewCount = -1;
+    var thirdMaxViewCount = -1;
+    var maxPostIndex = -1;
+    var secondMaxPostIndex = -1;
+    var thirdMaxPostIndex = -1;
+    for (item in postItemData){
+      var postItem = postItemData[item];
+      if(postItem.viewCount > maxViewCount){
+        thirdMaxViewCount = secondMaxViewCount;
+        thirdMaxPostIndex = secondMaxPostIndex;
+        secondMaxViewCount = maxViewCount;
+        secondMaxPostIndex = maxPostIndex;
+        maxViewCount = postItem.viewCount;
+        maxPostIndex = item;
+      }else if(postItem.viewCount > secondMaxViewCount){
+        thirdMaxViewCount = secondMaxViewCount;
+        thirdMaxPostIndex = secondMaxPostIndex;
+        secondMaxViewCount = postItem.viewCount;
+        secondMaxPostIndex = item;
+      }else if(postItem.viewCount > thirdMaxViewCount){
+        thirdMaxViewCount = postItem.viewCount;
+        thirdMaxPostIndex = item;
+      }
+    }
+    if(maxPostIndex != -1)
+      recommend_list.push(postItemData[maxPostIndex]);
+    else {
+      recommend_list.push(maxPostIndex);
+    }
+    if(secondMaxPostIndex != -1)
+      recommend_list.push(postItemData[secondMaxPostIndex]);
+    else {
+      recommend_list.push(secondMaxPostIndex);
+    }
+    if(thirdMaxPostIndex != -1)
+      recommend_list.push(postItemData[thirdMaxPostIndex]);
+    else {
+      recommend_list.push(thirdMaxPostIndex);
+    }
+    return recommend_list;
+  }
+
+  app.get('/postItem', function(req, res){
+    res.send(getRecommendPostItem());
+  });
+//Elvis not here
+//Elvis not here
+//Elvis not here
 
 // Starts the server on port 3000!
 app.listen(3000, function () {
