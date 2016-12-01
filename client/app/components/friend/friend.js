@@ -1,7 +1,6 @@
 import React from 'react';
-//import MessageEntry from './messageEntry';
+import MessageEntry from './messageEntry';
 import FriendDetailModal from './friendDetailModal';
-//import {onMessage} from '../server';
 
 export default class friend extends React.Component {
   constructor(props) {
@@ -31,10 +30,9 @@ export default class friend extends React.Component {
                   {data.school}
                 </div>
               </div>
+              <MessageEntry friendId = {data._id}/>
             </div>
           </div>
-
-          <hr/>
         </div>
       </div>
     )
