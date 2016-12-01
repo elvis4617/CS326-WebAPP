@@ -82,12 +82,27 @@ app.get('/user/:userid', function(req, res){
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
   if(userId == fromUser){
-    res.send(readDocument('users', userId));
+    var userData = readDocument('users', userId);
+    var value = {contents: userData};
+    res.send(value);
   } else {
     res.status(401).end();
   }
 });
 
+app.put('/user/:userid', function(req, res) {
+  userId = parseInt(req.params.userid, 10);
+  var userData = readDocument('users', userId);
+  console.log(userData);
+  userData.fullName = req.body.name;
+  userData.email = req.body.email;
+  userData.grade = req.body.grade;
+  userData.major = req.body.major;
+  userData.description = req.body.description;
+  writeDocument('users', userData);
+  var value = {contents: userData};
+  res.send(readDocument('users', userId));
+});
 var getCollection = database.getCollection;
 
 function getUser(userName){
