@@ -12,8 +12,6 @@ var app = express();
 
 app.use(bodyParser.text());
 // Support receiving text in HTTP request bodies
-app.use(bodyParser.text());
-// Support receiving JSON in HTTP request bodies
 app.use(bodyParser.json());
 // You run the server from `server`, so `../client/build` is `server/../client/build`.
 // '..' means "go up one directory", so this translates into `client/build`!
@@ -221,6 +219,111 @@ app.use(function(err, req, res, next) {
   // res.send() sends an empty response with status code 200
   res.send();
   });
+
+  //Elvis here
+  //Elvis here
+  //Elvis here
+
+  function getMatchGroup(search_key){
+    var groupList = [];
+    var keys = search_key.toLowerCase().split(" ");
+    for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
+      var group = readDocument('groups', i);
+      var groupNameArr = group.groupName.toLowerCase().split(" ");
+      var index,index1;
+      for(index in groupNameArr){
+        for(index1 in keys){
+          if(groupNameArr[index].indexOf(keys[index1]) != -1){
+            groupList.push(group);
+            break;
+          }
+        }
+      }
+    }
+    var value = {contents : groupList};
+    return value;
+  }
+
+  app.post('/search', function(req, res){
+    if (typeof(req.body) === 'string') {
+      var queryText = req.body;
+      res.send(getMatchGroup(queryText));
+    }else{
+      res.status(400).end();
+    }
+  });
+
+  function getRecommendPostItem() {
+    // Get the User object with the id "user".
+    var postItem = [];
+    for(var i = 1; ; i++){
+      try{
+        postItem.push(readDocument('postItem', i));
+      }catch(e){
+        break;
+      }
+    }
+    var userMaxList = getThreeMaxPost(postItem);
+    while(userMaxList.indexOf(-1) != -1){
+      userMaxList.splice(-1, 1);
+    }
+
+    var value = {contents : userMaxList};
+    return value;
+  }
+
+  function getThreeMaxPost(postItemData){
+    var recommend_list =  [];
+    var item;
+    var maxViewCount = -1;
+    var secondMaxViewCount = -1;
+    var thirdMaxViewCount = -1;
+    var maxPostIndex = -1;
+    var secondMaxPostIndex = -1;
+    var thirdMaxPostIndex = -1;
+    for (item in postItemData){
+      var postItem = postItemData[item];
+      if(postItem.viewCount > maxViewCount){
+        thirdMaxViewCount = secondMaxViewCount;
+        thirdMaxPostIndex = secondMaxPostIndex;
+        secondMaxViewCount = maxViewCount;
+        secondMaxPostIndex = maxPostIndex;
+        maxViewCount = postItem.viewCount;
+        maxPostIndex = item;
+      }else if(postItem.viewCount > secondMaxViewCount){
+        thirdMaxViewCount = secondMaxViewCount;
+        thirdMaxPostIndex = secondMaxPostIndex;
+        secondMaxViewCount = postItem.viewCount;
+        secondMaxPostIndex = item;
+      }else if(postItem.viewCount > thirdMaxViewCount){
+        thirdMaxViewCount = postItem.viewCount;
+        thirdMaxPostIndex = item;
+      }
+    }
+    if(maxPostIndex != -1)
+      recommend_list.push(postItemData[maxPostIndex]);
+    else {
+      recommend_list.push(maxPostIndex);
+    }
+    if(secondMaxPostIndex != -1)
+      recommend_list.push(postItemData[secondMaxPostIndex]);
+    else {
+      recommend_list.push(secondMaxPostIndex);
+    }
+    if(thirdMaxPostIndex != -1)
+      recommend_list.push(postItemData[thirdMaxPostIndex]);
+    else {
+      recommend_list.push(thirdMaxPostIndex);
+    }
+    return recommend_list;
+  }
+
+  app.get('/postItem', function(req, res){
+    res.send(getRecommendPostItem());
+  });
+//Elvis not here
+//Elvis not here
+//Elvis not here
 
 // Starts the server on port 3000!
 app.listen(3000, function () {

@@ -14,7 +14,6 @@ export default class NavBar extends React.Component{
 
   handleSearchChange(event){
     event.preventDefault();
-    // Callback function for both the like and unlike cases.
     var search_key = this.refs.key.value;
     this.setState({"key": search_key});
   }
