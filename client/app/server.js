@@ -225,7 +225,7 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
 
 
 // Send a Message
-export function onMessage(message, authorId, recieverId) {
+export function onMessage(message, authorId, recieverId, cb) {
   sendXHR('POST', '/message', {
     Message: message,
     AuthorId: authorId,

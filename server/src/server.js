@@ -78,23 +78,16 @@ app.get('/user/:userid/mailbox', function(req, res){
 app.get('/user/:userid', function(req, res){
 
   var userId = parseInt(req.params.userid, 10);
-  var fromUser = getUserIdFromToken(req.get('Authorization'));
-<<<<<<< HEAD
+  //var fromUser = getUserIdFromToken(req.get('Authorization'));
   if(true){
     res.send(readDocument('users', userId));
-=======
-  if(userId == fromUser){
-    var userData = readDocument('users', userId);
-    var value = {contents: userData};
-    res.send(value);
->>>>>>> 1a029b8d29268924f1662e7636a06fd05897fc22
   } else {
     res.status(401).end();
   }
 });
 
 app.put('/user/:userid', function(req, res) {
-  userId = parseInt(req.params.userid, 10);
+  var userId = parseInt(req.params.userid, 10);
   var userData = readDocument('users', userId);
   console.log(userData);
   userData.fullName = req.body.name;
@@ -186,6 +179,7 @@ function writeRequest(userId, recieverName, requestContent, titleEntry, groupNam
   return newRequest;
 }
 
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 var RequestItemSchema = require('./schemas/requestitem.json');
 
 app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
@@ -206,6 +200,7 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
 
 var MessageSchema = require('./schemas/message.json');
 
+
 app.post('/message', validate({body: MessageSchema}), function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
@@ -220,6 +215,7 @@ app.post('/message', validate({body: MessageSchema}), function(req, res){
   }
 });
 
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, res){
   var groupName = req.params.groupname;
   var userName = req.params.username;
@@ -255,6 +251,7 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
 
 });
 
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 app.get('/username/:name', function(req, res){
   var userName = req.params.name;
 
