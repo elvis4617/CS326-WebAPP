@@ -359,28 +359,16 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
   }
 
 
-// Works as long as messages / requests aren't deleted. Consider revising
+// Send a Message
 export function onMessage(message, authorId, recieverId) {
-  var reciever = readDocument('users', recieverId);
-    for(var i = 0; i < 100000000; i++) {
-      try {
-        var request = readDocument('requests', i);
-      }
-      catch(err) {
-        request._id = i;
-        request.author = authorId;
-        request.reciever = recieverId;
-        request.CreateDate = new Date();
-        request.status = "false";
-        request.title = "Message";
-        request.content = message;
-        request.read = "false";
-        writeDocument('requests', request);
-        reciever.mailbox.push(i)
-        writeDocument('users', reciever)
-        break;
-      }
-    }
+  sendXHR('POST', '/message', {
+    Message: message,
+    AuthorId: authorId,
+    RecieverId: recieverId
+  },
+  (xhr) => {
+      cb(JSON.parse(xhr.responseText));
+  });
 }
 
 function getUserE(email) {

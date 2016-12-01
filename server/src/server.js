@@ -130,7 +130,26 @@ function getGroup(groupName){
   return targetId;
 }
 
-
+// onMessage ********************************************************************
+function onMessage(message, authorId, recieverId){
+  var date = new Date().getTime();
+  var newMessage = {
+    "Type": "Message",
+    "author": authorId,
+    "reciever": recieverId,
+    "createDate": date,
+    "status": false,
+    "group":0,
+    "title": "Message",
+    "content": message,
+    "read": false
+  }
+  newMessage = addDocument('requestItems',newMessage);
+  var userData = readDocument('users',recieverId);
+  userData.mailbox.unshift(newMessage._id);
+  writeDocument('users',userData);
+  return newRequest;
+}
 
 function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
   var time = new Date().getTime();
@@ -178,6 +197,22 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
 
     res.send(newRequest);
   } else {
+    res.status(401).end();
+  }
+});
+
+var MessageSchema = require('./schemas/message.json');
+
+app.post('/message', validate({body: MessageSchema}), function(req, res){
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.authorId == fromUser){
+    var newMessage = onMessage(body.message, body.authorId, body.recieverId);
+    res.status(201);
+    res.set('Location', '/message/' + newMessage._id);
+    res.send(newMessage);
+  }
+  else {
     res.status(401).end();
   }
 });

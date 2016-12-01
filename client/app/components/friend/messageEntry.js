@@ -1,4 +1,5 @@
 import React from 'react';
+import {onMessage} from '../../server';
 
 export default class MessageEntry extends React.Component {
   constructor(props) {
@@ -12,7 +13,7 @@ export default class MessageEntry extends React.Component {
     // Trim whitespace from beginning + end of entry.
     var message = this.state.value.trim();
     if (message !== "") {
-      this.props.sendMessage(message);
+      onMessage(message, 1, this.props.friendId);
       // Reset status update.
       this.setState({value: ""});
     }
