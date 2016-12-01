@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
+  "properties": {
+    "message":{
+      "id": "message",
+      "type": "string"
+    },
+    "authorId":{
+        "id": "authorId",
+        "type": "integer"
+    },
+    "recieverId": {
+      "id": "recieverId",
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "message",
+    "authorId",
+    "recieverId"
+  ]
+}
