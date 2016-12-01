@@ -81,7 +81,7 @@ app.get('/user/:userid', function(req, res){
 
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId == fromUser){
+  if(true){
     res.send(readDocument('users', userId));
   } else {
     res.status(401).end();
@@ -172,18 +172,19 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
   var userName = req.params.username;
   var requestId = req.params.requestid;
   var userId=getUser(userName);
+  var requestData = readDocument('requestItems',requestId);
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId  == fromUser){
+  if(requestData.author  == fromUser || requestData.reciever == fromUser){
 
     var groupId=getGroup(groupName);
     var groupData=readDocument('groups',groupId);
     var userData=readDocument('users',userId);
     var joined = groupData.memberList.indexOf(userId);
-    var requestData = readDocument('requestItems',requestId);
+
     requestData.status = true;
 
-    writeDocument('requestItems',requestData);
+     writeDocument('requestItems',requestData);
 
 
     if(joined === -1){
@@ -191,12 +192,22 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
       writeDocument('groups',groupData);
       userData.groupList.push(groupId);
       writeDocument("users",userData);
-  }
+    }
+
+  res.send(requestData);
   } else {
     res.status(401).end();
   }
 
 
+});
+
+app.get('/username/:name', function(req, res){
+  var userName = req.params.name;
+
+  var userId = getUser(userName);
+
+  res.send(readDocument('users', userId));
 });
 
 

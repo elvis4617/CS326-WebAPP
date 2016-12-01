@@ -114,27 +114,20 @@ export function getFriendDataById(userId, cb){
 }
 
 export function getUserDataByName(userName, cb) {
-// Get the User object with the id "user".
-var userId = getUserId(userName);
-var userData = readDocument('users', userId);
-var value = {contents : userData};
-emulateServerReturn(value, cb);
+  sendXHR('GET','/username/'+userName, undefined,
+           (xhr)=>{cb(JSON.parse(xhr.responseText))
+
+           });
 }
 
 export function getUserDataById(userId, cb) {
 // Get the User object with the id "user".
-var userData = readDocument('users', userId);
-var value = {contents : userData};
-emulateServerReturn(value, cb);
+ sendXHR('GET','/user/'+userId, undefined,
+          (xhr)=>{cb(JSON.parse(xhr.responseText))
+
+          });
 }
 
-function getUserId(fullName){
-  for(var i = 1; readDocument('users', i); i++){
-    var user = readDocument('users', i);
-    if(user.fullName == fullName)
-      return user._id;
-  }
-}
 
 function emulateServerReturn(data, cb) {
   setTimeout(() => {
