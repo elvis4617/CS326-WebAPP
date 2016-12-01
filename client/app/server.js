@@ -1,7 +1,11 @@
 import {readDocument, writeDocument, addDocument} from './database.js';
 
 // token is for 'id: 2'
-var token = 'eyJpZCI6Mn0='; // <-- Put your base64'd JSON token here
+//var token = 'eyJpZCI6Mn0='; // <-- Put your base64'd JSON token here
+//eyJpZCI6MX0=
+
+// for 'id: 1'
+var token = 'eyJpZCI6MX0=';
 /**
 * Properly configure+send an XMLHttpRequest with error handling,
 * authorization token, and other needed properties.
@@ -289,8 +293,8 @@ export function readRequest(requestItemId, userId, cb) {
 
 export function getRequestData(userId, cb){
 
-  sendXHR('GET', '/user/' + userId + '/mailbox', (xhr) => {
-    cb(JSON.parse(xhr.responseText));
+  sendXHR('GET', '/user/'+ userId + '/mailbox', undefined, (xhr) => {
+  cb(JSON.parse(xhr.responseText));
   });
 }
 
@@ -310,7 +314,7 @@ export function getRequestData(userId, cb){
 
   export function getUserById(userId, cb){
 
-    sendXHR('GET', '/user/' + userId, (xhr) => { 
+    sendXHR('GET', '/user/' + userId, undefined, (xhr) => {
       cb(JSON.parse(xhr.responseText));
     });
   }
