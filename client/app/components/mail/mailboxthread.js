@@ -32,7 +32,7 @@ export default class MailBoxThread extends React.Component{
 
   onSend(requestContent, recieverEntry, titleEntry, groupEntry, typeEntry){
 
-    writeRequest(this.state.userName, recieverEntry, requestContent, titleEntry, groupEntry, typeEntry, () =>{
+    writeRequest(this.props.user, recieverEntry, requestContent, titleEntry, groupEntry, typeEntry, () =>{
       this.refresh();
     });
 

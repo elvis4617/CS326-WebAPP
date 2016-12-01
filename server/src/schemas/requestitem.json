@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
+  "properties": {
+  "userId":{
+    "id": "userId",
+    "type": "integer"
+  },
+  "recieverName":{
+      "id": "recieverName",
+      "type": "string"
+  },
+  "contents": {
+    "id": "contents",
+    "type": "string"
+  },
+  "title": {
+    "id": "title",
+    "type": "string"
+  },
+  "groupName": {
+    "id": "groupName",
+    "type": "string"
+  },
+  "typeEntry": {
+    "id": "typeEntry",
+    "type": "string"
+  }
+  },
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "recieverName",
+    "contents",
+    "title",
+    "groupName",
+    "typeEntry"
+  ]
+}

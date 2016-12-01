@@ -41,7 +41,7 @@ function getUserIdFromToken(authorizationLine) {
   }
 }
 
-/*
+/* Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
  * Resolved requestItems aka. mails
  * Also, server version of getRequestData
  */
@@ -88,6 +88,84 @@ app.get('/user/:userid', function(req, res){
   }
 });
 
+var getCollection = database.getCollection;
+
+function getUser(userName){
+
+  var targetId = 0;
+  var wat = Object.keys(getCollection('users'));
+  wat.forEach((userId)=>{
+    var userData = readDocument('users', userId);
+    if(userData.fullName === userName)
+      targetId = userData._id;
+  });
+
+  return targetId;
+}
+
+function getGroup(groupName){
+  var targetId = 0;
+  var wat = Object.keys(getCollection('groups'));
+  wat.forEach((userId)=>{
+    var groupData = readDocument('groups', userId);
+    if(groupData.groupName === groupName)
+      targetId = groupData._id;
+  });
+
+  return targetId;
+}
+
+
+
+function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
+  var time = new Date().getTime();
+//  var requestItem = readDocument('requestItems', requestItemId);
+  //Find the user id via user name
+  var recieverId=getUser(recieverName);
+  var groupId=getGroup(groupName);
+  //var groupId = 2;
+  //recieverId=2;
+  //If user/reciever name not found, abort mission
+  if (recieverId <= 0 || groupId <= 0)
+    return null;
+
+  var newRequest ={
+    "type":typeEntry,
+    "author": userId,
+    "reciever": recieverId,
+    "createDate":time,
+    "status": false,
+    "group":groupId,
+    "title":titleEntry,
+    "content":requestContent,
+    "read":false
+  };
+
+  newRequest = addDocument('requestItems',newRequest);
+  var userData = readDocument('users',userId);
+
+  userData.mailbox.unshift(newRequest._id);
+  writeDocument('users',userData);
+  return newRequest;
+}
+
+var RequestItemSchema = require('./schemas/requestitem.json');
+
+app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
+  var body = req.body;
+
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.userId  == fromUser){
+    var newRequest = writeRequest(body.userId, body.recieverName, body.requestContent, body.title,
+                                  body.groupName, body.typeEntry);
+    res.status(201);
+    res.set('Location','/user/'+ body.userId);
+
+    res.send(newRequest);
+  } else {
+    res.status(401).end();
+  }
+});
 /**
 * Translate JSON Schema Validation failures into error 400s.
 */

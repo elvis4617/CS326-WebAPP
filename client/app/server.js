@@ -323,6 +323,7 @@ export function getRequestData(userId, cb){
    //var userList = readDocumentNoId('users');
    var groupBase = readDocument('dataBase',2);
 
+
    var groupR = -1;
 
    //var ll = userList.length;
@@ -349,35 +350,17 @@ export function updateUserInfo(userId, name, email, grade, major, description, c
 
 
 export function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry, cb){
-  var time = new Date().getTime();
-//  var requestItem = readDocument('requestItems', requestItemId);
-  //Find the user id via user name
-  var recieverId=getUser(recieverName);
-  var groupId=getGroup(groupName);
-  //var groupId = 2;
-  //recieverId=2;
-  //If user/reciever name not found, abort mission
-  if (recieverId <= 0 || groupId <= 0)
-    return null;
-
-  var newRequest ={
-    "type":typeEntry,
-    "author": userId,
-    "reciever": recieverId,
-    "createDate":time,
-    "status": false,
-    "group":groupId,
-    "title":titleEntry,
-    "content":requestContent,
-    "read":false
-  };
-
-  newRequest = addDocument('requestItems',newRequest);
-  var userData = readDocument('users',userId);
-
-  userData.mailbox.unshift(newRequest._id);
-  writeDocument('users',userData)
-  emulateServerReturn(newRequest, cb);
+  sendXHR('POST', '/requestitem', {
+    userId: userId,
+    recieverName: recieverName,
+    contents: requestContent,
+    title: titleEntry,
+    groupName: groupName,
+    typeEntry: typeEntry
+  },
+  (xhr) => { 
+      cb(JSON.parse(xhr.responseText));
+    });
 }
 
 

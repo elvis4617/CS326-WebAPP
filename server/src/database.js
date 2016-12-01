@@ -355,7 +355,7 @@ module.exports.deleteDocument = deleteDocument;
 /**
  * Returns an entire object collection.
  */
-function getCollection(collectionName) {
+  function getCollection(collectionName) {
   return JSONClone(data[collectionName]);
 }
 module.exports.getCollection = getCollection;
