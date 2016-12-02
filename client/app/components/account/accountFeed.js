@@ -55,36 +55,38 @@ export default class AccountFeed extends React.Component {
       typeof this.props.description == 'undefined')
       alert("You must fill in all fields before commit any changes.");
   else*/
-  if(this.state.name.length === 0){
-    this.state.name = this.state.contents.fullName;
-  }
-  if(this.state.email.length === 0){
-    this.state.email = this.state.contents.email;
-  }
-  if(this.state.grade.length === 0){
-    this.state.grade = this.state.contents.grade;
-  }
-  if(this.state.major.length === 0){
-    this.state.major = this.state.contents.major;
-  }
-  if(this.state.description.length === 0){
-    this.state.description = this.state.contents.description;
-  }
+  if(confirm("Do you want to Submit?") == true){
+    if(this.state.name.length === 0){
+      this.state.name = this.state.contents.fullName;
+    }
+    if(this.state.email.length === 0){
+      this.state.email = this.state.contents.email;
+    }
+    if(this.state.grade.length === 0){
+      this.state.grade = this.state.contents.grade;
+    }
+    if(this.state.major.length === 0){
+      this.state.major = this.state.contents.major;
+    }
+    if(this.state.description.length === 0){
+      this.state.description = this.state.contents.description;
+    }
     updateUserInfo(this.props.user,
-                  this.state.name,
-                  this.state.email,
-                  this.state.grade,
-                  this.state.major,
-                  this.state.description,
-                  (userData) => {
-                  this.setState(userData);
-                });
+                   this.state.name,
+                   this.state.email,
+                   this.state.grade,
+                   this.state.major,
+                   this.state.description,
+                   (userData) => {
+                     this.setState(userData);
+    });
     document.getElementById("name").reset();
     document.getElementById("email").reset();
     document.getElementById("grade").reset();
     document.getElementById("major").reset();
     document.getElementById("description").reset();
     this.refresh();
+  }
   }
 
 
