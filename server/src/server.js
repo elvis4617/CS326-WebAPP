@@ -245,14 +245,12 @@ app.post('/friendRequest', function(req, res){
   }
 });
 
-var MessageSchema = require('./schemas/message.json');
-
 //Not Tested
-app.post('/message', validate({body: MessageSchema}), function(req, res){
+app.post('/message', function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId === fromUser){
-    var newMessage = onMessage(body.message, body.authorId, body.recieverId);
+  if(body.AuthorId === fromUser){
+    var newMessage = onMessage(body.Message, body.AuthorId, body.RecieverId);
     res.status(201);
     res.set('Location', '/message/' + newMessage._id);
     res.send(newMessage);
