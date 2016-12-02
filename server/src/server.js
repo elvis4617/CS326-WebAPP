@@ -76,9 +76,7 @@ app.get('/user/:userid/mailbox', function(req, res){
 
 // get USER by ID
 app.get('/user/:userid', function(req, res){
-
   var userId = parseInt(req.params.userid, 10);
-
   //var fromUser = getUserIdFromToken(req.get('Authorization'));
 
   if(true){
@@ -88,10 +86,21 @@ app.get('/user/:userid', function(req, res){
   }
 });
 
+app.get('/userData/:userid', function(req,res) {
+  var userId = parseInt(req.params.userid, 10);
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(userId == fromUser){
+    var userData = readDocument('users', userId);
+    console.log("test");
+    var value = {contents: userData};
+    res.send(value);
+    } else {
+      res.status(401).end();
+    }
+});
 app.put('/user/:userid', function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var userData = readDocument('users', userId);
-  console.log(userData);
   userData.fullName = req.body.name;
   userData.email = req.body.email;
   userData.grade = req.body.grade;
@@ -464,6 +473,31 @@ app.use(function(err, req, res, next) {
 //Elvis not here
 //Elvis not here
 //Elvis not here
+
+function getForumData(user){
+
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  for (var item in postData){
+    var postItem = readDocument('postItem', postData[item]);
+    postItem.author = readDocument('users', postItem.author);
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
+    postItem.commentThread.forEach((comment) => {
+      comment.author = readDocument('users', comment.author);
+    });
+    postList.push(postItem);
+  }
+  var value = {contents: postList};
+
+  return value;
+}
+
+app.get('/user/:userid/feeditem', function(req, res) {
+  var userid = req.params.userid;
+  res.send(getForumData(userid));
+});
+
 
 // Starts the server on port 3000!
 app.listen(3000, function () {

@@ -114,8 +114,8 @@ export function getUserDataByName(userName, cb) {
 
 export function getUserDataById(userId, cb) {
 // Get the User object with the id "user".
-sendXHR('GET', '/user/' + userId, undefined, (xhr) => {
-  cb(JSON.parse(xhr.responseText));
+  sendXHR('GET', '/userData/' + userId, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
 });
 }
 
@@ -260,22 +260,9 @@ export function onRequest(username, email, authorId) {
 }
 
 export function getForumData(user, cb){
-
-  var userData = readDocument('users', user);
-  var postData = userData.postItem;
-  var postList = [];
-  for (var item in postData){
-    var postItem = readDocument('postItem', postData[item]);
-    postItem.author = readDocument('users', postItem.author);
-    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
-    postItem.commentThread.forEach((comment) => {
-      comment.author = readDocument('users', comment.author);
-    });
-    postList.push(postItem);
-  }
-  var value = {contents: postList};
-
-  emulateServerReturn(value, cb);
+  sendXHR('GET', '/user/' + user + '/feeditem', undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
 }
 
 export function postThread(user, title, contents, cb){
