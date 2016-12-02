@@ -185,7 +185,7 @@ export function onMessage(message, authorId, recieverId, cb) {
     Message: message,
     AuthorId: authorId,
     RecieverId: recieverId
-    },
+  },
     (xhr) =>{
       cb(JSON.parse(xhr.responseText));
     });
@@ -200,6 +200,13 @@ export function onRequest(username, email, authorId, cb) {
   (xhr) => {
       cb(JSON.parse(xhr.responseText));
   });
+}
+
+export function addFriend(username, authorId, cb) {
+  sendXHR('PUT', '/user/'+authorId+'/friend/'+username, undefined,
+          (xhr) => {
+            cb(JSON.parse(xhr.responseText));
+          });
 }
 
 export function getForumData(user, cb){

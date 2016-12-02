@@ -213,12 +213,12 @@ function onRequest(username, email, authorId){
     recieverId = getUserE(email)
   }
   var newRequest = {
-    "Type": "Friend Request",
+    "type": "Friend Request",
     "author": authorId,
     "reciever": recieverId,
     "createDate": date,
     "status": false,
-    "group":0,
+    "group": -1,
     "title": "Message",
     "content": "Would you like to be friends?",
     "read": false
@@ -243,6 +243,30 @@ app.post('/friendRequest', function(req, res){
   else {
     res.status(401).end();
   }
+});
+
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+app.put('/user/:userid/friend/:friendname', function(req, res){
+  var friendName = req.params.friendname;
+  var userId = parseInt(req.params.userid, 10);
+  var friendId = getUser(friendName);
+
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(userId === fromUser){
+
+    var userData = readDocument('users',userId);
+    var friended = userData.friendList.indexOf(friendId);
+    if(friended == -1){
+      userData.friendList.push(friendId);
+      writeDocument('users', userData);
+    }
+
+    res.send(userData);
+  } else{
+    res.status(401).end();
+  }
+
+
 });
 
 //Not Tested
