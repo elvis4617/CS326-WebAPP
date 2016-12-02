@@ -84,14 +84,14 @@ export function getRecommendPostItem(user, cb) {
 }
 
 export function getUnReadMsgs(user, cb){
-  sendXHR('POST', '/unReadReq', user, (xhr) => {
+  sendXHR('POST', '/unReadReq', user+"", (xhr) => {
     cb(JSON.parse(xhr.responseText));
   });
 }
 
 
 export function readRequest(requestItemId, userId, cb) {
-  sendXHR('PUT', '/readRequest/' + requestItemId +"/" +userId ,undefined, (xhr) => {
+  sendXHR('PUT', '/readRequest/' + requestItemId +'/' + userId , undefined, (xhr) => {
     cb(JSON.parse(xhr.responseText));
   });
 }
