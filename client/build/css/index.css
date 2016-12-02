@@ -28,7 +28,6 @@ h6 {
 
 .intro-header {
     height: 975px;
-    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
     padding-bottom: 50px;
     text-align: center;
     color: #f8f8f8;
@@ -124,4 +123,15 @@ footer {
 }
 .search-btn{
   color: black;
+}
+
+/* Prevent an HTML element from displaying at all. */
+.hidden {
+  display: 'none';
+}
+
+.error-banner{
+  width: 100%;
+  margin-top: 60px;
+  position:absolute;
 }

@@ -74,12 +74,15 @@ class App extends React.Component {
     render() {
       return (
         <div>
-
           <NavBar user={1} />
-
-          {this.props.children}
-
-          <ErrorBanner/>
+            <div className="container">
+              <div className="row">
+                <div className="col-md-12">
+                  <ErrorBanner />
+                </div>
+              </div>
+            </div>
+            {this.props.children}
         </div>
       );
     }
