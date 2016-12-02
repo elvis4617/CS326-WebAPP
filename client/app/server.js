@@ -100,14 +100,9 @@ export function readRequest(requestItemId, userId, cb) {
 //not Elvis
 //not Elvis
 export function getFriendDataById(userId, cb){
-  var user = readDocument('users', userId);
-  var friends = user.friendList;
-  var friendList = [];
-  for(var i = 0; i<friends.length; i++){
-    friendList.push(readDocument('users', friends[i]));
-  }
-  var value = {contents : friendList};
-  emulateServerReturn(value, cb);
+  sendXHR('GET', '/friend/data/' + userId, (xhr) => {
+    cb(JSON.parse(xhr.responseText))
+  });
 }
 
 export function getUserDataByName(userName, cb) {

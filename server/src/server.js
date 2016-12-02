@@ -127,6 +127,18 @@ function getGroup(groupName){
   return targetId;
 }
 
+app.get('/friend/data/:userid', function(req, res) {
+  var userId = parseInt(req.params.userid, 10);
+  var user = readDocument('users', userId);
+  var friends = user.friendList;
+  var friendList = [];
+  for(var i = 0; i<friends.length; i++){
+    friendList.push(readDocument('users', friends[i]));
+  }
+  var value = {contents: friendList};
+  res.send(value);
+});
+
 // onMessage ********************************************************************
 function onMessage(message, authorId, recieverId){
   var date = new Date().getTime();
