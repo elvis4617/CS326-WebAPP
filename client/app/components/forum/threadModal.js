@@ -1,9 +1,8 @@
 import React from 'react';
-import ForumNumber from './forumnumber';
 import {getPostDataById} from '../../server';
 import {unixTimeToString} from '../../util';
 //import ThreadBody from './threadbody'
-
+import NewCommentBox from './newcomment'
 export default class ThreadModal extends React.Component {
 
   constructor(props) {
@@ -55,6 +54,7 @@ export default class ThreadModal extends React.Component {
             </table>
             </div>
             <div className="modal-footer">
+              <NewCommentBox></NewCommentBox>
             </div>
             </div>
           </div>

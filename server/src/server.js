@@ -153,8 +153,8 @@ app.get('/friend/:userid', function(req, res) {
   for(var i = 0; i<friends.length; i++){
     friendList.push(readDocument('users', friends[i]));
   }
-  var value = {contents: friendList};
-  res.send(value);
+  //var value = {contents: friendList};
+  res.send(friendList);
 });
 
 // not Tested, should be onhold, future funationality
@@ -245,14 +245,12 @@ app.post('/friendRequest', function(req, res){
   }
 });
 
-var MessageSchema = require('./schemas/message.json');
-
 //Not Tested
-app.post('/message', validate({body: MessageSchema}), function(req, res){
+app.post('/message', function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId === fromUser){
-    var newMessage = onMessage(body.message, body.authorId, body.recieverId);
+  if(body.AuthorId === fromUser){
+    var newMessage = onMessage(body.Message, body.AuthorId, body.RecieverId);
     res.status(201);
     res.set('Location', '/message/' + newMessage._id);
     res.send(newMessage);
@@ -611,6 +609,17 @@ app.post('/thread',
     }
 });
 
+function getPostDataById(Id) {
+  var postData = readDocument('postItem', Id);
+  postData.author = readDocument('users', postData.author).fullName;
+  var value = {contents : postData};
+  return value;
+}
+
+app.get('/feeditem/:feeditemid', function(req, res) {
+  var userid = req.params.feeditemid;
+  res.send(getPostDataById(userid));
+});
 
 
 // Starts the server on port 3000!
