@@ -136,7 +136,7 @@ function getGroup(groupName){
   return targetId;
 }
 
-app.get('/friend/data/:userid', function(req, res) {
+app.get('/frienddata/:userid', function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var user = readDocument('users', userId);
   var friends = user.friendList;
@@ -162,12 +162,75 @@ function onMessage(message, authorId, recieverId){
     "content": message,
     "read": false
   }
-  newMessage = addDocument('requestItems',newMessage);
+  var newMessage1 = addDocument('requestItems',newMessage);
   var userData = readDocument('users',recieverId);
-  userData.mailbox.unshift(newMessage._id);
+  userData.mailbox.unshift(newMessage1._id);
   writeDocument('users',userData);
-  return newMessage;
+  return newMessage1;
 }
+
+function getUserE(email){
+  var targetId = 0;
+  var wat = Object.keys(getCollection('users'));
+  wat.forEach((userId)=>{
+    var userData = readDocument('users', userId);
+    if(userData.email === email)
+      targetId = userData._id;
+  });
+  return targetId;
+}
+
+function getUserU(username){
+  var targetId = 0;
+  var wat = Object.keys(getCollection('users'));
+  wat.forEach((userId)=>{
+    var userData = readDocument('users', userId);
+    if(userData.userName === username)
+      targetId = userData._id;
+  });
+  return targetId;
+}
+
+function onRequest(username, email, authorId){
+  var date = new Date().getTime();
+  var recieverId;
+  if (email == "") {
+    recieverId = getUserU(username)
+  }
+  else {
+    recieverId = getUserE(email)
+  }
+  var newRequest = {
+    "Type": "Friend Request",
+    "author": authorId,
+    "reciever": recieverId,
+    "createDate": date,
+    "status": false,
+    "group":0,
+    "title": "Message",
+    "content": "Would you like to be friends?",
+    "read": false
+  }
+  var newRequest1 = addDocument('requestItems',newRequest);
+  var userData = readDocument('users',recieverId);
+  userData.mailbox.unshift(newRequest1._id);
+  writeDocument('users',userData);
+  return newRequest1;
+}
+
+app.post('/friendRequest', function(req, res){
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.authorId == fromUser){
+    var newRequest = onRequest(body.username, body.email, body.authorId);
+    res.status(201);
+    res.set('Location', '/message/' + newRequest._id);
+    res.send(newRequest);
+  }
+  else {
+    res.status(401).end();
+  }
+});
 
 function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
   var time = new Date().getTime();
