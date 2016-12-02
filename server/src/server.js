@@ -453,6 +453,31 @@ app.use(function(err, req, res, next) {
 //Elvis not here
 //Elvis not here
 
+function getForumData(user){
+
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  for (var item in postData){
+    var postItem = readDocument('postItem', postData[item]);
+    postItem.author = readDocument('users', postItem.author);
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
+    postItem.commentThread.forEach((comment) => {
+      comment.author = readDocument('users', comment.author);
+    });
+    postList.push(postItem);
+  }
+  var value = {contents: postList};
+
+  return value;
+}
+
+app.get('/user/:userid/feeditem', function(req, res) {
+  var userid = req.params.userid;
+  res.send(getForumData(userid));
+});
+
+
 // Starts the server on port 3000!
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
