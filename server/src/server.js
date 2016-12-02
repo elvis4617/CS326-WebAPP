@@ -101,15 +101,20 @@ app.get('/userData/:userid', function(req,res) {
 });
 app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
   var userId = parseInt(req.params.userid, 10);
-  var userData = readDocument('users', userId);
-  userData.fullName = req.body.name;
-  userData.email = req.body.email;
-  userData.grade = req.body.grade;
-  userData.major = req.body.major;
-  userData.description = req.body.description;
-  writeDocument('users', userData);
-  var value = {contents: userData};
-  res.send(value);
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(userId === fromUser){
+    var userData = readDocument('users', userId);
+    userData.fullName = req.body.name;
+    userData.email = req.body.email;
+    userData.grade = req.body.grade;
+    userData.major = req.body.major;
+    userData.description = req.body.description;
+    writeDocument('users', userData);
+    var value = {contents: userData};
+    res.send(value);
+  } else {
+    res.status(401).end();
+  }
 });
 var getCollection = database.getCollection;
 
