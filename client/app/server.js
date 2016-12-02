@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 
-=======
->>>>>>> dc88e2e74ba4fbb26d3517c0f285063542d833a4
 // token is for 'id: 2'
 //var token = 'eyJpZCI6Mn0='; // <-- Put your base64'd JSON token here
 //eyJpZCI6MX0=
