@@ -12,8 +12,8 @@ export default class friendsFeed extends React.Component {
   }
 
   refresh() {
-    getFriendDataById(this.props.user._id, (userData) => {
-    this.setState(userData);
+    getFriendDataById(this.props.user, (userData) => {
+    this.setState({contents:userData});
   });
  }
 

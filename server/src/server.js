@@ -146,8 +146,8 @@ app.get('/frienddata/:userid', function(req, res) {
   for(var i = 0; i<friends.length; i++){
     friendList.push(readDocument('users', friends[i]));
   }
-  var value = {contents: friendList};
-  res.send(value);
+  //var value = {contents: friendList};
+  res.send(friendList);
 });
 
 // onMessage ********************************************************************
