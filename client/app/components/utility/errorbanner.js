@@ -1,5 +1,5 @@
 import React from 'react';
-import {hideElement} from '../util';
+import {hideElement} from '../../util';
 
 export default class ErrorBanner extends React.Component {
   constructor(props) {
