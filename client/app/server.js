@@ -1,4 +1,3 @@
-import {readDocument} from './database.js';
 
 // token is for 'id: 2'
 //var token = 'eyJpZCI6Mn0='; // <-- Put your base64'd JSON token here
@@ -119,13 +118,6 @@ export function getUserDataById(userId, cb) {
 });
 }
 
-
-
-function emulateServerReturn(data, cb) {
-  setTimeout(() => {
-    cb(data);
-  }, 4);
-}
 
 
 
