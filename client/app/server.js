@@ -1,4 +1,4 @@
-import {readDocument, writeDocument, addDocument} from './database.js';
+import {readDocument} from './database.js';
 
 // token is for 'id: 2'
 //var token = 'eyJpZCI6Mn0='; // <-- Put your base64'd JSON token here
@@ -111,7 +111,7 @@ export function getUserDataByName(userName, cb) {
            });
 }
 
-//redone with getUserById
+//use for account feed
 export function getUserDataById(userId, cb) {
 // Get the User object with the id "user".
   sendXHR('GET', '/userData/' + userId, undefined, (xhr) => {
