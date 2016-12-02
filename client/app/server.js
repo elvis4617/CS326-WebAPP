@@ -141,20 +141,7 @@ export function getRequestData(userId, cb){
   });
 }
 
-// Dont use this function
- function getUser(userName){
-  //var userList = readDocumentNoId('users');
-  var userBase = readDocument('dataBase',1);
 
-  var userR = -1;
-  //var ll = userList.length;
-  userBase.List.forEach((userId) => {
-    var userData = readDocument('users', userId);
-    if(userData.fullName === userName)
-      userR = userId;
-  });
-    return userR;
-}
 
   export function getUserById(userId, cb){
 
@@ -214,11 +201,14 @@ export function onMessage(message, authorId, recieverId, cb) {
   });
 }
 
-export function onRequest(username, email, authorId) {
+export function onRequest(username, email, authorId, cb) {
   sendXHR('POST', '/friendRequest', {
     email: email,
     username: username,
     authorId: authorId
+  },
+  (xhr) => {
+      cb(JSON.parse(xhr.responseText));
   });
 }
 

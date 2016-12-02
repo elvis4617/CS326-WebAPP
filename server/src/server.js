@@ -55,7 +55,7 @@ function getRequestItemSync(requestItemId) {
 app.get('/user/:userid/mailbox', function(req, res){
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId == fromUser){
+  if(userId === fromUser){
     //Get the user
     var userData = readDocument('users',userId);
     var mailboxData = userData.mailbox;
@@ -77,9 +77,9 @@ app.get('/user/:userid/mailbox', function(req, res){
 // get USER by ID
 app.get('/user/:userid', function(req, res){
   var userId = parseInt(req.params.userid, 10);
-  //var fromUser = getUserIdFromToken(req.get('Authorization'));
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
 
-  if(true){
+  if(userId === fromUser){
     res.send(readDocument('users', userId));
   } else {
     res.status(401).end();
@@ -89,7 +89,7 @@ app.get('/user/:userid', function(req, res){
 app.get('/userData/:userid', function(req,res) {
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId == fromUser){
+  if(userId === fromUser){
     var userData = readDocument('users', userId);
     console.log("test");
     var value = {contents: userData};
@@ -194,7 +194,7 @@ function getUserU(username){
 function onRequest(username, email, authorId){
   var date = new Date().getTime();
   var recieverId;
-  if (email == "") {
+  if (email === "") {
     recieverId = getUserU(username)
   }
   else {
@@ -221,7 +221,7 @@ function onRequest(username, email, authorId){
 app.post('/friendRequest', function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId == fromUser){
+  if(body.authorId === fromUser){
     var newRequest = onRequest(body.username, body.email, body.authorId);
     res.status(201);
     res.set('Location', '/message/' + newRequest._id);
@@ -232,15 +232,13 @@ app.post('/friendRequest', function(req, res){
   }
 });
 
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
   var time = new Date().getTime();
-//  var requestItem = readDocument('requestItems', requestItemId);
-  //Find the user id via user name
+
   var recieverId=getUser(recieverName);
   var groupId=getGroup(groupName);
-  //var groupId = 2;
-  //recieverId=2;
-  //If user/reciever name not found, abort mission
+
   if (recieverId <= 0 || groupId <= 0)
     return null;
 
@@ -271,7 +269,7 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
   var body = req.body;
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.userId  == fromUser){
+  if(body.userId  === fromUser){
     var newRequest = writeRequest(body.userId, body.recieverName, body.contents, body.title,
                                   body.groupName, body.typeEntry);
     res.status(201);
@@ -289,7 +287,7 @@ var MessageSchema = require('./schemas/message.json');
 app.post('/message', validate({body: MessageSchema}), function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId == fromUser){
+  if(body.authorId === fromUser){
     var newMessage = onMessage(body.message, body.authorId, body.recieverId);
     res.status(201);
     res.set('Location', '/message/' + newMessage._id);
@@ -309,7 +307,7 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
   var requestData = readDocument('requestItems',requestId);
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(requestData.author  == fromUser || requestData.reciever == fromUser){
+  if(requestData.author  === fromUser || requestData.reciever === fromUser){
 
     var groupId=getGroup(groupName);
     var groupData=readDocument('groups',groupId);
