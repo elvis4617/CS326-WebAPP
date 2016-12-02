@@ -83,12 +83,11 @@ export function getRecommendPostItem(user, cb) {
   });
 }
 
-export function getUnReadMsgs(user, cb){
-  sendXHR('POST', '/unReadReq', user+"", (xhr) => {
+export function getUnReadMsgs(userId, cb){
+  sendXHR('GET', '/unReadReq/' + userId, undefined, (xhr) => {
     cb(JSON.parse(xhr.responseText));
   });
 }
-
 
 export function readRequest(requestItemId, userId, cb) {
   sendXHR('PUT', '/readRequest/' + requestItemId +'/' + userId , undefined, (xhr) => {
@@ -96,19 +95,23 @@ export function readRequest(requestItemId, userId, cb) {
   });
 }
 
+//friend
 export function getFriendDataById(userId, cb){
-  sendXHR('GET', '/frienddata/' + userId, undefined, (xhr) => {
+  sendXHR('GET', '/friend/' + userId, undefined, (xhr) => {
     cb(JSON.parse(xhr.responseText))
   });
 }
+//Elvis not here
+//Elvis not here
+//Elvis not here
 
 export function getUserDataByName(userName, cb) {
   sendXHR('GET','/username/'+userName, undefined,
            (xhr)=>{cb(JSON.parse(xhr.responseText))
-
            });
 }
 
+//redone with getUserById
 export function getUserDataById(userId, cb) {
 // Get the User object with the id "user".
   sendXHR('GET', '/userData/' + userId, undefined, (xhr) => {
@@ -135,7 +138,6 @@ function emulateServerReturn(data, cb) {
  */
 
 export function getRequestData(userId, cb){
-
   sendXHR('GET', '/user/'+ userId + '/mailbox', undefined, (xhr) => {
   cb(JSON.parse(xhr.responseText));
   });
@@ -144,14 +146,13 @@ export function getRequestData(userId, cb){
 
 
   export function getUserById(userId, cb){
-
     sendXHR('GET', '/user/' + userId, undefined, (xhr) => {
       cb(JSON.parse(xhr.responseText));
     });
   }
 
 export function updateUserInfo(userId, name, email, grade, major, description, cb){
-  sendXHR('PUT', '/userData/' + userId, {
+  sendXHR('POST', '/userData/' + userId, {
     userId: userId,
     name: name,
     email: email,
@@ -180,7 +181,6 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
 
 
   export function joinGroup(userName, groupName, requestId, cb){
-
     sendXHR('PUT', '/group/'+groupName+'/user/'+userName+'/requestitem/'+requestId,
             undefined,
             (xhr) =>{
