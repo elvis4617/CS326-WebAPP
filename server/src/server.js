@@ -5,6 +5,7 @@ var validate = require('express-jsonschema').validate;
 var writeDocument = database.writeDocument;
 var addDocument = database.addDocument;
 var postThreadSchema = require('./schemas/thread.json');
+var userSchema = require('./schemas/user.json');
 
 // Imports the express Node module.
 var express = require('express');
@@ -98,7 +99,7 @@ app.get('/userData/:userid', function(req,res) {
       res.status(401).end();
     }
 });
-app.put('/userData/:userid', function(req, res) {
+app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var userData = readDocument('users', userId);
   userData.fullName = req.body.name;
