@@ -11,7 +11,12 @@ export default class AccountFeed extends React.Component {
       email: "",
       grade: "",
       major: "",
-      description: ""
+      description: "",
+      //changeName: false,
+      //changeEmail: false,
+      //changeGrade: false,
+      //changeMajor: false,
+      //changeDescription: false
     };
   }
 

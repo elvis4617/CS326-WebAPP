@@ -119,8 +119,8 @@ export function getUserDataByName(userName, cb) {
 
 export function getUserDataById(userId, cb) {
 // Get the User object with the id "user".
-sendXHR('GET', '/user/' + userId, undefined, (xhr) => {
-  cb(JSON.parse(xhr.responseText));
+  sendXHR('GET', '/userData/' + userId, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
 });
 }
 
