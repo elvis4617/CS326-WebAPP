@@ -106,7 +106,7 @@ var initialData = {
       "_id": 1,
       "type":"request",
       "author": 4, // id of the user who is the author
-      "receiver": 1, // id of the user who is recieving the request
+      "reciever": 1, // id of the user who is recieving the request
       "createDate": 1453690800000,
       "status": false,
       "group":1,
@@ -118,7 +118,7 @@ var initialData = {
       "_id": 2,
       "type":"request",
       "author": 3, // id of the user who is the author
-      "receiver": 1, // id of the user who is recieving the request
+      "reciever": 1, // id of the user who is recieving the request
       "createDate": 1453590800000,
       "status": false,
       "group":1,
@@ -130,7 +130,7 @@ var initialData = {
       "_id": 3,
       "type":"request",
       "author": 4, // id of the user who is the author
-      "receiver": 2, // id of the user who is recieving the request
+      "reciever": 2, // id of the user who is recieving the request
       "createDate": 1454690800000,
       "status": false,
       "group":2,
@@ -142,7 +142,7 @@ var initialData = {
       "_id": 4,
       "type":"request",
       "author": 3, // id of the user who is the author
-      "receiver": 2, // id of the user who is recieving the request
+      "reciever": 2, // id of the user who is recieving the request
       "createDate": 1553590800000,
       "status": false,
       "group":1,
