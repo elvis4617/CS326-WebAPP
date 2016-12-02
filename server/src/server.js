@@ -4,6 +4,7 @@ var readDocument = database.readDocument;
 var validate = require('express-jsonschema').validate;
 var writeDocument = database.writeDocument;
 var addDocument = database.addDocument;
+var postThreadSchema = require('./schemas/thread.json');
 
 // Imports the express Node module.
 var express = require('express');
@@ -55,7 +56,7 @@ function getRequestItemSync(requestItemId) {
 app.get('/user/:userid/mailbox', function(req, res){
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId == fromUser){
+  if(userId === fromUser){
     //Get the user
     var userData = readDocument('users',userId);
     var mailboxData = userData.mailbox;
@@ -76,20 +77,31 @@ app.get('/user/:userid/mailbox', function(req, res){
 
 // get USER by ID
 app.get('/user/:userid', function(req, res){
-
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(true){
+
+  if(userId === fromUser){
     res.send(readDocument('users', userId));
   } else {
     res.status(401).end();
   }
 });
 
+app.get('/userData/:userid', function(req,res) {
+  var userId = parseInt(req.params.userid, 10);
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(userId === fromUser){
+    var userData = readDocument('users', userId);
+    console.log("test");
+    var value = {contents: userData};
+    res.send(value);
+    } else {
+      res.status(401).end();
+    }
+});
 app.put('/user/:userid', function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var userData = readDocument('users', userId);
-  console.log(userData);
   userData.fullName = req.body.name;
   userData.email = req.body.email;
   userData.grade = req.body.grade;
@@ -125,6 +137,18 @@ function getGroup(groupName){
   return targetId;
 }
 
+app.get('/frienddata/:userid', function(req, res) {
+  var userId = parseInt(req.params.userid, 10);
+  var user = readDocument('users', userId);
+  var friends = user.friendList;
+  var friendList = [];
+  for(var i = 0; i<friends.length; i++){
+    friendList.push(readDocument('users', friends[i]));
+  }
+  var value = {contents: friendList};
+  res.send(value);
+});
+
 // onMessage ********************************************************************
 function onMessage(message, authorId, recieverId){
   var date = new Date().getTime();
@@ -139,22 +163,83 @@ function onMessage(message, authorId, recieverId){
     "content": message,
     "read": false
   }
-  newMessage = addDocument('requestItems',newMessage);
+  var newMessage1 = addDocument('requestItems',newMessage);
   var userData = readDocument('users',recieverId);
-  userData.mailbox.unshift(newMessage._id);
+  userData.mailbox.unshift(newMessage1._id);
   writeDocument('users',userData);
-  return newMessage;
+  return newMessage1;
 }
 
+function getUserE(email){
+  var targetId = 0;
+  var wat = Object.keys(getCollection('users'));
+  wat.forEach((userId)=>{
+    var userData = readDocument('users', userId);
+    if(userData.email === email)
+      targetId = userData._id;
+  });
+  return targetId;
+}
+
+function getUserU(username){
+  var targetId = 0;
+  var wat = Object.keys(getCollection('users'));
+  wat.forEach((userId)=>{
+    var userData = readDocument('users', userId);
+    if(userData.userName === username)
+      targetId = userData._id;
+  });
+  return targetId;
+}
+
+function onRequest(username, email, authorId){
+  var date = new Date().getTime();
+  var recieverId;
+  if (email === "") {
+    recieverId = getUserU(username)
+  }
+  else {
+    recieverId = getUserE(email)
+  }
+  var newRequest = {
+    "Type": "Friend Request",
+    "author": authorId,
+    "reciever": recieverId,
+    "createDate": date,
+    "status": false,
+    "group":0,
+    "title": "Message",
+    "content": "Would you like to be friends?",
+    "read": false
+  }
+  var newRequest1 = addDocument('requestItems',newRequest);
+  var userData = readDocument('users',recieverId);
+  userData.mailbox.unshift(newRequest1._id);
+  writeDocument('users',userData);
+  return newRequest1;
+}
+
+app.post('/friendRequest', function(req, res){
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.authorId === fromUser){
+    var newRequest = onRequest(body.username, body.email, body.authorId);
+    res.status(201);
+    res.set('Location', '/message/' + newRequest._id);
+    res.send(newRequest);
+  }
+  else {
+    res.status(401).end();
+  }
+});
+
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
   var time = new Date().getTime();
-//  var requestItem = readDocument('requestItems', requestItemId);
-  //Find the user id via user name
+
   var recieverId=getUser(recieverName);
   var groupId=getGroup(groupName);
-  //var groupId = 2;
-  //recieverId=2;
-  //If user/reciever name not found, abort mission
+
   if (recieverId <= 0 || groupId <= 0)
     return null;
 
@@ -178,13 +263,14 @@ function writeRequest(userId, recieverName, requestContent, titleEntry, groupNam
   return newRequest;
 }
 
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 var RequestItemSchema = require('./schemas/requestitem.json');
 
 app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
   var body = req.body;
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.userId  == fromUser){
+  if(body.userId  === fromUser){
     var newRequest = writeRequest(body.userId, body.recieverName, body.contents, body.title,
                                   body.groupName, body.typeEntry);
     res.status(201);
@@ -198,10 +284,11 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
 
 var MessageSchema = require('./schemas/message.json');
 
+
 app.post('/message', validate({body: MessageSchema}), function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId == fromUser){
+  if(body.authorId === fromUser){
     var newMessage = onMessage(body.message, body.authorId, body.recieverId);
     res.status(201);
     res.set('Location', '/message/' + newMessage._id);
@@ -212,6 +299,7 @@ app.post('/message', validate({body: MessageSchema}), function(req, res){
   }
 });
 
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, res){
   var groupName = req.params.groupname;
   var userName = req.params.username;
@@ -220,7 +308,7 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
   var requestData = readDocument('requestItems',requestId);
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(requestData.author  == fromUser || requestData.reciever == fromUser){
+  if(requestData.author  === fromUser || requestData.reciever === fromUser){
 
     var groupId=getGroup(groupName);
     var groupData=readDocument('groups',groupId);
@@ -247,6 +335,7 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
 
 });
 
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 app.get('/username/:name', function(req, res){
   var userName = req.params.name;
 
@@ -441,6 +530,77 @@ app.use(function(err, req, res, next) {
 //Elvis not here
 //Elvis not here
 //Elvis not here
+
+function getForumData(user){
+
+  var userData = readDocument('users', user);
+  var postData = userData.postItem;
+  var postList = [];
+  for (var item in postData){
+    var postItem = readDocument('postItem', postData[item]);
+    postItem.author = readDocument('users', postItem.author);
+    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
+    postItem.commentThread.forEach((comment) => {
+      comment.author = readDocument('users', comment.author);
+    });
+    postList.push(postItem);
+  }
+  var value = {contents: postList};
+
+  return value;
+}
+
+app.get('/user/:userid/feeditem', function(req, res) {
+  var userid = req.params.userid;
+  res.send(getForumData(userid));
+});
+
+function postThread(user, title, contents){
+  var time = new Date().getTime();
+  var newThread = {
+    "author": user,
+    "postDate": time,
+    "title": title,
+    "content": contents,
+    "viewCount": 0,
+    "replyCount": 0,
+    "lastReplyAuthor": user,
+    "lastReplyDate": time,
+    "commentThread": []
+  };
+  newThread = addDocument('postItem', newThread);
+  var userData = readDocument('users', user);
+
+  userData.postItem.unshift(newThread._id);
+
+  writeDocument('users', userData);
+
+  return newThread;
+}
+
+app.post('/thread',
+  validate({ body: postThreadSchema }), function(req, res) {
+    // If this function runs, `req.body` passed JSON validation!
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  // Check if requester is authorized to post this status update.
+  // (The requester must be the author of the update.)
+  if (fromUser === body.author) {
+    var newUpdate = postThread(body.author, body.title,
+      body.contents);
+      // When POST creates a new resource, we should tell the client about it
+      // in the 'Location' header and use status code 201.
+      res.status(201);
+      res.set('Location', '/thread' + newUpdate._id);
+      // Send the update!
+      res.send(newUpdate);
+    } else {
+      // 401: Unauthorized.
+      res.status(401).end();
+    }
+});
+
+
 
 // Starts the server on port 3000!
 app.listen(3000, function () {

@@ -12,7 +12,7 @@ export default class AccountDetailModal extends React.Component {
 
   refresh() {
     getUserDataByName(this.props.author, (userData) => {
-    this.setState(userData);
+    this.setState({contents:userData});
   });
  }
 

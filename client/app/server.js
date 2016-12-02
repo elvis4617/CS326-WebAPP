@@ -96,18 +96,10 @@ export function readRequest(requestItemId, userId, cb) {
   });
 }
 
-//not Elvis
-//not Elvis
-//not Elvis
 export function getFriendDataById(userId, cb){
-  var user = readDocument('users', userId);
-  var friends = user.friendList;
-  var friendList = [];
-  for(var i = 0; i<friends.length; i++){
-    friendList.push(readDocument('users', friends[i]));
-  }
-  var value = {contents : friendList};
-  emulateServerReturn(value, cb);
+  sendXHR('GET', '/frienddata/' + userId, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText))
+  });
 }
 
 export function getUserDataByName(userName, cb) {
@@ -119,8 +111,8 @@ export function getUserDataByName(userName, cb) {
 
 export function getUserDataById(userId, cb) {
 // Get the User object with the id "user".
-sendXHR('GET', '/user/' + userId, undefined, (xhr) => {
-  cb(JSON.parse(xhr.responseText));
+  sendXHR('GET', '/userData/' + userId, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
 });
 }
 
@@ -149,20 +141,7 @@ export function getRequestData(userId, cb){
   });
 }
 
-// Dont use this function
- function getUser(userName){
-  //var userList = readDocumentNoId('users');
-  var userBase = readDocument('dataBase',1);
 
-  var userR = -1;
-  //var ll = userList.length;
-  userBase.List.forEach((userId) => {
-    var userData = readDocument('users', userId);
-    if(userData.fullName === userName)
-      userR = userId;
-  });
-    return userR;
-}
 
   export function getUserById(userId, cb){
 
@@ -222,88 +201,32 @@ export function onMessage(message, authorId, recieverId, cb) {
   });
 }
 
-function getUserE(email) {
-  //var userList = readDocumentNoId('users');
-  var userBase = readDocument('dataBase',1);
-
-  var userR = -1;
-  //var ll = userList.length;
-  userBase.List.forEach((userId) => {
-    var userData = readDocument('users', userId);
-    if(userData.email === email)
-      userR = userId;
+export function onRequest(username, email, authorId, cb) {
+  sendXHR('POST', '/friendRequest', {
+    email: email,
+    username: username,
+    authorId: authorId
+  },
+  (xhr) => {
+      cb(JSON.parse(xhr.responseText));
   });
-    return userR;
-}
-
-// Works as long as messages / requests aren't deleted. Consider revising
-export function onRequest(username, email, authorId) {
-  var reciever;
-  if (username === "") {
-    reciever = getUserE(email); }
-  else {
-    reciever = getUser(username); }
-  for(var i = 0; i < 100000000; i++) {
-    try {
-      var request = readDocument('requests', i);
-    }
-    catch(err) {
-      request._id = i;
-      request.author = authorId;
-      request.reciever = reciever._id;
-      request.CreateDate = new Date();
-      request.status = "false";
-      request.title = "Friend Request";
-      request.content = "Will you be my friend?";
-      request.read = "false";
-      writeDocument('requests', request);
-      reciever.mailbox.push(i)
-      writeDocument('users', reciever)
-      break;
-    }
-  }
 }
 
 export function getForumData(user, cb){
-
-  var userData = readDocument('users', user);
-  var postData = userData.postItem;
-  var postList = [];
-  for (var item in postData){
-    var postItem = readDocument('postItem', postData[item]);
-    postItem.author = readDocument('users', postItem.author);
-    postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
-    postItem.commentThread.forEach((comment) => {
-      comment.author = readDocument('users', comment.author);
-    });
-    postList.push(postItem);
-  }
-  var value = {contents: postList};
-
-  emulateServerReturn(value, cb);
+  sendXHR('GET', '/user/' + user + '/feeditem', undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
 }
 
 export function postThread(user, title, contents, cb){
-  var time = new Date().getTime();
-  var newThread = {
-    "author": user,
-    "title": title,
-    "postDate": time,
-    "contents": contents,
-    "viewCount": 0,
-    "replyCount": 0,
-    "lastReplyAuthor": user,
-    "lastReplyDate": time,
-    "commentThread": []
-  };
-  newThread = addDocument('postItem', newThread);
-  var userData = readDocument('users', user);
-
-  userData.postItem.unshift(newThread._id);
-
-  writeDocument('users', userData);
-
-  emulateServerReturn(newThread, cb);
+  sendXHR('POST', '/thread', {
+    author: user,
+    title: title,
+    contents: contents
+  }, (xhr) => {
+    // Return the new status update.
+    cb(JSON.parse(xhr.responseText));
+});
 }
 
 export function getPostDataById(Id, cb) {
