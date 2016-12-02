@@ -5,6 +5,7 @@ var validate = require('express-jsonschema').validate;
 var writeDocument = database.writeDocument;
 var addDocument = database.addDocument;
 var postThreadSchema = require('./schemas/thread.json');
+var userSchema = require('./schemas/user.json');
 
 // Imports the express Node module.
 var express = require('express');
@@ -92,14 +93,13 @@ app.get('/userData/:userid', function(req,res) {
   var fromUser = getUserIdFromToken(req.get('Authorization'));
   if(userId === fromUser){
     var userData = readDocument('users', userId);
-    console.log("test");
     var value = {contents: userData};
     res.send(value);
     } else {
       res.status(401).end();
     }
 });
-app.put('/user/:userid', function(req, res) {
+app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var userData = readDocument('users', userId);
   userData.fullName = req.body.name;
@@ -108,7 +108,8 @@ app.put('/user/:userid', function(req, res) {
   userData.major = req.body.major;
   userData.description = req.body.description;
   writeDocument('users', userData);
-  res.send(readDocument('users', userId));
+  var value = {contents: userData};
+  res.send(value);
 });
 var getCollection = database.getCollection;
 

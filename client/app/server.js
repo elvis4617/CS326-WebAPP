@@ -152,7 +152,7 @@ export function getRequestData(userId, cb){
   }
 
 export function updateUserInfo(userId, name, email, grade, major, description, cb){
-  sendXHR('PUT', '/user/' + userId, {
+  sendXHR('POST', '/userData/' + userId, {
     userId: userId,
     name: name,
     email: email,

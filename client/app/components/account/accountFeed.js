@@ -11,12 +11,7 @@ export default class AccountFeed extends React.Component {
       email: "",
       grade: "",
       major: "",
-      description: "",
-      //changeName: false,
-      //changeEmail: false,
-      //changeGrade: false,
-      //changeMajor: false,
-      //changeDescription: false
+      description: ""
     };
   }
 
@@ -60,6 +55,21 @@ export default class AccountFeed extends React.Component {
       typeof this.props.description == 'undefined')
       alert("You must fill in all fields before commit any changes.");
   else*/
+  if(this.state.name.length === 0){
+    this.state.name = this.state.contents.fullName;
+  }
+  if(this.state.email.length === 0){
+    this.state.email = this.state.contents.email;
+  }
+  if(this.state.grade.length === 0){
+    this.state.grade = this.state.contents.grade;
+  }
+  if(this.state.major.length === 0){
+    this.state.major = this.state.contents.major;
+  }
+  if(this.state.description.length === 0){
+    this.state.description = this.state.contents.description;
+  }
     updateUserInfo(this.props.user,
                   this.state.name,
                   this.state.email,
@@ -69,6 +79,11 @@ export default class AccountFeed extends React.Component {
                   (userData) => {
                   this.setState(userData);
                 });
+    document.getElementById("name").reset();
+    document.getElementById("email").reset();
+    document.getElementById("grade").reset();
+    document.getElementById("major").reset();
+    document.getElementById("description").reset();
     this.refresh();
   }
 
@@ -134,7 +149,7 @@ export default class AccountFeed extends React.Component {
             <div className="row input">
               <h4>Edit Information:</h4>
               <div className="col-md-8">
-                <form>
+                <form id="name">
                   <label>*Name:</label>
                   <input type="text"
                          name="fullName"
@@ -144,7 +159,7 @@ export default class AccountFeed extends React.Component {
             </div>
             <div className="row text">
               <div className="col-md-8">
-                <form>
+                <form id="email">
                   <label>*E-mail:</label>
                   <input type="text"
                          name="email"
@@ -154,7 +169,7 @@ export default class AccountFeed extends React.Component {
             </div>
             <div className="row text">
               <div className="col-md-8">
-                <form>
+                <form id="grade">
                   <label>*Grade:</label>
                   <input type="text"
                          name="grade"
@@ -162,7 +177,7 @@ export default class AccountFeed extends React.Component {
                 </form>
               </div>
               <div className="col-md-8">
-                <form>
+                <form id="major">
                   <label>*Major:</label>
                   <input type="text"
                          name="major"
@@ -172,7 +187,7 @@ export default class AccountFeed extends React.Component {
             </div>
             <div className="row text">
               <div className="col-md-8">
-                <form>
+                <form id="description">
                   <label>*Description:</label>
                   <textarea className="description"
                             type="text"
