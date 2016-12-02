@@ -100,6 +100,7 @@ app.get('/userData/:userid', function(req,res) {
       res.status(401).end();
     }
 });
+
 app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
@@ -623,5 +624,5 @@ app.get('/feeditem/:feeditemid', function(req, res) {
 
 // Starts the server on port 3000!
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  console.log('ToGather listening on port 3000!');
 });
