@@ -1,5 +1,4 @@
 import React from 'react';
-import ForumNumber from './forumnumber';
 import NewThreadBox from './newthread';
 import Post from './post';
 import {getForumData, postThread} from '../../server';
@@ -39,7 +38,6 @@ export default class ForumItem extends React.Component{
             </div>
             <p className = "lead"> Post any new threads to look for a study group or partner, please write the course number in bracket and the any title you wish to write.</p>
             <hr />
-            <ForumNumber/>
             <table className = "table forum table-striped">
               <thead>
                 <tr>
@@ -57,8 +55,6 @@ export default class ForumItem extends React.Component{
                 })}
               </tbody>
             </table>
-            <ForumNumber/>
-            <br/>
             <hr id = "bottom" />
             <NewThreadBox
               onPost={(threadTitle, threadContent)=> this.onPost(threadTitle, threadContent)}/>

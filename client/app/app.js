@@ -11,6 +11,7 @@ import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 import ForumItem from './components/forum/forumitem';
 import AddFriendPage from './components/friend/addFriend';
 import SearchResultPage from './components/index/searchresultpage';
+import ErrorBanner from './components/utility/errorBanner';
 
 class LandingPage extends React.Component {
   render() {
@@ -74,9 +75,11 @@ class App extends React.Component {
       return (
         <div>
 
-        <NavBar user={1} />
+          <NavBar user={1} />
 
-        {this.props.children}
+          {this.props.children}
+
+          <ErrorBanner/>
         </div>
       );
     }

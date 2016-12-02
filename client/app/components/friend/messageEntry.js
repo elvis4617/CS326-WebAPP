@@ -11,9 +11,10 @@ export default class MessageEntry extends React.Component {
   handleMessage(e) {
     e.preventDefault();
     // Trim whitespace from beginning + end of entry.
+    var status;
     var message = this.state.value.trim();
     if (message !== "") {
-      onMessage(message, 1, this.props.friendId);
+      onMessage(message, 1, this.props.friendId, (result) => {return(status = result)});
       // Reset status update.
       this.setState({value: ""});
     }

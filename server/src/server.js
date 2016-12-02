@@ -5,6 +5,7 @@ var validate = require('express-jsonschema').validate;
 var writeDocument = database.writeDocument;
 var addDocument = database.addDocument;
 var postThreadSchema = require('./schemas/thread.json');
+var userSchema = require('./schemas/user.json');
 
 // Imports the express Node module.
 var express = require('express');
@@ -87,29 +88,34 @@ app.get('/user/:userid', function(req, res){
   }
 });
 
+//use for account feed
 app.get('/userData/:userid', function(req,res) {
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
   if(userId === fromUser){
     var userData = readDocument('users', userId);
-    console.log(userData);
     var value = {contents: userData};
     res.send(value);
     } else {
       res.status(401).end();
     }
 });
-app.put('/userData/:userid', function(req, res) {
+app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
   var userId = parseInt(req.params.userid, 10);
-  var userData = readDocument('users', userId);
-  userData.fullName = req.body.name;
-  userData.email = req.body.email;
-  userData.grade = req.body.grade;
-  userData.major = req.body.major;
-  userData.description = req.body.description;
-  writeDocument('users', userData);
-  var value = {contents: userData};
-  res.send(value);
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(userId === fromUser){
+    var userData = readDocument('users', userId);
+    userData.fullName = req.body.name;
+    userData.email = req.body.email;
+    userData.grade = req.body.grade;
+    userData.major = req.body.major;
+    userData.description = req.body.description;
+    writeDocument('users', userData);
+    var value = {contents: userData};
+    res.send(value);
+  } else {
+    res.status(401).end();
+  }
 });
 var getCollection = database.getCollection;
 
@@ -138,7 +144,8 @@ function getGroup(groupName){
   return targetId;
 }
 
-app.get('/frienddata/:userid', function(req, res) {
+//Elvis
+app.get('/friend/:userid', function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var user = readDocument('users', userId);
   var friends = user.friendList;
@@ -150,7 +157,7 @@ app.get('/frienddata/:userid', function(req, res) {
   res.send(friendList);
 });
 
-// onMessage ********************************************************************
+// not Tested, should be onhold, future funationality
 function onMessage(message, authorId, recieverId){
   var date = new Date().getTime();
   var newMessage = {
@@ -171,6 +178,7 @@ function onMessage(message, authorId, recieverId){
   return newMessage1;
 }
 
+//Not Tested
 function getUserE(email){
   var targetId = 0;
   var wat = Object.keys(getCollection('users'));
@@ -182,6 +190,7 @@ function getUserE(email){
   return targetId;
 }
 
+//Not Tested
 function getUserU(username){
   var targetId = 0;
   var wat = Object.keys(getCollection('users'));
@@ -193,6 +202,7 @@ function getUserU(username){
   return targetId;
 }
 
+//Not Tested
 function onRequest(username, email, authorId){
   var date = new Date().getTime();
   var recieverId;
@@ -220,6 +230,7 @@ function onRequest(username, email, authorId){
   return newRequest1;
 }
 
+//not Tested
 app.post('/friendRequest', function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
@@ -228,6 +239,21 @@ app.post('/friendRequest', function(req, res){
     res.status(201);
     res.set('Location', '/message/' + newRequest._id);
     res.send(newRequest);
+  }
+  else {
+    res.status(401).end();
+  }
+});
+
+//Not Tested
+app.post('/message', function(req, res){
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.AuthorId === fromUser){
+    var newMessage = onMessage(body.Message, body.AuthorId, body.RecieverId);
+    res.status(201);
+    res.set('Location', '/message/' + newMessage._id);
+    res.send(newMessage);
   }
   else {
     res.status(401).end();
@@ -283,23 +309,6 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
   }
 });
 
-var MessageSchema = require('./schemas/message.json');
-
-
-app.post('/message', validate({body: MessageSchema}), function(req, res){
-  var body = req.body;
-  var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId === fromUser){
-    var newMessage = onMessage(body.message, body.authorId, body.recieverId);
-    res.status(201);
-    res.set('Location', '/message/' + newMessage._id);
-    res.send(newMessage);
-  }
-  else {
-    res.status(401).end();
-  }
-});
-
 //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, res){
   var groupName = req.params.groupname;
@@ -339,9 +348,7 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
 //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 app.get('/username/:name', function(req, res){
   var userName = req.params.name;
-
   var userId = getUser(userName);
-
   res.send(readDocument('users', userId));
 });
 
@@ -489,7 +496,6 @@ app.use(function(err, req, res, next) {
     var requestItem = readDocument('requestItems', requestItemId);
     requestItem.read = true;
     writeDocument('requestItems', requestItem);
-    console.log(userId);
     var user = readDocument('users', userId);
     var unRead = user.unread;
     if(unRead.indexOf(requestItemId) != -1){
@@ -499,12 +505,10 @@ app.use(function(err, req, res, next) {
     return true;
   }
 
-  app.post('/unReadReq', function(req, res) {
-    var userid = parseInt(req.body, 10);
+  app.get('/unReadReq/:userId', function(req, res) {
+    var userid = parseInt(req.params.userId, 10);
     var fromUser = getUserIdFromToken(req.get('Authorization'));
-    // Parameters are always strings.
-    var useridNumber = parseInt(userid, 10);
-    if (fromUser === useridNumber) {
+    if (fromUser === userid) {
       // Send response.
       res.send(getUnReadMsgs(userid));
     } else {
@@ -519,7 +523,8 @@ app.use(function(err, req, res, next) {
   var userid = req.params.userId;
   var requestItems = readDocument('requestItems', requestItemId);
   // Check that the requester is the author of this feed item.
-  if (fromUser === requestItems.receiver) {
+  console.log(requestItems);
+  if (fromUser === requestItems.reciever) {
     // Check that the body is a string, and not something like a JSON object.
     // We can't use JSON validation here, since the body is simply text!
     res.send(readRequest(requestItemId, userid));
@@ -532,6 +537,9 @@ app.use(function(err, req, res, next) {
 //Elvis not here
 //Elvis not here
 
+//Minxin here
+//Minxin here
+//Minxin here
 function getForumData(user){
 
   var userData = readDocument('users', user);
@@ -601,6 +609,17 @@ app.post('/thread',
     }
 });
 
+function getPostDataById(Id) {
+  var postData = readDocument('postItem', Id);
+  postData.author = readDocument('users', postData.author).fullName;
+  var value = {contents : postData};
+  return value;
+}
+
+app.get('/feeditem/:feeditemid', function(req, res) {
+  var userid = req.params.feeditemid;
+  res.send(getPostDataById(userid));
+});
 
 
 // Starts the server on port 3000!

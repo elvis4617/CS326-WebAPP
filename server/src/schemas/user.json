@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "userId": {
+      "type": "integer",
+      "id": "userId"
+    },
+    "name": {
+      "type": "string",
+      "id": "name"
+    },
+    "grade": {
+      "type": "string",
+      "id": "grade"
+    },
+    "email": {
+      "type": "string",
+      "id": "email"
+    },
+    "major": {
+      "type": "string",
+      "id": "major"
+    },
+    "description": {
+      "type": "string",
+      "id": "description"
+    }
+  },
+  "id": "/",
+  "required": [
+    "userId",
+    "name",
+    "grade",
+    "email",
+    "major",
+    "description"
+  ]
+}
