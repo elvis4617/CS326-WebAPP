@@ -1,5 +1,4 @@
 import React from 'react';
-import ForumNumber from './forumnumber';
 import NewThreadBox from './newthread';
 import Post from './post';
 import {getForumData, postThread} from '../../server';
