@@ -12,11 +12,11 @@ export default class AccountFeed extends React.Component {
       grade: "",
       major: "",
       description: "",
-      //changeName: false,
-      //changeEmail: false,
-      //changeGrade: false,
-      //changeMajor: false,
-      //changeDescription: false
+      changeName: false,
+      changeEmail: false,
+      changeGrade: false,
+      changeMajor: false,
+      changeDescription: false
     };
   }
 
@@ -32,23 +32,23 @@ export default class AccountFeed extends React.Component {
 
   handleChangeName(e) {
   e.preventDefault();
-  this.setState({name: e.target.value});
+  this.setState({name: e.target.value, changeName: true});
   }
   handleChangeEmail(e) {
   e.preventDefault();
-  this.setState({email: e.target.value});
+  this.setState({email: e.target.value, changeEmail: true});
   }
   handleChangeGrade(e) {
   e.preventDefault();
-  this.setState({grade: e.target.value});
+  this.setState({grade: e.target.value, changeGrade: true});
   }
   handleChangeMajor(e) {
   e.preventDefault();
-  this.setState({major: e.target.value});
+  this.setState({major: e.target.value, changeMajor: true});
   }
   handleChangeDescription(e) {
   e.preventDefault();
-  this.setState({description: e.target.value});
+  this.setState({description: e.target.value, changeDescription: true});
   }
 
   handleUpdateUserInfo(e) {
@@ -60,6 +60,21 @@ export default class AccountFeed extends React.Component {
       typeof this.props.description == 'undefined')
       alert("You must fill in all fields before commit any changes.");
   else*/
+  if(this.state.changeName === false){
+    this.state.name = this.state.contents.fullName;
+  }
+  if(this.state.changeEmail === false){
+    this.state.email = this.state.contents.email;
+  }
+  if(this.state.changeGrade === false){
+    this.state.grade = this.state.contents.grade;
+  }
+  if(this.state.changeMajor === false){
+    this.state.major = this.state.contents.major;
+  }
+  if(this.state.changeDescription === false){
+    this.state.description = this.state.contents.description;
+  }
     updateUserInfo(this.props.user,
                   this.state.name,
                   this.state.email,

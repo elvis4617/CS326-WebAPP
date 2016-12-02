@@ -92,14 +92,14 @@ app.get('/userData/:userid', function(req,res) {
   var fromUser = getUserIdFromToken(req.get('Authorization'));
   if(userId === fromUser){
     var userData = readDocument('users', userId);
-    console.log("test");
+    console.log(userData);
     var value = {contents: userData};
     res.send(value);
     } else {
       res.status(401).end();
     }
 });
-app.put('/user/:userid', function(req, res) {
+app.put('/userData/:userid', function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var userData = readDocument('users', userId);
   userData.fullName = req.body.name;
@@ -108,7 +108,8 @@ app.put('/user/:userid', function(req, res) {
   userData.major = req.body.major;
   userData.description = req.body.description;
   writeDocument('users', userData);
-  res.send(readDocument('users', userId));
+  var value = {contents: userData};
+  res.send(value);
 });
 var getCollection = database.getCollection;
 
