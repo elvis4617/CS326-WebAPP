@@ -190,14 +190,11 @@ export function writeRequest(userId, recieverName, requestContent, titleEntry, g
 
 
 // Send a Message
-export function onMessage(message, authorId, recieverId, cb) {
+export function onMessage(message, authorId, recieverId) {
   sendXHR('POST', '/message', {
     Message: message,
     AuthorId: authorId,
     RecieverId: recieverId
-  },
-  (xhr) => {
-      cb(JSON.parse(xhr.responseText));
   });
 }
 
