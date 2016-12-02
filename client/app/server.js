@@ -227,8 +227,7 @@ export function postThread(user, title, contents, cb){
 }
 
 export function getPostDataById(Id, cb) {
-  var postData = readDocument('postItem', Id);
-  postData.author = readDocument('users', postData.author).fullName;
-  var value = {contents : postData};
-  emulateServerReturn(value, cb);
+  sendXHR('GET', '/feeditem/' + Id, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
 }
