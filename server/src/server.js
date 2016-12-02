@@ -100,6 +100,7 @@ app.get('/userData/:userid', function(req,res) {
       res.status(401).end();
     }
 });
+
 app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
@@ -547,7 +548,6 @@ app.use(function(err, req, res, next) {
   var userid = req.params.userId;
   var requestItems = readDocument('requestItems', requestItemId);
   // Check that the requester is the author of this feed item.
-  console.log(requestItems);
   if (fromUser === requestItems.reciever) {
     // Check that the body is a string, and not something like a JSON object.
     // We can't use JSON validation here, since the body is simply text!
@@ -648,5 +648,5 @@ app.get('/feeditem/:feeditemid', function(req, res) {
 
 // Starts the server on port 3000!
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  console.log('ToGather listening on port 3000!');
 });
