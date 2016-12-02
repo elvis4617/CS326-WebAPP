@@ -609,6 +609,17 @@ app.post('/thread',
     }
 });
 
+function getPostDataById(Id) {
+  var postData = readDocument('postItem', Id);
+  postData.author = readDocument('users', postData.author).fullName;
+  var value = {contents : postData};
+  return value;
+}
+
+app.get('/feeditem/:feeditemid', function(req, res) {
+  var userid = req.params.feeditemid;
+  res.send(getPostDataById(userid));
+});
 
 
 // Starts the server on port 3000!
