@@ -96,18 +96,10 @@ export function readRequest(requestItemId, userId, cb) {
   });
 }
 
-//not Elvis
-//not Elvis
-//not Elvis
 export function getFriendDataById(userId, cb){
-  var user = readDocument('users', userId);
-  var friends = user.friendList;
-  var friendList = [];
-  for(var i = 0; i<friends.length; i++){
-    friendList.push(readDocument('users', friends[i]));
-  }
-  var value = {contents : friendList};
-  emulateServerReturn(value, cb);
+  sendXHR('GET', '/frienddata/' + userId, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText))
+  });
 }
 
 export function getUserDataByName(userName, cb) {
@@ -149,20 +141,7 @@ export function getRequestData(userId, cb){
   });
 }
 
-// Dont use this function
- function getUser(userName){
-  //var userList = readDocumentNoId('users');
-  var userBase = readDocument('dataBase',1);
 
-  var userR = -1;
-  //var ll = userList.length;
-  userBase.List.forEach((userId) => {
-    var userData = readDocument('users', userId);
-    if(userData.fullName === userName)
-      userR = userId;
-  });
-    return userR;
-}
 
   export function getUserById(userId, cb){
 
@@ -222,46 +201,15 @@ export function onMessage(message, authorId, recieverId, cb) {
   });
 }
 
-function getUserE(email) {
-  //var userList = readDocumentNoId('users');
-  var userBase = readDocument('dataBase',1);
-
-  var userR = -1;
-  //var ll = userList.length;
-  userBase.List.forEach((userId) => {
-    var userData = readDocument('users', userId);
-    if(userData.email === email)
-      userR = userId;
+export function onRequest(username, email, authorId, cb) {
+  sendXHR('POST', '/friendRequest', {
+    email: email,
+    username: username,
+    authorId: authorId
+  },
+  (xhr) => {
+      cb(JSON.parse(xhr.responseText));
   });
-    return userR;
-}
-
-// Works as long as messages / requests aren't deleted. Consider revising
-export function onRequest(username, email, authorId) {
-  var reciever;
-  if (username === "") {
-    reciever = getUserE(email); }
-  else {
-    reciever = getUser(username); }
-  for(var i = 0; i < 100000000; i++) {
-    try {
-      var request = readDocument('requests', i);
-    }
-    catch(err) {
-      request._id = i;
-      request.author = authorId;
-      request.reciever = reciever._id;
-      request.CreateDate = new Date();
-      request.status = "false";
-      request.title = "Friend Request";
-      request.content = "Will you be my friend?";
-      request.read = "false";
-      writeDocument('requests', request);
-      reciever.mailbox.push(i)
-      writeDocument('users', reciever)
-      break;
-    }
-  }
 }
 
 export function getForumData(user, cb){

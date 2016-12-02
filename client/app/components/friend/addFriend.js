@@ -23,7 +23,7 @@ export default class AddFriendPage extends React.Component {
               </Link>
             </button>
             <hr/>
-            <RequestEntry sendRequest = {(username, email) => onRequest(username, email, 2)}/>
+            <RequestEntry sendRequest = {(username, email) => onRequest(username, email, 1)}/>
           </div>
         </div>
       </div>

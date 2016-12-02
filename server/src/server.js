@@ -56,7 +56,7 @@ function getRequestItemSync(requestItemId) {
 app.get('/user/:userid/mailbox', function(req, res){
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId == fromUser){
+  if(userId === fromUser){
     //Get the user
     var userData = readDocument('users',userId);
     var mailboxData = userData.mailbox;
@@ -78,9 +78,9 @@ app.get('/user/:userid/mailbox', function(req, res){
 // get USER by ID
 app.get('/user/:userid', function(req, res){
   var userId = parseInt(req.params.userid, 10);
-  //var fromUser = getUserIdFromToken(req.get('Authorization'));
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
 
-  if(true){
+  if(userId === fromUser){
     res.send(readDocument('users', userId));
   } else {
     res.status(401).end();
@@ -90,7 +90,7 @@ app.get('/user/:userid', function(req, res){
 app.get('/userData/:userid', function(req,res) {
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(userId == fromUser){
+  if(userId === fromUser){
     var userData = readDocument('users', userId);
     console.log("test");
     var value = {contents: userData};
@@ -137,6 +137,18 @@ function getGroup(groupName){
   return targetId;
 }
 
+app.get('/frienddata/:userid', function(req, res) {
+  var userId = parseInt(req.params.userid, 10);
+  var user = readDocument('users', userId);
+  var friends = user.friendList;
+  var friendList = [];
+  for(var i = 0; i<friends.length; i++){
+    friendList.push(readDocument('users', friends[i]));
+  }
+  var value = {contents: friendList};
+  res.send(value);
+});
+
 // onMessage ********************************************************************
 function onMessage(message, authorId, recieverId){
   var date = new Date().getTime();
@@ -151,22 +163,83 @@ function onMessage(message, authorId, recieverId){
     "content": message,
     "read": false
   }
-  newMessage = addDocument('requestItems',newMessage);
+  var newMessage1 = addDocument('requestItems',newMessage);
   var userData = readDocument('users',recieverId);
-  userData.mailbox.unshift(newMessage._id);
+  userData.mailbox.unshift(newMessage1._id);
   writeDocument('users',userData);
-  return newMessage;
+  return newMessage1;
 }
 
+function getUserE(email){
+  var targetId = 0;
+  var wat = Object.keys(getCollection('users'));
+  wat.forEach((userId)=>{
+    var userData = readDocument('users', userId);
+    if(userData.email === email)
+      targetId = userData._id;
+  });
+  return targetId;
+}
+
+function getUserU(username){
+  var targetId = 0;
+  var wat = Object.keys(getCollection('users'));
+  wat.forEach((userId)=>{
+    var userData = readDocument('users', userId);
+    if(userData.userName === username)
+      targetId = userData._id;
+  });
+  return targetId;
+}
+
+function onRequest(username, email, authorId){
+  var date = new Date().getTime();
+  var recieverId;
+  if (email === "") {
+    recieverId = getUserU(username)
+  }
+  else {
+    recieverId = getUserE(email)
+  }
+  var newRequest = {
+    "Type": "Friend Request",
+    "author": authorId,
+    "reciever": recieverId,
+    "createDate": date,
+    "status": false,
+    "group":0,
+    "title": "Message",
+    "content": "Would you like to be friends?",
+    "read": false
+  }
+  var newRequest1 = addDocument('requestItems',newRequest);
+  var userData = readDocument('users',recieverId);
+  userData.mailbox.unshift(newRequest1._id);
+  writeDocument('users',userData);
+  return newRequest1;
+}
+
+app.post('/friendRequest', function(req, res){
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.authorId === fromUser){
+    var newRequest = onRequest(body.username, body.email, body.authorId);
+    res.status(201);
+    res.set('Location', '/message/' + newRequest._id);
+    res.send(newRequest);
+  }
+  else {
+    res.status(401).end();
+  }
+});
+
+//Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
   var time = new Date().getTime();
-//  var requestItem = readDocument('requestItems', requestItemId);
-  //Find the user id via user name
+
   var recieverId=getUser(recieverName);
   var groupId=getGroup(groupName);
-  //var groupId = 2;
-  //recieverId=2;
-  //If user/reciever name not found, abort mission
+
   if (recieverId <= 0 || groupId <= 0)
     return null;
 
@@ -197,7 +270,7 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
   var body = req.body;
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.userId  == fromUser){
+  if(body.userId  === fromUser){
     var newRequest = writeRequest(body.userId, body.recieverName, body.contents, body.title,
                                   body.groupName, body.typeEntry);
     res.status(201);
@@ -215,7 +288,7 @@ var MessageSchema = require('./schemas/message.json');
 app.post('/message', validate({body: MessageSchema}), function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId == fromUser){
+  if(body.authorId === fromUser){
     var newMessage = onMessage(body.message, body.authorId, body.recieverId);
     res.status(201);
     res.set('Location', '/message/' + newMessage._id);
@@ -235,7 +308,7 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
   var requestData = readDocument('requestItems',requestId);
 
   var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(requestData.author  == fromUser || requestData.reciever == fromUser){
+  if(requestData.author  === fromUser || requestData.reciever === fromUser){
 
     var groupId=getGroup(groupName);
     var groupData=readDocument('groups',groupId);
