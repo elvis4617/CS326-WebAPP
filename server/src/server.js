@@ -76,9 +76,7 @@ app.get('/user/:userid/mailbox', function(req, res){
 
 // get USER by ID
 app.get('/user/:userid', function(req, res){
-
   var userId = parseInt(req.params.userid, 10);
-
   //var fromUser = getUserIdFromToken(req.get('Authorization'));
 
   if(true){
@@ -88,10 +86,21 @@ app.get('/user/:userid', function(req, res){
   }
 });
 
+app.get('/userData/:userid', function(req,res) {
+  var userId = parseInt(req.params.userid, 10);
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(userId == fromUser){
+    var userData = readDocument('users', userId);
+    console.log("test");
+    var value = {contents: userData};
+    res.send(value);
+    } else {
+      res.status(401).end();
+    }
+});
 app.put('/user/:userid', function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var userData = readDocument('users', userId);
-  console.log(userData);
   userData.fullName = req.body.name;
   userData.email = req.body.email;
   userData.grade = req.body.grade;
