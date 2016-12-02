@@ -88,6 +88,7 @@ app.get('/user/:userid', function(req, res){
   }
 });
 
+//use for account feed
 app.get('/userData/:userid', function(req,res) {
   var userId = parseInt(req.params.userid, 10);
   var fromUser = getUserIdFromToken(req.get('Authorization'));
@@ -156,7 +157,7 @@ app.get('/friend/:userid', function(req, res) {
   res.send(value);
 });
 
-// onMessage ********************************************************************
+// not Tested, should be onhold, future funationality
 function onMessage(message, authorId, recieverId){
   var date = new Date().getTime();
   var newMessage = {
@@ -177,6 +178,7 @@ function onMessage(message, authorId, recieverId){
   return newMessage1;
 }
 
+//Not Tested
 function getUserE(email){
   var targetId = 0;
   var wat = Object.keys(getCollection('users'));
@@ -188,6 +190,7 @@ function getUserE(email){
   return targetId;
 }
 
+//Not Tested
 function getUserU(username){
   var targetId = 0;
   var wat = Object.keys(getCollection('users'));
@@ -199,6 +202,7 @@ function getUserU(username){
   return targetId;
 }
 
+//Not Tested
 function onRequest(username, email, authorId){
   var date = new Date().getTime();
   var recieverId;
@@ -226,6 +230,7 @@ function onRequest(username, email, authorId){
   return newRequest1;
 }
 
+//not Tested
 app.post('/friendRequest', function(req, res){
   var body = req.body;
   var fromUser = getUserIdFromToken(req.get('Authorization'));
@@ -234,6 +239,23 @@ app.post('/friendRequest', function(req, res){
     res.status(201);
     res.set('Location', '/message/' + newRequest._id);
     res.send(newRequest);
+  }
+  else {
+    res.status(401).end();
+  }
+});
+
+var MessageSchema = require('./schemas/message.json');
+
+//Not Tested
+app.post('/message', validate({body: MessageSchema}), function(req, res){
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  if(body.authorId === fromUser){
+    var newMessage = onMessage(body.message, body.authorId, body.recieverId);
+    res.status(201);
+    res.set('Location', '/message/' + newMessage._id);
+    res.send(newMessage);
   }
   else {
     res.status(401).end();
@@ -285,23 +307,6 @@ app.post('/requestitem', validate({body: RequestItemSchema}),function(req, res){
 
     res.send(newRequest);
   } else {
-    res.status(401).end();
-  }
-});
-
-var MessageSchema = require('./schemas/message.json');
-
-
-app.post('/message', validate({body: MessageSchema}), function(req, res){
-  var body = req.body;
-  var fromUser = getUserIdFromToken(req.get('Authorization'));
-  if(body.authorId === fromUser){
-    var newMessage = onMessage(body.message, body.authorId, body.recieverId);
-    res.status(201);
-    res.set('Location', '/message/' + newMessage._id);
-    res.send(newMessage);
-  }
-  else {
     res.status(401).end();
   }
 });
@@ -534,6 +539,9 @@ app.use(function(err, req, res, next) {
 //Elvis not here
 //Elvis not here
 
+//Minxin here
+//Minxin here
+//Minxin here
 function getForumData(user){
 
   var userData = readDocument('users', user);
