@@ -523,7 +523,6 @@ app.use(function(err, req, res, next) {
   var userid = req.params.userId;
   var requestItems = readDocument('requestItems', requestItemId);
   // Check that the requester is the author of this feed item.
-  console.log(requestItems);
   if (fromUser === requestItems.reciever) {
     // Check that the body is a string, and not something like a JSON object.
     // We can't use JSON validation here, since the body is simply text!
