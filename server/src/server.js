@@ -4,6 +4,7 @@ var readDocument = database.readDocument;
 var validate = require('express-jsonschema').validate;
 var writeDocument = database.writeDocument;
 var addDocument = database.addDocument;
+var postThreadSchema = require('./schemas/thread.json');
 
 // Imports the express Node module.
 var express = require('express');
@@ -485,6 +486,52 @@ app.get('/user/:userid/feeditem', function(req, res) {
   var userid = req.params.userid;
   res.send(getForumData(userid));
 });
+
+function postThread(user, title, contents){
+  var time = new Date().getTime();
+  var newThread = {
+    "author": user,
+    "postDate": time,
+    "title": title,
+    "content": contents,
+    "viewCount": 0,
+    "replyCount": 0,
+    "lastReplyAuthor": user,
+    "lastReplyDate": time,
+    "commentThread": []
+  };
+  newThread = addDocument('postItem', newThread);
+  var userData = readDocument('users', user);
+
+  userData.postItem.unshift(newThread._id);
+
+  writeDocument('users', userData);
+
+  return newThread;
+}
+
+app.post('/thread',
+  validate({ body: postThreadSchema }), function(req, res) {
+    // If this function runs, `req.body` passed JSON validation!
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  // Check if requester is authorized to post this status update.
+  // (The requester must be the author of the update.)
+  if (fromUser === body.author) {
+    var newUpdate = postThread(body.author, body.title,
+      body.contents);
+      // When POST creates a new resource, we should tell the client about it
+      // in the 'Location' header and use status code 201.
+      res.status(201);
+      res.set('Location', '/thread' + newUpdate._id);
+      // Send the update!
+      res.send(newUpdate);
+    } else {
+      // 401: Unauthorized.
+      res.status(401).end();
+    }
+});
+
 
 
 // Starts the server on port 3000!
