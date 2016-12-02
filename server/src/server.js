@@ -92,7 +92,6 @@ app.get('/userData/:userid', function(req,res) {
   var fromUser = getUserIdFromToken(req.get('Authorization'));
   if(userId === fromUser){
     var userData = readDocument('users', userId);
-    console.log(userData);
     var value = {contents: userData};
     res.send(value);
     } else {
