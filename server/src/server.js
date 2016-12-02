@@ -143,7 +143,8 @@ function getGroup(groupName){
   return targetId;
 }
 
-app.get('/frienddata/:userid', function(req, res) {
+//Elvis
+app.get('/friend/:userid', function(req, res) {
   var userId = parseInt(req.params.userid, 10);
   var user = readDocument('users', userId);
   var friends = user.friendList;
@@ -344,9 +345,7 @@ app.put('/group/:groupname/user/:username/requestitem/:requestid',function(req, 
 //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 app.get('/username/:name', function(req, res){
   var userName = req.params.name;
-
   var userId = getUser(userName);
-
   res.send(readDocument('users', userId));
 });
 
@@ -494,7 +493,6 @@ app.use(function(err, req, res, next) {
     var requestItem = readDocument('requestItems', requestItemId);
     requestItem.read = true;
     writeDocument('requestItems', requestItem);
-    console.log(userId);
     var user = readDocument('users', userId);
     var unRead = user.unread;
     if(unRead.indexOf(requestItemId) != -1){
@@ -504,12 +502,10 @@ app.use(function(err, req, res, next) {
     return true;
   }
 
-  app.post('/unReadReq', function(req, res) {
-    var userid = parseInt(req.body, 10);
+  app.get('/unReadReq/:userId', function(req, res) {
+    var userid = parseInt(req.params.userId, 10);
     var fromUser = getUserIdFromToken(req.get('Authorization'));
-    // Parameters are always strings.
-    var useridNumber = parseInt(userid, 10);
-    if (fromUser === useridNumber) {
+    if (fromUser === userid) {
       // Send response.
       res.send(getUnReadMsgs(userid));
     } else {
@@ -524,7 +520,8 @@ app.use(function(err, req, res, next) {
   var userid = req.params.userId;
   var requestItems = readDocument('requestItems', requestItemId);
   // Check that the requester is the author of this feed item.
-  if (fromUser === requestItems.receiver) {
+  console.log(requestItems);
+  if (fromUser === requestItems.reciever) {
     // Check that the body is a string, and not something like a JSON object.
     // We can't use JSON validation here, since the body is simply text!
     res.send(readRequest(requestItemId, userid));
