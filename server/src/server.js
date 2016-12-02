@@ -399,17 +399,18 @@ app.use(function(err, req, res, next) {
     var requestItem = readDocument('requestItems', requestItemId);
     requestItem.read = true;
     writeDocument('requestItems', requestItem);
+    console.log(userId);
     var user = readDocument('users', userId);
     var unRead = user.unread;
     if(unRead.indexOf(requestItemId) != -1){
       user.unread.splice(unRead.indexOf(requestItemId),1);
       writeDocument('users', user);
     }
-    return "true";
+    return true;
   }
 
   app.post('/unReadReq', function(req, res) {
-    var userid = req.body;
+    var userid = parseInt(req.body, 10);
     var fromUser = getUserIdFromToken(req.get('Authorization'));
     // Parameters are always strings.
     var useridNumber = parseInt(userid, 10);
@@ -422,22 +423,16 @@ app.use(function(err, req, res, next) {
     }
   });
 
-  app.put('/readRequest/:requestItemId:/:userId', function(req, res) {
+  app.put('/readRequest/:requestItemId/:userId', function(req, res) {
   var fromUser = getUserIdFromToken(req.get('Authorization'));
   var requestItemId = req.params.requestItemId;
-  var userid = req.params.userid;
+  var userid = req.params.userId;
   var requestItems = readDocument('requestItems', requestItemId);
   // Check that the requester is the author of this feed item.
   if (fromUser === requestItems.receiver) {
     // Check that the body is a string, and not something like a JSON object.
     // We can't use JSON validation here, since the body is simply text!
-    if (typeof(req.body) !== 'string') {
-      // 400: Bad request.
-      res.status(400).end();
-      return;
-    }// Update text content of update.
-    readRequest(requestItemId, userid);
-    res.send("true");
+    res.send(readRequest(requestItemId, userid));
   } else {
     // 401: Unauthorized.
     res.status(401).end();
