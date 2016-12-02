@@ -55,7 +55,6 @@ export default class ThreadModal extends React.Component {
             </table>
             </div>
             <div className="modal-footer">
-              <ForumNumber/>
             </div>
             </div>
           </div>
