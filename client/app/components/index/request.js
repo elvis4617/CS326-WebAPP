@@ -1,5 +1,6 @@
 import React from 'react';
 import {readRequest} from '../../server';
+import { Link} from 'react-router';
 
 export default class Request extends React.Component{
 
@@ -21,7 +22,11 @@ export default class Request extends React.Component{
   render(){
     return(
       <li >
-        <a href = "#" onClick={(e) => this.handleUnReadClick(e)}>{this.state.content}</a>
+          <span href = "#" onClick={(e) => this.handleUnReadClick(e)}>
+            <Link to={'/Notification'}>
+              <span>{this.state.content}</span>
+            </Link>
+          </span>
       </li>
     )
   }
