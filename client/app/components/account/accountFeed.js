@@ -202,7 +202,7 @@ export default class AccountFeed extends React.Component {
             </div>
             <div className="row submit">
               <div className="col-md-12">
-                <button type="button"
+                <button type="submit" className="btn btn-primary"
                   onClick={(e) => this.handleUpdateUserInfo(e)}>
                   Submit</button>
               </div>

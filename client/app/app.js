@@ -13,6 +13,7 @@ import AddFriendPage from './components/friend/addFriend';
 import SearchResult from './components/index/searchresult';
 import ErrorBanner from './components/utility/errorBanner';
 import About from './components/index/about';
+import Contact from './components/index/contact';
 
 class LandingPage extends React.Component {
   render() {
@@ -31,6 +32,17 @@ class AboutPage extends React.Component {
     return(
       <div>
         <About />
+        <Footer />
+      </div>
+    )
+  }
+}
+
+class ContactPage extends React.Component {
+  render(){
+    return(
+      <div>
+        <Contact />
         <Footer />
       </div>
     )
@@ -134,6 +146,7 @@ class App extends React.Component {
         <Route path="/AddFriend" component={AddFriend} />
         <Route path="/SearchResult/:userId/:key" component={SearchResultPage}/>
         <Route path="/About" component={AboutPage}/>
+        <Route path="/Contact" component={ContactPage}/>
       </Route>
     </Router>
   ),
