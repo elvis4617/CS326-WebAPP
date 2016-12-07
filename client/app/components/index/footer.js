@@ -29,7 +29,9 @@ export default class Footer extends React.Component{
             <span href="#" className="footer-nav">About </span>
           </Link>
            ·
-          <a href="#" className="footer-nav">Faq</a>
+          <Link to={'/Faq'}>
+            <a href="#" className="footer-nav">Faq</a>
+          </Link>
            ·
           <Link to={'/Contact'}>
             <span href="#" className="footer-nav">Contact</span>

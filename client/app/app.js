@@ -14,6 +14,7 @@ import SearchResult from './components/index/searchresult';
 import ErrorBanner from './components/utility/errorBanner';
 import About from './components/index/about';
 import Contact from './components/index/contact';
+import Faq from './components/index/faq';
 
 class LandingPage extends React.Component {
   render() {
@@ -43,6 +44,17 @@ class ContactPage extends React.Component {
     return(
       <div>
         <Contact />
+        <Footer />
+      </div>
+    )
+  }
+}
+
+class FaqPage extends React.Component {
+  render(){
+    return(
+      <div>
+        <Faq />
         <Footer />
       </div>
     )
@@ -146,6 +158,7 @@ class App extends React.Component {
         <Route path="/AddFriend" component={AddFriend} />
         <Route path="/SearchResult/:userId/:key" component={SearchResultPage}/>
         <Route path="/About" component={AboutPage}/>
+        <Route path="/Faq" component={FaqPage}/>
         <Route path="/Contact" component={ContactPage}/>
       </Route>
     </Router>
