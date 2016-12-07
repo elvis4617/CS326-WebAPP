@@ -4,33 +4,36 @@ import { Link} from 'react-router';
 export default class Footer extends React.Component{
   render(){
     return(
-      <footer>
-          <div className="container">
-              <div className="row">
-                  <div className="col-lg-12">
-                      <ul className="list-inline">
-                          <li>
-                              <Link to="/Index">
-                                <span className = "footer-nav" href="#">Home</span>
-                              </Link>
-                          </li>
-                          <li className="footer-menu-divider">&sdot;</li>
-                          <li>
-                              <span className = "footer-nav" href="#about">About</span>
-                          </li>
-                          <li className="footer-menu-divider">&sdot;</li>
-                          <li>
-                              <span className = "footer-nav" href="#services">Services</span>
-                          </li>
-                          <li className="footer-menu-divider">&sdot;</li>
-                          <li>
-                              <span className = "footer-nav" href="#contact">Contact</span>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
+      <div className="wrapper">
+      <footer className="footer-distributed">
+        <div className="footer-right">
+
+          <a href="#"><i className="fa fa-facebook"></i></a>
+          <a href="#"><i className="fa fa-twitter"></i></a>
+          <a href="#"><i className="fa fa-linkedin"></i></a>
+          <a href="#"><i className="fa fa-github"></i></a>
+        </div>
+
+        <div className="footer-center">
+          <h3>To<span>Gather</span></h3>
+        </div>
+
+        <div className="footer-left">
+
+				<p className="footer-links">
+					<a href="#" className="footer-nav">Home </a>
+           ·
+					<a href="#" className="footer-nav">About</a>
+           ·
+					<a href="#" className="footer-nav">Faq</a>
+           ·
+					<a href="#" className="footer-nav">Contact</a>
+				</p>
+
+				<p>ToGather &copy; 2016</p>
+			</div>
       </footer>
+      </div>
     )
   }
 }

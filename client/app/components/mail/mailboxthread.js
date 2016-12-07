@@ -68,7 +68,7 @@ export default class MailBoxThread extends React.Component{
 
     return(
 
-      <div className="container">
+      <div className="container content">
         <div className="row">
           <div className="col-md-8 col-md-offset-2">
             <MailBoxTitle />
