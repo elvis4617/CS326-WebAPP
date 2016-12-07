@@ -21,11 +21,13 @@ export default class Footer extends React.Component{
         <div className="footer-left">
 
 				<p className="footer-links">
-					<a href="#" className="footer-nav">Home </a>
+          <Link to={'/Index'}>
+            <span href="#" className="footer-nav">Home </span>
+          </Link>
            ·
-					<a href="#" className="footer-nav">About</a>
-           ·
-					<a href="#" className="footer-nav">Faq</a>
+          <Link to={'/About'}>
+            <span href="#" className="footer-nav">About </span>
+          </Link>
            ·
 					<a href="#" className="footer-nav">Contact</a>
 				</p>

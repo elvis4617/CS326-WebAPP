@@ -425,6 +425,7 @@ app.use(function(err, req, res, next) {
   }
 
   app.post('/search', function(req, res){
+    console.log(typeof(req.body));
     if (typeof(req.body) === 'string') {
       var queryText = req.body;
       res.send(getMatchGroup(queryText));

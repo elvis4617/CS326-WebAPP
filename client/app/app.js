@@ -10,8 +10,9 @@ import AccountFeed from './components/account/accountFeed';
 import { IndexRoute, Router, Route, hashHistory } from 'react-router';
 import ForumItem from './components/forum/forumitem';
 import AddFriendPage from './components/friend/addFriend';
-import SearchResultPage from './components/index/searchresultpage';
+import SearchResult from './components/index/searchresult';
 import ErrorBanner from './components/utility/errorBanner';
+import About from './components/index/about';
 
 class LandingPage extends React.Component {
   render() {
@@ -25,6 +26,27 @@ class LandingPage extends React.Component {
   }
 }
 
+class AboutPage extends React.Component {
+  render(){
+    return(
+      <div>
+        <About />
+        <Footer />
+      </div>
+    )
+  }
+}
+
+class SearchResultPage extends React.Component {
+  render(){
+    return(
+      <div>
+        <SearchResult keys={this.props.params.key} userId={this.props.params.userId}/>
+        <Footer />
+      </div>
+    )
+  }
+}
 
 class NotificationPage extends React.Component {
   render() {
@@ -111,6 +133,7 @@ class App extends React.Component {
         <Route path="/MyProfile" component={AccountPage}/>
         <Route path="/AddFriend" component={AddFriend} />
         <Route path="/SearchResult/:userId/:key" component={SearchResultPage}/>
+        <Route path="/About" component={AboutPage}/>
       </Route>
     </Router>
   ),

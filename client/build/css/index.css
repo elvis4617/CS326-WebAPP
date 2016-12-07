@@ -151,3 +151,11 @@ h6 {
 .dropdown-menu>li>span>a:hover {
     background-color: #F1F1F1;
 }
+.about-content{
+  padding: 15px;
+}
+@media(max-width:991px) {
+    .customer-img {
+        margin-bottom: 30px;
+    }
+}
