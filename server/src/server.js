@@ -638,6 +638,9 @@ app.post('/thread',
 function getPostDataById(Id) {
   var postData = readDocument('postItem', Id);
   postData.author = readDocument('users', postData.author).fullName;
+  postData.commentThread.forEach((comment) => {
+    comment.author = readDocument('users', comment.author);
+  });
   var value = {contents : postData};
   return value;
 }

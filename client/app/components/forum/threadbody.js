@@ -10,6 +10,7 @@ export default class ThreadBody extends React.Component{
   // }
 
   render(){
+    //console.log(this.props.author)
     return(
       <tbody>
         <tr>

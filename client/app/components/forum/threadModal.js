@@ -29,6 +29,20 @@ export default class ThreadModal extends React.Component {
   }
 
   render(){
+    var map;
+    if (this.state.contents.commentThread !== undefined){
+      map = this.state.contents.commentThread.map((comment, i) => {
+        // i is comment's index in comments array
+        return (
+          <ThreadBody key={i}
+            author={comment.author}
+            postDate={comment.postDate}>
+            {comment.content}
+          </ThreadBody>
+        );
+      })
+    }
+
     return(
       <div className="modal fade" id={"thread-modal"+this.props.id} role="dialog">
         <div className="modal-dialog modal-lg">
@@ -58,16 +72,7 @@ export default class ThreadModal extends React.Component {
                 </tr>
               </tbody>
               {
-              this.props.commentThread.map((comment, i) => {
-                // i is comment's index in comments array
-                return (
-                  <ThreadBody key={i}
-                    author={comment.author}
-                    postDate={comment.postDate}>
-                    {comment.content}
-                  </ThreadBody>
-                );
-              })
+              map
             }
             </table>
             </div>
