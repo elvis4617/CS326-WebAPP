@@ -3,10 +3,11 @@ import {unixTimeToString} from '../../util'
 
 export default class ThreadBody extends React.Component{
 
-  constructor(props){
-    super(props);
-    this.state = this.props.data;
-  }
+  // constructor(props){
+  //   console.log("am i here");
+  //   super(props);
+  //   this.state = this.props.data;
+  // }
 
   render(){
     return(
@@ -14,11 +15,11 @@ export default class ThreadBody extends React.Component{
         <tr>
           <td>
             <img src = "img/testProfilePic.jpg" alt/>
-              <a className = "name" href = "#"> {this.state.author}</a>
+              <a className = "name" href = "#"> {this.props.author.fullName}</a>
           </td>
           <td>
-              <span>{unixTimeToString(this.state.postDate)}</span>
-            <p>{this.state.content}</p>
+              <span>{unixTimeToString(this.props.postDate)}</span>
+            <p>{this.props.children}</p>
           </td>
         </tr>
       </tbody>

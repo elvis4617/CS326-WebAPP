@@ -6,6 +6,7 @@ var writeDocument = database.writeDocument;
 var addDocument = database.addDocument;
 var postThreadSchema = require('./schemas/thread.json');
 var userSchema = require('./schemas/user.json');
+var commentSchema = require('./schemas/comment.json');
 
 // Imports the express Node module.
 var express = require('express');
@@ -644,6 +645,40 @@ function getPostDataById(Id) {
 app.get('/feeditem/:feeditemid', function(req, res) {
   var userid = req.params.feeditemid;
   res.send(getPostDataById(userid));
+});
+
+
+function postReply(user, contents, Id){
+  var postData = readDocument('postItem', Id);
+  postData.commentThread.push({
+    "author": user,
+    "postDate": new Date().getTime(),
+    "content": contents
+  });
+  writeDocument('postItem', postData);
+
+  return postData.commentThread;
+}
+
+app.post('/thread/comments',
+  validate({ body: commentSchema }), function(req, res) {
+    // If this function runs, `req.body` passed JSON validation!
+  var body = req.body;
+  var fromUser = getUserIdFromToken(req.get('Authorization'));
+  // Check if requester is authorized to post this comment.
+  // (The requester must be the author of the comment.)
+  if (fromUser === body.author) {
+    var newComment = postReply(body.author, body.contents, body.threadid);
+      // When POST creates a new resource, we should tell the client about it
+      // in the 'Location' header and use status code 201.
+      res.status(201);
+      res.set('Location', '/thread/comments' + newComment._id);
+      // Send the update!
+      res.send(newComment);
+    } else {
+      // 401: Unauthorized.
+      res.status(401).end();
+    }
 });
 
 

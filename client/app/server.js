@@ -231,3 +231,15 @@ export function getPostDataById(Id, cb) {
     cb(JSON.parse(xhr.responseText));
   });
 }
+
+
+export function postReply(user, contents, Id, cb){
+  sendXHR('POST', '/thread/comments', {
+    author: user,
+    contents: contents,
+    threadid: Id
+  }, (xhr) => {
+    // Return the new status update.
+    cb(JSON.parse(xhr.responseText));
+});
+}
