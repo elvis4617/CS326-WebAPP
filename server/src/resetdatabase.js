@@ -166,7 +166,7 @@ var initialData = {
       "content": "Man that cs250 midterm was awful",
       "viewCount": 1,
       "replyCount": 2,
-      "lastReplyAuthor": 3, // id of the last user to reply
+      "lastReplyAuthor": new ObjectID("000000000000000000000003"), // id of the last user to reply
       "lastReplyDate": 1453690800000,
       "commentThread": [ // list of all comments on the post
         {
@@ -189,7 +189,7 @@ var initialData = {
       "content": "Man that cs250 midterm was awful",
       "viewCount": 2,
       "replyCount": 3,
-      "lastReplyAuthor": 3, // id of the last user to reply
+      "lastReplyAuthor": new ObjectID("000000000000000000000003"), // id of the last user to reply
       "lastReplyDate": 1453690800000,
       "commentThread": [ // list of all comments on the post
         {
@@ -212,7 +212,7 @@ var initialData = {
       "content": "Man that cs250 midterm was awful",
       "viewCount": 3,
       "replyCount": 4,
-      "lastReplyAuthor": 3, // id of the last user to reply
+      "lastReplyAuthor": new ObjectID("000000000000000000000003"), // id of the last user to reply
       "lastReplyDate": 1453690800000,
       "commentThread": [ // list of all comments on the post
         {
@@ -255,7 +255,7 @@ var initialData = {
  * Adds any desired indexes to the database.
  */
 function addIndexes(db, cb) {
-  db.collection('reqeuestItems').createIndex({ "content": "text" }, null, cb);
+  db.collection('void').createIndex({ "content": "text" }, null, cb);
 }
 
 /**
