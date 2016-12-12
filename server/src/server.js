@@ -7,11 +7,19 @@ var addDocument = database.addDocument;
 var postThreadSchema = require('./schemas/thread.json');
 var userSchema = require('./schemas/user.json');
 var commentSchema = require('./schemas/comment.json');
+ 
+var mongo_express = require('mongo-express/lib/middleware');
+// Import the default Mongo Express configuration
+var mongo_express_config = require('mongo-express/config.default.js');
+
+
 
 // Imports the express Node module.
 var express = require('express');
 // Creates an Express server.
 var app = express();
+
+app.use('/mongo_express', mongo_express(mongo_express_config));
 
 app.use(bodyParser.text());
 // Support receiving text in HTTP request bodies
