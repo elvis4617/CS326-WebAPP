@@ -62,7 +62,7 @@ MongoClient.connect(url, function(err, db) {
      * Resolved requestItems aka. mails
      * Also, server version of getRequestData
      */
-     function resolveUserObjects(userList, callback) {
+    function resolveUserObjects(userList, callback) {
        // Special case: userList is empty.
        // It would be invalid to query the database with a logical OR
        // query with an empty array.
@@ -90,7 +90,7 @@ MongoClient.connect(url, function(err, db) {
        }
      }
 
-     function resolveGroupObjects(groupList, callback) {
+    function resolveGroupObjects(groupList, callback) {
        // Special case: userList is empty.
        // It would be invalid to query the database with a logical OR
        // query with an empty array.
@@ -118,14 +118,7 @@ MongoClient.connect(url, function(err, db) {
        }
      }
 
-    function getRequestItemSync(requestItemId) {
-      var requestItem = readDocument('requestItems', requestItemId);
 
-      requestItem.author = readDocument('users', requestItem.author).fullName;
-      requestItem.reciever = readDocument('users', requestItem.reciever).fullName;
-      requestItem.group = readDocument('groups',requestItem.group).groupName;
-      return requestItem;
-    }
 
     function getRequestItem(requestItemId, callback){
       db.collection('requestItems').findOne({
@@ -212,7 +205,7 @@ MongoClient.connect(url, function(err, db) {
           }else if(requestData===null){
             res.status(400).send("Could not look up feed for user " + userId);
           } else{
-            res.send(requestData);
+            res.send(requestData.mailbox);
           }
         });
 
@@ -221,15 +214,60 @@ MongoClient.connect(url, function(err, db) {
       }
     });
 
+    function getUserData(user, callback){
+      db.collection('users').findOne({
+        _id:user
+      }, function(err, userData){
+        if(err){
+          return callback(err);
+        } else if (userData === null){
+          return callback(null, null);
+        }
+
+        var userList = userData.friendList;
+        resolveUserObjects(userList, function(err, userMap){
+          if(err){
+            return callback(err);
+          }
+
+          var resolvedFriendList = [];
+          userData.friendList.forEach((friendId) => resolvedFriendList.push(userMap[friendId]));
+          userData.friendList = resolvedFriendList;
+
+
+          resolveGroupObjects(userData.groupList, function(err, groupMap){
+            if(err){
+              return callback(err);
+            }
+
+            var resolvedGroupList = [];
+            userData.groupList.forEach((groupId) => resolvedGroupList.push(groupMap[groupId]));
+            userData.groupList = resolvedGroupList;
+
+
+              callback(null, userData);
+
+          });
+        });
+      });
+    }
     // get USER by ID
     app.get('/user/:userid', function(req, res){
-      var userId = parseInt(req.params.userid, 10);
+      var userId = req.params.userid;
       var fromUser = getUserIdFromToken(req.get('Authorization'));
 
       if(userId === fromUser){
-        res.send(readDocument('users', userId));
+        getUserData(new ObjectID(userId), function(err, userData){
+          if(err){
+            res.status(500).send("Database error: "+err);
+          }else if(userData===null){
+            res.status(400).send("Could not look up feed for user " + userId);
+          } else{
+            res.send(userData);
+          }
+        });
       } else {
-        res.status(401).end();
+        res.status(403).end();
       }
     });
 
