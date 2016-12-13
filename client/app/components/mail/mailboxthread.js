@@ -64,6 +64,7 @@ export default class MailBoxThread extends React.Component{
       return (author === this.state.userName);
   }
 
+
   render(){
 
     return(
@@ -79,19 +80,22 @@ export default class MailBoxThread extends React.Component{
             <MailEntry  onSend={(requestContent, recieverEntry, titleEntry, groupEntry, typeEntry) => this.onSend(requestContent, recieverEntry, titleEntry, groupEntry, typeEntry)}/>
             <div className="row">
               <MailBox >
+
                {this.state.contents.map((requestItem, i) => {
-                if(this.filterMail(requestItem.author, requestItem.reciever)){
+                if(this.filterMail(requestItem.author.fullName, requestItem.reciever.fullName)){
+
                 return(
                    <Mail key={i} author={requestItem.author}
                                  reciever={requestItem.reciever}
                                  createDate={requestItem.createDate}
                                  title={requestItem.title}
                                  mailId={requestItem._id}
-                                 group={requestItem.group}
+                                 group={requestItem.group.groupName}
                                  type={requestItem.type}
                                  status={requestItem.status}
                                  onAccept={(userName, groupName, requestId) => this.onAccept(userName, groupName, requestId)}
-                                 userName = {this.state.userName}>
+                                 userName = {this.state.userName}
+                                >
                                  {requestItem.content}
                   </Mail>
                  );
