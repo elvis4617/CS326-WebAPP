@@ -36,10 +36,10 @@ export default class Mail extends React.Component {
               <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"1"}>{this.props.author.fullName}</a>&lsquo;s {this.props.type} to
               <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"2"}> {this.props.reciever.fullName}</a>
               <AccountDetailModal mailId={this.props.mailId + "1"}
-                         author={this.props.author.fullName}>
+                         author={this.props.author}>
               </AccountDetailModal>
               <AccountDetailModal mailId={this.props.mailId + "2"}
-                         author={this.props.reciever.fullName}>
+                         author={this.props.reciever}>
               </AccountDetailModal>
 
               <br /> {this.props.title}

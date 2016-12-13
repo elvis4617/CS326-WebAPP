@@ -140,12 +140,17 @@ MongoClient.connect(url, function(err, db) {
           requestItem.author = userMap[requestItem.author];
           requestItem.reciever = userMap[requestItem.reciever];
 
-          resolveGroupObjects([requestItem.group], function(err, groupMap){
+          var groupList = [requestItem.group];
+          groupList = groupList.concat(requestItem.author.groupList);
+          groupList = groupList.concat(requestItem.reciever.groupList);
+
+          resolveGroupObjects(groupList, function(err, groupMap){
             if(err){
               return callback(err);
             }
             requestItem.group = groupMap[requestItem.group];
-
+            requestItem.author.groupList = requestItem.author.groupList.map((groupId) => groupMap[groupId]);
+            requestItem.reciever.groupList = requestItem.reciever.groupList.map((groupId) => groupMap[groupId]);
             callback(null, requestItem);
           });
         });
