@@ -255,7 +255,7 @@ var initialData = {
  * Adds any desired indexes to the database.
  */
 function addIndexes(db, cb) {
-  db.collection('void').createIndex({ "content": "text" }, null, cb);
+  db.collection('requestItems').createIndex({ "content": "text" }, null, cb);
 }
 
 /**

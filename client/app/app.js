@@ -76,7 +76,7 @@ class NotificationPage extends React.Component {
   render() {
     return (
       <div>
-        <MailBoxThread user={1} />
+        <MailBoxThread user={"000000000000000000000001"} />
         <Footer />
       </div>
     )
