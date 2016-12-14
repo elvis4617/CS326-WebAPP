@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link} from 'react-router';
-import {onRequest} from '../../server';
 import RequestEntry from './requestEntry';
 
 export default class AddFriendPage extends React.Component {
@@ -23,7 +22,7 @@ export default class AddFriendPage extends React.Component {
               </Link>
             </button>
             <hr/>
-            <RequestEntry sendRequest = {(username, email) => onRequest(username, email, 1)}/>
+            <RequestEntry />
           </div>
         </div>
       </div>

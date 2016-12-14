@@ -71,9 +71,11 @@ function sendXHR(verb, resource, body, cb) {
 //Elvis here
 //Elvis here
 export function getMatchGroup(search_key, cb){
-  sendXHR('POST', '/search', search_key, (xhr) => {
-    cb(JSON.parse(xhr.responseText));
-  });
+  if(search_key != 'undefined' && search_key.length != 0 && search_key.trim()){
+    sendXHR('POST', '/search', search_key, (xhr) => {
+      cb(JSON.parse(xhr.responseText));
+    });
+  }
 }
 
 export function getRecommendPostItem(user, cb) {
@@ -191,22 +193,14 @@ export function onMessage(message, authorId, recieverId, cb) {
     });
 }
 
-export function onRequest(username, email, authorId, cb) {
+export function onRequest(username, authorId, cb) {
   sendXHR('POST', '/friendRequest', {
-    email: email,
     username: username,
     authorId: authorId
   },
   (xhr) => {
       cb(JSON.parse(xhr.responseText));
   });
-}
-
-export function addFriend(username, authorId, cb) {
-  sendXHR('PUT', '/user/'+authorId+'/friend/'+username, undefined,
-          (xhr) => {
-            cb(JSON.parse(xhr.responseText));
-          });
 }
 
 export function getForumData(user, cb){
@@ -227,6 +221,12 @@ export function postThread(user, title, contents, cb){
 }
 
 export function getPostDataById(Id, cb) {
+  sendXHR('GET', '/feeditem/' + Id, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
+}
+
+export function getForumItem(Id, cb) {
   sendXHR('GET', '/feeditem/' + Id, undefined, (xhr) => {
     cb(JSON.parse(xhr.responseText));
   });

@@ -19,6 +19,7 @@ MongoClient.connect(url, function(err, db) {
     var mongo_express = require('mongo-express/lib/middleware');
     // Import the default Mongo Express configuration
     var mongo_express_config = require('mongo-express/config.default.js');
+    var ResetDatabase = require('./resetdatabase');
 
 
 
@@ -35,6 +36,11 @@ MongoClient.connect(url, function(err, db) {
     // You run the server from `server`, so `../client/build` is `server/../client/build`.
     // '..' means "go up one directory", so this translates into `client/build`!
     app.use(express.static('../client/build'));
+
+    //Helper method
+    function sendDatabaseError(res, err) {
+      res.status(500).send("A database error occurred: " + err);
+    }
 
     function getUserIdFromToken(authorizationLine) {
       try {
@@ -102,7 +108,6 @@ MongoClient.connect(url, function(err, db) {
          var query = {
            $or: groupList.map((id) => { return {_id: id } })
          };
-         // Resolve 'like' counter
          db.collection('groups').find(query).toArray(function(err, groups) {
            if (err) {
              return callback(err);
@@ -340,17 +345,45 @@ MongoClient.connect(url, function(err, db) {
       });
     }
 
-    //Elvis
+
+    function getFriendList(userid, callback) {
+      //get user with given id
+      db.collection('users').findOne({ _id: ObjectID(userid)}, function(err, user) {
+        if (err) {
+          // An error occurred.
+          return callback(err);
+        } else if (user === null) {
+          // user not found!
+          return callback(null, null);
+        }else{
+          resolveUnReadObjects(user.friendList, function(err, data){
+            if(err){
+              callback(err);
+            }else{
+              console.log(data);
+              callback(null, data);
+            }
+          });
+        }
+    });
+  }
+
     app.get('/friend/:userid', function(req, res) {
-      var userId = parseInt(req.params.userid, 10);
-      var user = readDocument('users', userId);
-      var friends = user.friendList;
-      var friendList = [];
-      for(var i = 0; i<friends.length; i++){
-        friendList.push(readDocument('users', friends[i]));
-      }
-      //var value = {contents: friendList};
-      res.send(friendList);
+      var userid = req.params.userid;
+      getFriendList(userid, function(err, friends){
+        if (err) {
+          res.status(500).send("Database error: " + err);
+        }
+        else if (friends === null) {
+          res.status(400).send("Could not look up friends for user " + userid);
+        }
+        else if (friends === []) {
+          res.status(400).send("Could not look up friends for user " + userid);
+        }
+        else {
+          res.send(friends);
+        }
+      });
     });
 
     // not Tested, should be onhold, future funationality
@@ -374,74 +407,86 @@ MongoClient.connect(url, function(err, db) {
       return newMessage1;
     }
 
-    //Not Tested
-    function getUserE(email){
-      var targetId = 0;
-      var wat = Object.keys(getCollection('users'));
-      wat.forEach((userId)=>{
-        var userData = readDocument('users', userId);
-        if(userData.email === email)
-          targetId = userData._id;
+    function getUserByUserName(username, callback){
+      db.collection('users').findOne({userName: username}, function(err, user){
+        if(err){
+          return callback(err);
+        } else{
+          callback(null, user);
+        }
       });
-      return targetId;
     }
 
     //Not Tested
-    function getUserU(username){
-      var targetId = 0;
-      var wat = Object.keys(getCollection('users'));
-      wat.forEach((userId)=>{
-        var userData = readDocument('users', userId);
-        if(userData.userName === username)
-          targetId = userData._id;
-      });
-      return targetId;
-    }
-
-    //Not Tested
-    function onRequest(username, email, authorId){
+    function onRequest(username, authorId, callback){
       var date = new Date().getTime();
-      var recieverId;
-      if (email === "") {
-        recieverId = getUserU(username)
+
+      getUserByUserName(username, function(err, user){
+        if(err){
+          return callback(err);
+        } else if(user === null){
+          return callback(null, null);
+        }
+        var recieverId=user._id;
+        var newRequest ={
+          "type":'friendRequest',
+          "author": new ObjectID(authorId),
+          "reciever": recieverId,
+          "createDate":date,
+          "status": false,
+          "group":new ObjectID("000000000000000000000001"),
+          "title":"Friend Request",
+          "content":"Will you be my friend?",
+          "read":false
+        };
+
+          db.collection('requestItems').insertOne(newRequest, function(err, result){
+            if(err){
+              return callback(err);
+            }
+            newRequest._id = result.insertedId;
+
+            db.collection('users').updateOne({_id: recieverId},
+              {
+                $addToSet:{
+                  mailbox: newRequest._id
+                }
+              },function(err){
+              if(err){
+                return callback(err);
+              }
+              getRequestItem(newRequest._id, function(err, requestItem){
+                if(err){
+                  callback (err);
+                }
+                callback(err, requestItem)
+              });
+            });
+          });
+        });
       }
-      else {
-        recieverId = getUserE(email)
-      }
-      var newRequest = {
-        "type": "Friend Request",
-        "author": authorId,
-        "reciever": recieverId,
-        "createDate": date,
-        "status": false,
-        "group": -1,
-        "title": "Message",
-        "content": "Would you like to be friends?",
-        "read": false
-      }
-      var newRequest1 = addDocument('requestItems',newRequest);
-      var userData = readDocument('users',recieverId);
-      userData.mailbox.unshift(newRequest1._id);
-      writeDocument('users',userData);
-      return newRequest1;
-    }
 
     //not Tested
     app.post('/friendRequest', function(req, res){
       var body = req.body;
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(body.authorId === fromUser){
-        var newRequest = onRequest(body.username, body.email, body.authorId);
-        res.status(201);
-        res.set('Location', '/message/' + newRequest._id);
-        res.send(newRequest);
-      }
-      else {
-        res.status(401).end();
-      }
+      onRequest(body.username, body.authorId, function(err, requestItem){
+        if(err){
+          res.status(500).send("A database error occured: " + err);
+        }
+        else if(requestItem === null){
+          res.status(400).send("Unable to find userName: " + body.username);
+        }
+        else{
+          res.status(201);
+          res.set('Location', '/requestItems/'+ requestItem._id);
+          res.send(requestItem);
+        }
+      });
     });
 
+
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
+
     app.put('/user/:userid/friend/:friendname', function(req, res){
       var friendName = req.params.friendname;
       var userId = parseInt(req.params.userid, 10);
@@ -677,65 +722,64 @@ MongoClient.connect(url, function(err, db) {
     });
 
     // Reset database.
-      app.post('/resetdb', function(req, res) {
+    app.post('/resetdb', function(req, res) {
       console.log("Resetting database...");
-      // This is a debug route, so don't do any validation.
-      database.resetDatabase();
-      // res.send() sends an empty response with status code 200
-      res.send();
+      ResetDatabase(db, function() {
+        res.send();
       });
+    });
 
       //Elvis here
       //Elvis here
       //Elvis here
 
-      function getMatchGroup(search_key){
+      function getMatchGroup(search_key, callback){
         var groupList = [];
-        var keys = search_key.toLowerCase().split(" ");
-        for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
-          var group = readDocument('groups', i);
-          var groupNameArr = group.groupName.toLowerCase().split(" ");
-          var index,index1;
-          for(index in groupNameArr){
-            for(index1 in keys){
-              if(groupNameArr[index].indexOf(keys[index1]) != -1){
-                groupList.push(group);
-                break;
-              }
-            }
+        var keys = search_key.split(" ");
+        var query = {
+          $or: keys.map((key) => { return {"groupName": { $regex : ".*" + key + ".*", '$options' : 'i'} } })
+        };
+        db.collection('groups').find(query).toArray(function(err, groups) {
+          if (err) {
+            return callback(err);
+          }else{
+            groups.forEach((group) => {
+              groupList.push(group);
+            });
+            var value = {contents : groupList};
+            callback(null, value);
           }
-        }
-        var value = {contents : groupList};
-        return value;
+      });
       }
 
       app.post('/search', function(req, res){
-        console.log(typeof(req.body));
         if (typeof(req.body) === 'string') {
           var queryText = req.body;
-          res.send(getMatchGroup(queryText));
+          getMatchGroup(queryText, function(err, data){
+            if(err){
+              res.status(404).end();
+            }else {
+              res.status(200).send(data);
+            }
+          });
         }else{
           res.status(400).end();
         }
       });
 
-      function getRecommendPostItem() {
-        // Get the User object with the id "user".
-        var postItem = [];
-        for(var i = 1; ; i++){
-          try{
-            postItem.push(readDocument('postItem', i));
-          }catch(e){
-            break;
+      function getRecommendPostItem(callback) {
+        db.collection('postItem').find().toArray(function(err, posts) {
+          if (err) {
+            return callback(err);
+          }else{
+            var userMaxList = getThreeMaxPost(posts);
+            while(userMaxList.indexOf(-1) != -1){
+              userMaxList.splice(-1, 1);
+            }
+            var value = {contents : userMaxList};
+            callback(null, value);
           }
-        }
-        var userMaxList = getThreeMaxPost(postItem);
-        while(userMaxList.indexOf(-1) != -1){
-          userMaxList.splice(-1, 1);
-        }
-
-        var value = {contents : userMaxList};
-        return value;
+        });
       }
 
       function getThreeMaxPost(postItemData){
@@ -785,96 +829,243 @@ MongoClient.connect(url, function(err, db) {
       }
 
       app.get('/postItem', function(req, res){
-        res.send(getRecommendPostItem());
+        getRecommendPostItem(function(err, data){
+          if(err){
+            res.status(500).end();
+          }else {
+            res.status(200).send(data);
+          }
+        });
       });
 
-      function getUnReadMsgs(user){
-        var userData = readDocument('users', user);
-        var unReadList = [];
-        if(userData.unread.length != 0){
-          for(var i = 0; i<userData.unread.length; i++){
-            var request = readDocument('requestItems', userData.unread[i]);
-            if(!request.read)
-              unReadList.push(request);
+      function getUnReadMsgs(user, callback){
+        var query = {
+          "_id": ObjectID(user)
+        };
+
+        db.collection('users').findOne(query, function(err, user) {
+          if (err) {
+            callback(err);
+          } else {
+            resolveUnReadObjects(user.unread, function(err, data){
+              var value = {contents : data.map((unread) => {
+                if(!unread.read) return unread;
+              })};
+              callback(null, value);
+            });
+
           }
-        }
-        var value = {contents : unReadList};
-        return value;
+        });
       }
 
-
-      function readRequest(requestItemId, userId) {
-        var requestItem = readDocument('requestItems', requestItemId);
-        requestItem.read = true;
-        writeDocument('requestItems', requestItem);
-        var user = readDocument('users', userId);
-        var unRead = user.unread;
-        if(unRead.indexOf(requestItemId) != -1){
-          user.unread.splice(unRead.indexOf(requestItemId),1);
-          writeDocument('users', user);
-        }
-        return true;
-      }
+      function resolveUnReadObjects(unReadList, callback) {
+         // Special case: userList is empty.
+         // It would be invalid to query the database with a logical OR
+         // query with an empty array.
+         if (unReadList.length === 0) {
+           callback(null, []);
+         } else {
+           // Build up a MongoDB "OR" query to resolve all of the user objects
+           // in the userList.
+           var query = {
+             $or: unReadList.map((id) => { return {_id: Object(id) } })
+           };
+           // Resolve 'like' counter
+           db.collection('requestItems').find(query).toArray(function(err, posts) {
+             if (err) {
+               return callback(err);
+             }
+             // Build a map from ID to user object.
+             // (so userMap["4"] will give the user with ID 4)
+             callback(null, posts);
+           });
+         }
+       }
 
       app.get('/unReadReq/:userId', function(req, res) {
-        var userid = parseInt(req.params.userId, 10);
-        var fromUser = getUserIdFromToken(req.get('Authorization'));
-        if (true) {
-          // Send response.
-          res.send(getUnReadMsgs(userid));
-        } else {
-          // 401: Unauthorized request.
-          res.status(401).end();
-        }
+         var userid = req.params.userId;
+         var fromUser = getUserIdFromToken(req.get('Authorization'));
+         if (userid == fromUser) {
+           // Send response.
+           getUnReadMsgs(userid, function(err, data){
+             if(err){
+               res.status(500).end();
+             }else{
+               res.send(data);
+             }
+           });
+         } else {
+           // 401: Unauthorized request.
+           res.status(401).end();
+         }
       });
 
-      app.put('/readRequest/:requestItemId/:userId', function(req, res) {
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      var requestItemId = req.params.requestItemId;
-      var userid = req.params.userId;
-      var requestItems = readDocument('requestItems', requestItemId);
-      // Check that the requester is the author of this feed item.
-      if (fromUser === requestItems.reciever) {
-        // Check that the body is a string, and not something like a JSON object.
-        // We can't use JSON validation here, since the body is simply text!
-        res.send(readRequest(requestItemId, userid));
-      } else {
-        // 401: Unauthorized.
-        res.status(401).end();
-      }
-    });
-    //Elvis not here
-    //Elvis not here
-    //Elvis not here
+      function readRequest(requestItemId, userId, callback) {
+        var query = {
+          "_id": ObjectID(requestItemId)
+        };
 
-    //Minxin here
-    //Minxin here
-    //Minxin here
-    function getForumData(user){
-
-      var userData = readDocument('users', user);
-      var postData = userData.postItem;
-      var postList = [];
-      for (var item in postData){
-        var postItem = readDocument('postItem', postData[item]);
-        postItem.author = readDocument('users', postItem.author);
-        postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
-        postItem.commentThread.forEach((comment) => {
-          comment.author = readDocument('users', comment.author);
+        db.collection('requestItems').updateOne(query, { $set: { read: true } }, function(err, result){
+          if (err) {
+            callback(err);
+          } else {
+            if (result.modifiedCount === 1) {
+            // Filter matched at least 1 document, which the database modified.
+              db.collection('users').findOne({ _id: ObjectID(userId) }, function(err, user){
+              if(err){
+                callback(err);
+              }else{
+                var unRead = user.unread;
+                for(var i = 0; i< unRead.length; i++){
+                  if(unRead[i].equals(ObjectID(requestItemId))){
+                    unRead.splice(i,1);
+                  }
+                }
+                db.collection('users').updateOne({ _id: ObjectID(userId) }, { $set: { unread: unRead } }, function(err, result){
+                  if (err) {
+                    callback(err);
+                  } else {
+                    if (result.modifiedCount === 1) {
+                      callback(null, true);
+                    }else{
+                      // Filter did not match any documents, so no change was made.
+                      // It is likely that this document was removed from the database prior
+                      // to the operation.
+                    }
+                  }
+                });
+              }
+              });
+            } else {
+              // Filter did not match any documents, so no change was made.
+              // It is likely that this document was removed from the database prior
+              // to the operation.
+              }
+          }
         });
-        postList.push(postItem);
       }
-      var value = {contents: postList};
 
-      return value;
+      app.put('/readRequest/:requestItemId/:userId', function(req, res) {
+        var fromUser = getUserIdFromToken(req.get('Authorization'));
+        var requestItemId = req.params.requestItemId;
+        var userid = req.params.userId;
+        db.collection('requestItems').findOne({ _id: ObjectID(requestItemId) }, function(err, request){
+          if (request.reciever.equals(ObjectID(fromUser))) {
+            // Check that the requester is the author of this feed item.
+            readRequest(requestItemId, userid, function(err, data){
+              if(err){
+                res.status(500).end();
+              }else{
+                res.send(data);
+              }
+            });
+          } else {
+            // 401: Unauthorized.
+            res.status(401).end();
+          }
+        });
+      });
+
+    //Elvis not here
+    //Elvis not here
+    //Elvis not here
+
+    //Minxin here
+    //Minxin here
+    //Minxin here
+
+  function getForumItem(postItemId, callback) {
+  // Get the feed item with the given ID.
+  db.collection('postItem').findOne({
+    _id: postItemId
+  }, function(err, postItem) {
+    if (err) {
+      // An error occurred.
+      return callback(err);
+    } else if (postItem === null) {
+      // Feed item not found!
+      return callback(null, null);
     }
+
+    var userList = [postItem.author];
+    userList.push(postItem.lastReplyAuthor);
+    postItem.commentThread.forEach((comment) => userList.push(comment.author));
+    resolveUserObjects(userList, function(err, userMap) {
+      if (err) {
+        return callback(err);
+      }
+      postItem.author = userMap[postItem.author];
+      postItem.lastReplyAuthor = userMap[postItem.lastReplyAuthor];
+      postItem.commentThread.forEach((comment) => {
+        comment.author = userMap[comment.author];
+      });
+      callback(null, postItem);
+    });
+  });
+}
+
+    function getForumData(user, callback){
+
+      db.collection('users').findOne({
+        _id: user
+      }, function (err, userData){
+        if(err){
+          return callback(err);
+        } else if (userData === null){
+          return callback(null, null);
+        }
+          var resolvedContents = [];
+
+          function processNextPostItem(i){
+            getForumItem(userData.postItem[i], function(err, postItem){
+                if(err){
+                  callback(err);
+                } else {
+                  resolvedContents.push(postItem);
+                  if(resolvedContents.length === userData.postItem.length){
+                    userData.postItem = resolvedContents;
+                    callback(null, userData.postItem);
+                  } else {
+                    processNextPostItem(i+1);
+                  }
+                }
+              });
+            }
+
+            if (userData.postItem.length === 0){
+              callback(null, userData.postItem);
+            } else {
+              processNextPostItem(0);
+            }
+          });
+      }
 
     app.get('/user/:userid/feeditem', function(req, res) {
       var userid = req.params.userid;
-      res.send(getForumData(userid));
-    });
+      var fromUser = getUserIdFromToken(req.get('Authorization'));
+      if (fromUser === userid) {
+        // Convert userid into an ObjectID before passing it to database queries.
+        getForumData(new ObjectID(userid), function(err, forumData) {
+          if (err) {
+        // A database error happened.
+        // Internal Error: 500.
+        sendDatabaseError(res, err)
+        } else if (forumData === null) {
+          // Couldn't find the feed in the database.
+          res.status(400).send("Could not look up forum for user " + userid);
+        } else {
+          // Send data.
+          //console.log(forumData);
+          res.send(forumData);
+        }
+      });
+    } else {
+      // 403: Unauthorized request.
+      res.status(403).end();
+    }
+  });
 
-    function postThread(user, title, contents){
+    function postThread(user, title, contents, callback){
       var time = new Date().getTime();
       var newThread = {
         "author": user,
@@ -887,14 +1078,27 @@ MongoClient.connect(url, function(err, db) {
         "lastReplyDate": time,
         "commentThread": []
       };
-      newThread = addDocument('postItem', newThread);
-      var userData = readDocument('users', user);
 
-      userData.postItem.unshift(newThread._id);
+  db.collection('postItem').insertOne(newThread, function(err, result) {
+    if (err) {
+      return callback(err);
+    }
+    newThread._id = result.insertedId;
 
-      writeDocument('users', userData);
-
-      return newThread;
+    // Retrieve the author's user object.
+    db.collection('users').updateOne({ _id: user },
+        {
+          $push: {
+            postItem: {$each: [newThread._id],
+              $position: 0}
+          }
+        }, function(err) {
+          if (err) {
+            return callback(err);
+          }
+          callback(null, newThread);
+    });
+  });
     }
 
     app.post('/thread',
@@ -905,22 +1109,29 @@ MongoClient.connect(url, function(err, db) {
       // Check if requester is authorized to post this status update.
       // (The requester must be the author of the update.)
       if (fromUser === body.author) {
-        var newUpdate = postThread(body.author, body.title,
-          body.contents);
+        postThread(new ObjectID(fromUser), body.title, body.contents, function(err,newUpdate){
+          if (err) {
+          // A database error happened.
+          // 500: Internal error.
+          sendDatabaseError(res, err)
+        } else {
           // When POST creates a new resource, we should tell the client about it
           // in the 'Location' header and use status code 201.
           res.status(201);
-          res.set('Location', '/thread' + newUpdate._id);
-          // Send the update!
+          res.set('Location', '/thread/' + newUpdate._id);
+            // Send the update!
           res.send(newUpdate);
-        } else {
-          // 401: Unauthorized.
-          res.status(401).end();
         }
+      });
+    } else {
+      // 401: Unauthorized.
+      res.status(401).end();
+    }
     });
 
     function getPostDataById(Id) {
       var postData = readDocument('postItem', Id);
+
       postData.author = readDocument('users', postData.author).fullName;
       postData.commentThread.forEach((comment) => {
         comment.author = readDocument('users', comment.author);
@@ -930,22 +1141,43 @@ MongoClient.connect(url, function(err, db) {
     }
 
     app.get('/feeditem/:feeditemid', function(req, res) {
-      var userid = req.params.feeditemid;
-      res.send(getPostDataById(userid));
+      var feeditemid = req.params.feeditemid;
+      getForumItem(new ObjectID(feeditemid), function(err, forumItem) {
+        // console.log("forum data: " +  forumItem);
+        if (err) {
+      // A database error happened.
+      // Internal Error: 500.
+        sendDatabaseError(res, err)
+      } else if (forumItem === null) {
+        // Couldn't find the feed in the database.
+        res.status(400).send("Could not look up post");
+      } else {
+        // Send data.
+        //console.log(forumItem);
+        res.send(forumItem);
+        }
+      });
     });
 
 
-    function postReply(user, contents, Id){
-      var postData = readDocument('postItem', Id);
-      postData.commentThread.push({
+    function postReply(user, contents, Id, callback){
+      var currentTime = new Date().getTime();
+      var newComment = {
         "author": user,
-        "postDate": new Date().getTime(),
+        "postDate": currentTime,
         "content": contents
+      };
+      db.collection('postItem').updateOne({ _id: Id },
+        {
+        $push: { commentThread: newComment },
+        $set: { lastReplyAuthor: new ObjectID(user), lastReplyDate: currentTime}
+    }, function(err){
+      if(err){
+        return callback(err);
+      }
+        callback(null, newComment);
       });
-      writeDocument('postItem', postData);
-
-      return postData.commentThread;
-    }
+  }
 
     app.post('/thread/comments',
       validate({ body: commentSchema }), function(req, res) {
@@ -955,19 +1187,25 @@ MongoClient.connect(url, function(err, db) {
       // Check if requester is authorized to post this comment.
       // (The requester must be the author of the comment.)
       if (fromUser === body.author) {
-        var newComment = postReply(body.author, body.contents, body.threadid);
+          postReply(new ObjectID(fromUser), body.contents,new ObjectID(body.threadid), function(err,newComment){
+          if (err) {
+          // A database error happened.
+          // 500: Internal error.
+          res.status(500).send("A database error occurred: " + err);
+        } else {
           // When POST creates a new resource, we should tell the client about it
           // in the 'Location' header and use status code 201.
           res.status(201);
           res.set('Location', '/thread/comments' + newComment._id);
-          // Send the update!
+            // Send the update!
           res.send(newComment);
+        }
+      });
         } else {
           // 401: Unauthorized.
           res.status(401).end();
         }
     });
-
 
     // Starts the server on port 3000!
     app.listen(3000, function () {

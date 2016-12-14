@@ -1,5 +1,5 @@
 import React from 'react';
-import {getPostDataById, postReply} from '../../server';
+import {getPostDataById, postReply, getForumItem} from '../../server';
 import {unixTimeToString} from '../../util';
 import ThreadBody from './threadbody'
 import NewCommentBox from './newcomment'
@@ -13,8 +13,9 @@ export default class ThreadModal extends React.Component {
   }
 
   refresh() {
-    getPostDataById(this.props.id, (postData) => {
-    this.setState(postData);
+    getForumItem(this.props.id, (postData) => {
+    // this.setState(postData);
+    this.setState({contents:postData})
   });
   }
 
@@ -49,7 +50,7 @@ export default class ThreadModal extends React.Component {
           <div className="modal-content">
             <div className="modal-header">
             <button type="button" className="close" data-dismiss="modal">&times;</button>
-              <h1>{this.state.contents.title}</h1>
+              <h1>{this.props.title}</h1>
             </div>
             <div className="modal-body">
             <table className = "table forum table-striped">
@@ -63,10 +64,10 @@ export default class ThreadModal extends React.Component {
                 <tr>
                   <td>
                     <img src = "img/testProfilePic.jpg" alt/>
-                      <a className = "name" href = "#"> {this.state.contents.author}</a>
+                      <a className = "name" href = "#"> {this.props.author}</a>
                   </td>
                   <td>
-                      <span>{unixTimeToString(this.state.contents.postDate)}</span>
+                      <span>{unixTimeToString(this.props.postDate)}</span>
                     <p>{this.state.contents.content}</p>
                   </td>
                 </tr>

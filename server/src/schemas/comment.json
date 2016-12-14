@@ -5,7 +5,7 @@
   "properties": {
     "author": {
       "id": "author",
-      "type": "integer"
+      "type": "string"
     },
     "contents": {
       "id": "contents",
@@ -13,7 +13,7 @@
     },
     "threadid": {
       "id": "threadid",
-      "type": "integer"
+      "type": "string"
     }
   },
   "additionalProperties": false,
