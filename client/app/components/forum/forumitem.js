@@ -13,8 +13,10 @@ export default class ForumItem extends React.Component{
 
   refresh(){
     getForumData(this.props.user, (forumData) => {
-      //this.setState({contents:forumData});
-      this.setState(forumData);
+      this.setState({contents:forumData});
+      // this.setState(forumData);
+      // console.log(forumData);
+      // console.log(this.state.contents);
     });
   }
 
@@ -29,6 +31,7 @@ export default class ForumItem extends React.Component{
   }
 
   render(){
+    // console.log(this.state.contents);
     return(
       <div className = "container">
         <div className = "row">

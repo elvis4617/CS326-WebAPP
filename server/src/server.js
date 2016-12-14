@@ -849,29 +849,97 @@ MongoClient.connect(url, function(err, db) {
     //Minxin here
     //Minxin here
     //Minxin here
-    function getForumData(user){
 
-      var userData = readDocument('users', user);
-      var postData = userData.postItem;
-      var postList = [];
-      for (var item in postData){
-        var postItem = readDocument('postItem', postData[item]);
-        postItem.author = readDocument('users', postItem.author);
-        postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
-        postItem.commentThread.forEach((comment) => {
-          comment.author = readDocument('users', comment.author);
-        });
-        postList.push(postItem);
-      }
-      var value = {contents: postList};
-
-      return value;
+  function getForumItem(postItemId, callback) {
+  // Get the feed item with the given ID.
+  db.collection('postItem').findOne({
+    _id: postItemId
+  }, function(err, postItem) {
+    if (err) {
+      // An error occurred.
+      return callback(err);
+    } else if (postItem === null) {
+      // Feed item not found!
+      return callback(null, null);
     }
+
+    var userList = [postItem.author];
+    userList.push(postItem.lastReplyAuthor);
+    postItem.commentThread.forEach((comment) => userList.push(comment.author));
+    resolveUserObjects(userList, function(err, userMap) {
+      if (err) {
+        return callback(err);
+      }
+      postItem.author = userMap[postItem.author];
+      postItem.lastReplyAuthor = userMap[postItem.lastReplyAuthor];
+      postItem.commentThread.forEach((comment) => {
+        comment.author = userMap[comment.author];
+      });
+      callback(null, postItem);
+    });
+  });
+}
+
+    function getForumData(user, callback){
+
+      db.collection('users').findOne({
+        _id: user
+      }, function (err, userData){
+        if(err){
+          return callback(err);
+        } else if (userData === null){
+          return callback(null, null);
+        }
+          var resolvedContents = [];
+
+          function processNextPostItem(i){
+            getForumItem(userData.postItem[i], function(err, postItem){
+                if(err){
+                  callback(err);
+                } else {
+                  resolvedContents.push(postItem);
+                  if(resolvedContents.length === userData.postItem.length){
+                    userData.postItem = resolvedContents;
+                    callback(null, userData.postItem);
+                  } else {
+                    processNextPostItem(i+1);
+                  }
+                }
+              });
+            }
+
+            if (userData.postItem.length === 0){
+              callback(null, userData.postItem);
+            } else {
+              processNextPostItem(0);
+            }
+          });
+      }
 
     app.get('/user/:userid/feeditem', function(req, res) {
       var userid = req.params.userid;
-      res.send(getForumData(userid));
-    });
+      var fromUser = getUserIdFromToken(req.get('Authorization'));
+      if (fromUser === userid) {
+        // Convert userid into an ObjectID before passing it to database queries.
+        getForumData(new ObjectID(userid), function(err, forumData) {
+          if (err) {
+        // A database error happened.
+        // Internal Error: 500.
+          res.status(500).send("Database error: " + err);
+        } else if (forumData === null) {
+          // Couldn't find the feed in the database.
+          res.status(400).send("Could not look up forum for user " + userid);
+        } else {
+          // Send data.
+          console.log(forumData);
+          res.send(forumData);
+        }
+      });
+    } else {
+      // 403: Unauthorized request.
+      res.status(403).end();
+    }
+  });
 
     function postThread(user, title, contents){
       var time = new Date().getTime();
