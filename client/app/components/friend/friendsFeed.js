@@ -13,7 +13,7 @@ export default class friendsFeed extends React.Component {
 
   refresh() {
     getFriendDataById(this.props.user, (userData) => {
-    this.setState({contents:userData});
+    this.setState({contents: userData});
 
   });
  }
@@ -33,11 +33,11 @@ export default class friendsFeed extends React.Component {
           </Link>
         </button>
         <hr />
-        {this.state.contents.map((friend) => {
-            return (
-              <Friend key={friend._id} data={friend} />
-            )
-        })}
+          {this.state.contents.map((friend, i) => {
+              return (
+                <Friend key={parseInt((friend._id + ''), 16)} data={friend} />
+              )
+          })}
         </div>
       </div>
     )

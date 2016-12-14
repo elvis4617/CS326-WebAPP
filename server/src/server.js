@@ -15,7 +15,6 @@ MongoClient.connect(url, function(err, db) {
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
-    var ResetDatabase = require('./resetdatabase');
 
     var mongo_express = require('mongo-express/lib/middleware');
     // Import the default Mongo Express configuration
@@ -345,17 +344,55 @@ MongoClient.connect(url, function(err, db) {
       });
     }
 
-    //Elvis
+
+    function getFriendList(userid, callback) {
+      //get user with given id
+      db.collection('users').findOne({
+        _id: userid
+      }, function(err, user) {
+        if (err) {
+          // An error occurred.
+          return callback(err);
+        } else if (user === null) {
+          // user not found!
+          return callback(null, null);
+        }
+        var friends = [];
+        user.friendList.forEach((friendid) => {
+          //get user with given id
+          db.collection('users').findOne({
+            _id: friendid
+          }, function(err, friend) {
+            if (err) {
+              // An error occurred.
+              return callback(err);
+            } else if (friend === null) {
+              // user not found!
+              return callback(null, null);
+            }
+            friends.push(friend);
+          });
+        });
+        callback(null, friends);
+    });
+  }
+
     app.get('/friend/:userid', function(req, res) {
-      var userId = parseInt(req.params.userid, 10);
-      var user = readDocument('users', userId);
-      var friends = user.friendList;
-      var friendList = [];
-      for(var i = 0; i<friends.length; i++){
-        friendList.push(readDocument('users', friends[i]));
-      }
-      //var value = {contents: friendList};
-      res.send(friendList);
+      var userid = req.params.userid;
+      getFriendList(new ObjectID(userid), function(err, friends){
+        if (err) {
+          res.status(500).send("Database error: " + err);
+        }
+        else if (friends === null) {
+          res.status(400).send("Could not look up friends for user " + userid);
+        }
+        else if (friends === []) {
+          res.status(400).send("Could not look up friends for user " + userid);
+        }
+        else {
+          res.send(friends);
+        }
+      });
     });
 
     // not Tested, should be onhold, future funationality

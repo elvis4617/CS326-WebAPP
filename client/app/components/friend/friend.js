@@ -22,15 +22,15 @@ export default class friend extends React.Component {
                   <img className="profpic" src = "img/testProfilePic.jpg"/>
                 </div>
                 <div className ="media-body">
-                  <a type="button" data-toggle="modal" data-target={"#account-modal"+data._id} href="#">{data.fullName}</a>
-                    <FriendDetailModal id={data._id}
+                  <a type="button" data-toggle="modal" data-target={"#account-modal"+parseInt((friend._id + ''), 16)} href="#">{data.fullName}</a>
+                    <FriendDetailModal id={parseInt((friend._id + ''), 16)}
                                data={data}>
                     </FriendDetailModal>
                   <br/>
                   {data.school}
                 </div>
               </div>
-              <MessageEntry friendId = {data._id}/>
+              <MessageEntry friendId = {parseInt((friend._id + ''), 16)}/>
             </div>
           </div>
         </div>
