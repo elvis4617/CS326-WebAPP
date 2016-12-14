@@ -347,39 +347,29 @@ MongoClient.connect(url, function(err, db) {
 
     function getFriendList(userid, callback) {
       //get user with given id
-      db.collection('users').findOne({
-        _id: userid
-      }, function(err, user) {
+      db.collection('users').findOne({ _id: ObjectID(userid)}, function(err, user) {
         if (err) {
           // An error occurred.
           return callback(err);
         } else if (user === null) {
           // user not found!
           return callback(null, null);
-        }
-        var friends = [];
-        user.friendList.forEach((friendid) => {
-          //get user with given id
-          db.collection('users').findOne({
-            _id: friendid
-          }, function(err, friend) {
-            if (err) {
-              // An error occurred.
-              return callback(err);
-            } else if (friend === null) {
-              // user not found!
-              return callback(null, null);
+        }else{
+          resolveUnReadObjects(user.friendList, function(err, data){
+            if(err){
+              callback(err);
+            }else{
+              console.log(data);
+              callback(null, data);
             }
-            friends.push(friend);
           });
-        });
-        callback(null, friends);
+        }
     });
   }
 
     app.get('/friend/:userid', function(req, res) {
       var userid = req.params.userid;
-      getFriendList(new ObjectID(userid), function(err, friends){
+      getFriendList(userid, function(err, friends){
         if (err) {
           res.status(500).send("Database error: " + err);
         }
