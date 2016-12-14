@@ -46,7 +46,8 @@ export default class UnReadMsg extends React.Component{
           {this.state.contents.map((reqItem) => {
               return(
                 <Request key={reqItem._id}
-                          data={reqItem}/>
+                          data={reqItem}
+                          user={this.props.user}/>
               )
             }
           )}
