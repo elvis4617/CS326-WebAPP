@@ -281,13 +281,7 @@ MongoClient.connect(url, function(err, db) {
       var userId = req.params.userid;
       var fromUser = getUserIdFromToken(req.get('Authorization'));
       if(userId === fromUser){
-        /**
-        var userData = readDocument('users', new ObjectID(userId));
-        var value = {contents: userData};
-        res.send(value);
-        **/
         db.collection('users').findOne({_id: new ObjectID(userId)}, function(err,userObject) {
-          //console.log(userObject);
           var value = {contents: userObject};
           res.send(value);
         });
@@ -297,18 +291,25 @@ MongoClient.connect(url, function(err, db) {
     });
 
     app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
-      var userId = parseInt(req.params.userid, 10);
+      var userId = req.params.userid;
       var fromUser = getUserIdFromToken(req.get('Authorization'));
       if(userId === fromUser){
-        var userData = readDocument('users', userId);
-        userData.fullName = req.body.name;
-        userData.email = req.body.email;
-        userData.grade = req.body.grade;
-        userData.major = req.body.major;
-        userData.description = req.body.description;
-        writeDocument('users', userData);
-        var value = {contents: userData};
-        res.send(value);
+        db.collection('users').updateOne({ _id: new ObjectID(userId) },
+          { $set: {
+            email: req.body.email,
+            fullName: req.body.name,
+            grade: req.body.grade,
+            major: req.body.major,
+            description: req.body.description
+            } }, function(err) {
+            if (err) {
+              return res.status(500).send("Database error");
+            }
+            db.collection('users').findOne({_id: new ObjectID(userId)}, function(err,userObject) {
+                var value = {contents: userObject};
+                res.send(value);
+              });
+          });
       } else {
         res.status(401).end();
       }
