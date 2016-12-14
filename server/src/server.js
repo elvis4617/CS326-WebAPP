@@ -941,7 +941,7 @@ MongoClient.connect(url, function(err, db) {
     }
   });
 
-    function postThread(user, title, contents){
+    function postThread(user, title, contents, callback){
       var time = new Date().getTime();
       var newThread = {
         "author": user,
@@ -954,14 +954,27 @@ MongoClient.connect(url, function(err, db) {
         "lastReplyDate": time,
         "commentThread": []
       };
-      newThread = addDocument('postItem', newThread);
-      var userData = readDocument('users', user);
 
-      userData.postItem.unshift(newThread._id);
+  db.collection('postItem').insertOne(newThread, function(err, result) {
+    if (err) {
+      return callback(err);
+    }
+    newThread._id = result.insertedId;
 
-      writeDocument('users', userData);
-
-      return newThread;
+    // Retrieve the author's user object.
+    db.collection('users').updateOne({ _id: user },
+        {
+          $push: {
+            postItem: {$each: [newThread._id],
+              $position: 0}
+          }
+        }, function(err) {
+          if (err) {
+            return callback(err);
+          }
+          callback(null, newThread);
+    });
+  });
     }
 
     app.post('/thread',
@@ -972,18 +985,24 @@ MongoClient.connect(url, function(err, db) {
       // Check if requester is authorized to post this status update.
       // (The requester must be the author of the update.)
       if (fromUser === body.author) {
-        var newUpdate = postThread(body.author, body.title,
-          body.contents);
+        postThread(new ObjectID(fromUser), body.title, body.contents, function(err,newUpdate){
+          if (err) {
+          // A database error happened.
+          // 500: Internal error.
+          res.status(500).send("A database error occurred: " + err);
+        } else {
           // When POST creates a new resource, we should tell the client about it
           // in the 'Location' header and use status code 201.
           res.status(201);
-          res.set('Location', '/thread' + newUpdate._id);
-          // Send the update!
+          res.set('Location', '/thread/' + newUpdate._id);
+            // Send the update!
           res.send(newUpdate);
-        } else {
-          // 401: Unauthorized.
-          res.status(401).end();
         }
+      });
+    } else {
+      // 401: Unauthorized.
+      res.status(401).end();
+    }
     });
 
     function getPostDataById(Id) {
@@ -1010,7 +1029,7 @@ MongoClient.connect(url, function(err, db) {
         res.status(400).send("Could not look up post");
       } else {
         // Send data.
-        console.log(forumItem);
+        //console.log(forumItem);
         res.send(forumItem);
         }
       });
