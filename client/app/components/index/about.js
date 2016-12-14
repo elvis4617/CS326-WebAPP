@@ -16,7 +16,7 @@ export default class About extends React.Component{
         </div>
         <div className="row about-content">
             <div className="col-md-6">
-                <img className="img-responsive" src="http://placehold.it/750x450" alt=""/>
+                <img className="img-responsive" src="img/intro-bg.jpg" alt=""/>
             </div>
             <div className="col-md-6">
                 <h2>About ToGather</h2>

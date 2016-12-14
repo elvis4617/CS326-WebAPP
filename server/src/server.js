@@ -320,7 +320,6 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
-    var getCollection = database.getCollection;
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -359,7 +358,6 @@ MongoClient.connect(url, function(err, db) {
             if(err){
               callback(err);
             }else{
-              console.log(data);
               callback(null, data);
             }
           });
