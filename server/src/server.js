@@ -278,12 +278,19 @@ MongoClient.connect(url, function(err, db) {
 
     //use for account feed
     app.get('/userData/:userid', function(req,res) {
-      var userId = parseInt(req.params.userid, 10);
+      var userId = req.params.userid;
       var fromUser = getUserIdFromToken(req.get('Authorization'));
       if(userId === fromUser){
-        var userData = readDocument('users', userId);
+        /**
+        var userData = readDocument('users', new ObjectID(userId));
         var value = {contents: userData};
         res.send(value);
+        **/
+        db.collection('users').findOne({_id: new ObjectID(userId)}, function(err,userObject) {
+          //console.log(userObject);
+          var value = {contents: userObject};
+          res.send(value);
+        });
         } else {
           res.status(401).end();
         }

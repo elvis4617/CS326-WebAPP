@@ -98,7 +98,7 @@ class AccountPage extends React.Component {
   render(){
     return (
       <div>
-        <AccountFeed user={1}/>
+        <AccountFeed user={"000000000000000000000001"}/>
         <Footer />
       </div>
     )
