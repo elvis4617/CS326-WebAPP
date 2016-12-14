@@ -1,4 +1,4 @@
-import React from 'react';  
+import React from 'react';
 
 export default class AccountDetailModal extends React.Component {
 
@@ -80,7 +80,7 @@ export default class AccountDetailModal extends React.Component {
                               this.props.author.groupList.map((group, i) => {
                                 return(
                                   <span key={i}>
-                                  {group.groupName}
+                                  {" " + i + "." + group.groupName}
                                 </span>
                                 )
                               })

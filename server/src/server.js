@@ -552,7 +552,7 @@ MongoClient.connect(url, function(err, db) {
         writeRequest(body.userId, body.recieverName, body.contents, body.title,
                                       body.groupName, body.typeEntry,function(err, requestItem){
           if(err){
-            res.status(500).send("A database error occured: " + err)
+            res.status(500).send("A database error occured: " + err);
           } else{
 
             res.status(201);
@@ -571,36 +571,88 @@ MongoClient.connect(url, function(err, db) {
       var groupName = req.params.groupname;
       var userName = req.params.username;
       var requestId = req.params.requestid;
-      var userId=getUser(userName);
-      var requestData = readDocument('requestItems',requestId);
 
       var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(requestData.author  === fromUser || requestData.reciever === fromUser){
+      resolveUserObjects([new ObjectID(fromUser)], function(err, userMap){
+        if(err)
+          res.status(500).send("A database error occured: " + err);
 
-        var groupId=getGroup(groupName);
-        var groupData=readDocument('groups',groupId);
-        var userData=readDocument('users',userId);
-        var joined = groupData.memberList.indexOf(userId);
+          getRequestItem(new ObjectID(requestId), function(err, requestItem){
+            if(err)
+              res.status(500).send("A database error occured: " + err);
 
-        requestData.status = true;
+            if(requestItem===null)
+              return res.status(400).end();
 
-         writeDocument('requestItems',requestData);
+            if(userMap[fromUser].fullName === requestItem.author.fullName || userMap[fromUser].fullName === requestItem.reciever.fullName){
 
+              getUserObjectByName(userName, function(err, userObject){
+                if(err){
+                  res.status(500).send("A database error occured: " + err);
+                } else if(userObject === null){
+                  return res.status(400).end();
+                }
 
-        if(joined === -1){
-          groupData.memberList.push(userId);
-          writeDocument('groups',groupData);
-          userData.groupList.push(groupId);
-          writeDocument("users",userData);
+                getGroupObjectByName(groupName, function(err, groupObject){
+                  if(err){
+                    res.status(500).send("A database error occured: " + err);
+                  } else if(groupObject === null){
+                    return res.status(400).end();
+                  }
+
+                  db.collection('groups').updateOne({_id:groupObject._id},{
+                    $addToSet:{
+                      memberList: userObject._id
+                    },
+                    $inc:{
+                      memberCount: 1
+                    }
+                  }, function(err){
+                    if(err){
+                      res.status(500).send("A database error occured: " + err);
+                    }
+
+                    db.collection('users').updateOne({_id:userObject._id},{
+                      $addToSet:{
+                        groupList:groupObject._id
+                      }
+                    }, function(err){
+                      if(err){
+                        res.status(500).send("A database error occured: " + err);
+                      }
+
+                      db.collection('requestItems').updateOne({_id: new ObjectID(requestId)},{
+                        $set:{
+                          status:true
+                        }
+                      } ,function(err){
+                        if(err)
+                          res.status(500).send("A database error occured: " + err);
+
+                        resolveGroupObjects([groupObject._id], function(err, groupMap){
+                            if(err){
+                              res.status(500).send("A database error occured: " + err);
+                            }
+
+                            res.send(groupMap[groupObject._id]);
+
+                        }); //resolveGroupObjects
+                      });
+
+                  }); //db collection users
+                }); //db collection groups
+              });  //getGroupObjectByName
+          }); //getUserObjectByName
+        } else{
+          res.status(403).end();
         }
 
-      res.send(requestData);
-      } else {
-        res.status(401).end();
-      }
 
 
-    });
+      });//getRequestItem
+
+    }); //resolveUserObjects
+   }); //app
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     app.get('/username/:name', function(req, res){

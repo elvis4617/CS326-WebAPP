@@ -11,9 +11,9 @@ export default class Mail extends React.Component {
     e.preventDefault();
     if(!this.props.status){
       if(this.props.type == "invite")
-        this.props.onAccept(this.props.reciever, this.props.group, this.props.mailId);
+        this.props.onAccept(this.props.reciever.fullName, this.props.group, this.props.mailId);
       else
-        this.props.onAccept(this.props.author, this.props.group, this.props.mailId);
+        this.props.onAccept(this.props.author.fullName, this.props.group, this.props.mailId);
     }
   }
 
