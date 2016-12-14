@@ -416,72 +416,83 @@ MongoClient.connect(url, function(err, db) {
       return newMessage1;
     }
 
-    //Not Tested
-    function getUserE(email){
-      var targetId = 0;
-      var wat = Object.keys(getCollection('users'));
-      wat.forEach((userId)=>{
-        var userData = readDocument('users', userId);
-        if(userData.email === email)
-          targetId = userData._id;
+    function getUserByUserName(username, callback){
+      db.collection('users').findOne({userName: username}, function(err, user){
+        if(err){
+          return callback(err);
+        } else{
+          callback(null, user);
+        }
       });
-      return targetId;
     }
 
     //Not Tested
-    function getUserU(username){
-      var targetId = 0;
-      var wat = Object.keys(getCollection('users'));
-      wat.forEach((userId)=>{
-        var userData = readDocument('users', userId);
-        if(userData.userName === username)
-          targetId = userData._id;
-      });
-      return targetId;
-    }
-
-    //Not Tested
-    function onRequest(username, email, authorId){
+    function onRequest(username, authorId, callback){
       var date = new Date().getTime();
-      var recieverId;
-      if (email === "") {
-        recieverId = getUserU(username)
+
+      getUserByUserName(username, function(err, user){
+        if(err){
+          return callback(err);
+        } else if(user === null){
+          return callback(null, null);
+        }
+        var recieverId=user._id;
+        var newRequest ={
+          "type":'friendRequest',
+          "author": new ObjectID(authorId),
+          "reciever": recieverId,
+          "createDate":date,
+          "status": false,
+          "group":new ObjectID("000000000000000000000001"),
+          "title":"Friend Request",
+          "content":"Will you be my friend?",
+          "read":false
+        };
+
+          db.collection('requestItems').insertOne(newRequest, function(err, result){
+            if(err){
+              return callback(err);
+            }
+            newRequest._id = result.insertedId;
+
+            db.collection('users').updateOne({_id: recieverId},
+              {
+                $addToSet:{
+                  mailbox: newRequest._id
+                }
+              },function(err){
+              if(err){
+                return callback(err);
+              }
+              getRequestItem(newRequest._id, function(err, requestItem){
+                if(err){
+                  callback (err);
+                }
+                callback(err, requestItem)
+              });
+            });
+          });
+        });
       }
-      else {
-        recieverId = getUserE(email)
-      }
-      var newRequest = {
-        "type": "Friend Request",
-        "author": authorId,
-        "reciever": recieverId,
-        "createDate": date,
-        "status": false,
-        "group": -1,
-        "title": "Message",
-        "content": "Would you like to be friends?",
-        "read": false
-      }
-      var newRequest1 = addDocument('requestItems',newRequest);
-      var userData = readDocument('users',recieverId);
-      userData.mailbox.unshift(newRequest1._id);
-      writeDocument('users',userData);
-      return newRequest1;
-    }
 
     //not Tested
     app.post('/friendRequest', function(req, res){
       var body = req.body;
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(body.authorId === fromUser){
-        var newRequest = onRequest(body.username, body.email, body.authorId);
-        res.status(201);
-        res.set('Location', '/message/' + newRequest._id);
-        res.send(newRequest);
-      }
-      else {
-        res.status(401).end();
-      }
+      onRequest(body.username, body.authorId, function(err, requestItem){
+        if(err){
+          res.status(500).send("A database error occured: " + err);
+        }
+        else if(requestItem === null){
+          res.status(400).send("Unable to find userName: " + body.username);
+        }
+        else{
+          res.status(201);
+          res.set('Location', '/requestItems/'+ requestItem._id);
+          res.send(requestItem);
+        }
+      });
     });
+
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     app.put('/user/:userid/friend/:friendname', function(req, res){
