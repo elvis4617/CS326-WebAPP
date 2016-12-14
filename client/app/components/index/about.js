@@ -32,12 +32,12 @@ export default class About extends React.Component{
             </div>
             <div className="col-md-4 text-center">
                 <div className="thumbnail">
-                    <img className="img-responsive" src="http://placehold.it/750x450" alt=""/>
+                    <img className="img-responsive developer-icon" src="img/elvis.png" alt=""/>
                     <div className="caption">
                         <h3>Elvis Chen<br/>
                             <small>Developer</small>
                         </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
+                        <p>He is a dude.</p>
                         <ul className="list-inline">
                             <li><a href="#"><i className="fa fa-facebook"></i></a>
                             </li>
@@ -53,12 +53,12 @@ export default class About extends React.Component{
             </div>
             <div className="col-md-4 text-center">
                 <div className="thumbnail">
-                    <img className="img-responsive" src="http://placehold.it/750x450" alt=""/>
+                    <img className="img-responsive developer-icon" src="img/andy.png" alt=""/>
                     <div className="caption">
                         <h3>Andy Liu<br/>
                             <small>Developer</small>
                         </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
+                        <p>He is a guy wearing a glass with three hair.</p>
                         <ul className="list-inline">
                             <li><a href="#"><i className="fa fa-facebook"></i></a>
                             </li>
@@ -74,12 +74,12 @@ export default class About extends React.Component{
             </div>
             <div className="col-md-4 text-center">
                 <div className="thumbnail">
-                    <img className="img-responsive" src="http://placehold.it/750x450" alt=""/>
+                    <img className="img-responsive developer-icon" src="img/minxin.png" alt=""/>
                     <div className="caption">
                         <h3>Minxin Gao<br/>
                             <small>developer</small>
                         </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
+                        <p>He is a guy with two hair.</p>
                         <ul className="list-inline">
                             <li><a href="#"><i className="fa fa-facebook"></i></a>
                             </li>
@@ -95,12 +95,12 @@ export default class About extends React.Component{
             </div>
             <div className="col-md-4 text-center">
                 <div className="thumbnail">
-                    <img className="img-responsive" src="http://placehold.it/750x450" alt=""/>
+                    <img className="img-responsive developer-icon" src="img/michael.png" alt=""/>
                     <div className="caption">
                         <h3>Michael Schmittlein<br/>
                             <small>Developer</small>
                         </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
+                        <p>He is a emoji dude.</p>
                         <ul className="list-inline">
                             <li><a href="#"><i className="fa fa-facebook"></i></a>
                             </li>

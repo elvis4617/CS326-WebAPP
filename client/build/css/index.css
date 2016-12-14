@@ -162,3 +162,8 @@ h6 {
         margin-bottom: 30px;
     }
 }
+
+.developer-icon{
+  width: 750px;
+  height: 250px !important;
+}

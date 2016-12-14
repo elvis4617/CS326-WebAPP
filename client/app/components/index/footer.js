@@ -30,7 +30,7 @@ export default class Footer extends React.Component{
           </Link>
            ·
           <Link to={'/Faq'}>
-            <a href="#" className="footer-nav">Faq</a>
+            <span href="#" className="footer-nav">Faq</span>
           </Link>
            ·
           <Link to={'/Contact'}>
