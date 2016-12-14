@@ -13,7 +13,7 @@
     },
     "threadid": {
       "id": "threadid",
-      "type": "integer"
+      "type": "string"
     }
   },
   "additionalProperties": false,

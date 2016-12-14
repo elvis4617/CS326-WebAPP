@@ -37,6 +37,11 @@ MongoClient.connect(url, function(err, db) {
     // '..' means "go up one directory", so this translates into `client/build`!
     app.use(express.static('../client/build'));
 
+    //Helper method
+    function sendDatabaseError(res, err) {
+      res.status(500).send("A database error occurred: " + err);
+    }
+
     function getUserIdFromToken(authorizationLine) {
       try {
         // Cut off "Bearer " from the header value.
@@ -925,7 +930,7 @@ MongoClient.connect(url, function(err, db) {
           if (err) {
         // A database error happened.
         // Internal Error: 500.
-          res.status(500).send("Database error: " + err);
+        sendDatabaseError(res, err)
         } else if (forumData === null) {
           // Couldn't find the feed in the database.
           res.status(400).send("Could not look up forum for user " + userid);
@@ -989,7 +994,7 @@ MongoClient.connect(url, function(err, db) {
           if (err) {
           // A database error happened.
           // 500: Internal error.
-          res.status(500).send("A database error occurred: " + err);
+          sendDatabaseError(res, err)
         } else {
           // When POST creates a new resource, we should tell the client about it
           // in the 'Location' header and use status code 201.
@@ -1023,7 +1028,7 @@ MongoClient.connect(url, function(err, db) {
         if (err) {
       // A database error happened.
       // Internal Error: 500.
-        res.status(500).send("Database error: " + err);
+        sendDatabaseError(res, err)
       } else if (forumItem === null) {
         // Couldn't find the feed in the database.
         res.status(400).send("Could not look up post");
@@ -1036,17 +1041,24 @@ MongoClient.connect(url, function(err, db) {
     });
 
 
-    function postReply(user, contents, Id){
-      var postData = readDocument('postItem', Id);
-      postData.commentThread.push({
+    function postReply(user, contents, Id, callback){
+      var currentTime = new Date().getTime();
+      var newComment = {
         "author": user,
-        "postDate": new Date().getTime(),
+        "postDate": currentTime,
         "content": contents
+      };
+      db.collection('postItem').updateOne({ _id: Id },
+        {
+        $push: { commentThread: newComment },
+        $set: { lastReplyAuthor: new ObjectID(user), lastReplyDate: currentTime}
+    }, function(err){
+      if(err){
+        return callback(err);
+      }
+        callback(null, newComment);
       });
-      writeDocument('postItem', postData);
-
-      return postData.commentThread;
-    }
+  }
 
     app.post('/thread/comments',
       validate({ body: commentSchema }), function(req, res) {
@@ -1056,19 +1068,25 @@ MongoClient.connect(url, function(err, db) {
       // Check if requester is authorized to post this comment.
       // (The requester must be the author of the comment.)
       if (fromUser === body.author) {
-        var newComment = postReply(body.author, body.contents, body.threadid);
+          postReply(new ObjectID(fromUser), body.contents,new ObjectID(body.threadid), function(err,newComment){
+          if (err) {
+          // A database error happened.
+          // 500: Internal error.
+          res.status(500).send("A database error occurred: " + err);
+        } else {
           // When POST creates a new resource, we should tell the client about it
           // in the 'Location' header and use status code 201.
           res.status(201);
           res.set('Location', '/thread/comments' + newComment._id);
-          // Send the update!
+            // Send the update!
           res.send(newComment);
+        }
+      });
         } else {
           // 401: Unauthorized.
           res.status(401).end();
         }
     });
-
 
     // Starts the server on port 3000!
     app.listen(3000, function () {
