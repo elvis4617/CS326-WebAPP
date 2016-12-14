@@ -386,62 +386,6 @@ MongoClient.connect(url, function(err, db) {
       });
     });
 
-
-    // Michael
-    function onMessage(message, authorId, recieverId, callback){
-      var date = new Date().getTime();
-        var authorObjectID = new ObjectID(authorId);
-        var recieverObjectID = new ObjectID(recieverId)
-        var newRequest ={
-          "type":'Message',
-          "author": authorObjectID,
-          "reciever": recieverObjectID,
-          "createDate":date,
-          "status": false,
-          "group":new ObjectID("000000000000000000000001"),
-          "title":"Message",
-          "content":message,
-          "read":false
-        };
-
-          db.collection('requestItems').insertOne(newRequest, function(err, result){
-            if(err){
-              return callback(err);
-            }
-            newRequest._id = result.insertedId;
-
-            db.collection('users').updateOne({_id: recieverObjectID},
-              {
-                $addToSet:{
-                  mailbox: newRequest._id
-                }
-              },function(err){
-              if(err){
-                return callback(err);
-              }
-              callback(null, newRequest._id)
-            });
-          });
-        }
-
-      // Michael
-      app.post('/message', function(req, res){
-        var body = req.body;
-        onMessage(body.Message, body.AuthorId, body.RecieverId, function(err, requestItem){
-          if(err){
-            res.status(500).send("A database error occured: " + err);
-          }
-          else if(requestItem === null){
-            res.status(400).send("Unable to find userName: " + body.username);
-          }
-          else{
-            res.status(201);
-            res.set('Location', '/requestItems/'+ requestItem._id);
-            res.send(requestItem);
-          }
-        });
-      });
-
     // Michael
     function getUserByUserName(username, callback){
       db.collection('users').findOne({userName: username}, function(err, user){
