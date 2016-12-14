@@ -347,8 +347,9 @@ MongoClient.connect(url, function(err, db) {
 
     // Michael / Elvis
     function getFriendList(userid, callback) {
+      var userId = new ObjectID(userid);
       //get user with given id
-      db.collection('users').findOne({ _id: ObjectID(userid)}, function(err, user) {
+      db.collection('users').findOne({ _id: userId}, function(err, user) {
         if (err) {
           // An error occurred.
           return callback(err);
@@ -356,11 +357,11 @@ MongoClient.connect(url, function(err, db) {
           // user not found!
           return callback(null, null);
         }else{
-          resolveUnReadObjects(user.friendList, function(err, data){
+          resolveUserObjects(user.friendList, function(err, data){
             if(err){
               callback(err);
             }else{
-              callback(null, data);
+              callback(null, user.friendList.map((friendId) => data[friendId]));
             }
           });
         }
