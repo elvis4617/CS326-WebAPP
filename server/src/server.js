@@ -160,6 +160,7 @@ MongoClient.connect(url, function(err, db) {
       });
     }
 
+    //get mailbox of a particular user
     function getRequestData(user, callback){
       db.collection('users').findOne({
         _id: user
@@ -182,7 +183,7 @@ MongoClient.connect(url, function(err, db) {
                   userData.mailbox = resolvedContents;
                   callback(null, userData);
                 } else{
-                  processNextRequestItem(i+1)
+                  processNextRequestItem(i-1)
                 }
             }
           });
@@ -191,7 +192,7 @@ MongoClient.connect(url, function(err, db) {
         if(userData.mailbox.length===0){
           callback(null, userData);
         } else{
-          processNextRequestItem(0);
+          processNextRequestItem(userData.mailbox.length-1);
         }
 
       });
@@ -316,29 +317,26 @@ MongoClient.connect(url, function(err, db) {
     });
     var getCollection = database.getCollection;
 
-    function getUser(userName){
+    //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+    function getUserObjectByName(userName, callback){
 
-      var targetId = 0;
-      var wat = Object.keys(getCollection('users'));
-      wat.forEach((userId)=>{
-        var userData = readDocument('users', userId);
-        if(userData.fullName === userName)
-          targetId = userData._id;
+      db.collection('users').findOne({fullName: userName}, function(err, userObject){
+        if(err){
+          return callback(err);
+        } else{
+          callback(null, userObject);
+        }
       });
-
-      return targetId;
     }
 
-    function getGroup(groupName){
-      var targetId = 0;
-      var wat = Object.keys(getCollection('groups'));
-      wat.forEach((userId)=>{
-        var groupData = readDocument('groups', userId);
-        if(groupData.groupName === groupName)
-          targetId = groupData._id;
+    function getGroupObjectByName(groupName, callback){
+      db.collection('groups').findOne({groupName: groupName}, function(err, groupObject){
+        if(err){
+          return callback(err);
+        } else{
+          callback(null, groupObject);
+        }
       });
-
-      return targetId;
     }
 
     //Elvis
@@ -482,33 +480,65 @@ MongoClient.connect(url, function(err, db) {
     });
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-    function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry){
+    function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry, callback){
       var time = new Date().getTime();
 
-      var recieverId=getUser(recieverName);
-      var groupId=getGroup(groupName);
+      getUserObjectByName(recieverName, function(err, userObject){
+        if(err){
+          return callback(err);
+        } else if(userObject === null){
+          return callback(null, null);
+        }
 
-      if (recieverId <= 0 || groupId <= 0)
-        return null;
+        var recieverId=userObject._id;
 
-      var newRequest ={
-        "type":typeEntry,
-        "author": userId,
-        "reciever": recieverId,
-        "createDate":time,
-        "status": false,
-        "group":groupId,
-        "title":titleEntry,
-        "content":requestContent,
-        "read":false
-      };
+        getGroupObjectByName(groupName, function(err, groupObject){
+          if(err){
+            return callback(err);
+          } else if(groupObject === null){
+            return callback(null, null);
+          }
 
-      newRequest = addDocument('requestItems',newRequest);
-      var userData = readDocument('users',userId);
+          var groupId = groupObject._id;
+          var newRequest ={
+            "type":typeEntry,
+            "author": new ObjectID(userId),
+            "reciever": recieverId,
+            "createDate":time,
+            "status": false,
+            "group":groupId,
+            "title":titleEntry,
+            "content":requestContent,
+            "read":false
+          };
 
-      userData.mailbox.unshift(newRequest._id);
-      writeDocument('users',userData);
-      return newRequest;
+          db.collection('requestItems').insertOne(newRequest, function(err, result){
+            if(err){
+              return callback(err);
+            }
+            newRequest._id = result.insertedId;
+
+            db.collection('users').updateOne({_id: new ObjectID(userId)},
+              {
+                $addToSet:{
+                  mailbox: newRequest._id
+                }
+              },function(err){
+              if(err){
+                return callback(err);
+              }
+              getRequestItem(newRequest._id, function(err, requestItem){
+                if(err){
+                  callback (err);
+                }
+                callback(err, requestItem)
+              });
+            });
+          });
+        });
+      });
+
+
     }
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
@@ -519,12 +549,18 @@ MongoClient.connect(url, function(err, db) {
 
       var fromUser = getUserIdFromToken(req.get('Authorization'));
       if(body.userId  === fromUser){
-        var newRequest = writeRequest(body.userId, body.recieverName, body.contents, body.title,
-                                      body.groupName, body.typeEntry);
-        res.status(201);
-        res.set('Location','/requestitem/'+ newRequest._id);
+        writeRequest(body.userId, body.recieverName, body.contents, body.title,
+                                      body.groupName, body.typeEntry,function(err, requestItem){
+          if(err){
+            res.status(500).send("A database error occured: " + err)
+          } else{
 
-        res.send(newRequest);
+            res.status(201);
+            res.set('Location', '/requestItems/'+requestItem._id);
+            res.send(requestItem);
+          }
+      });
+
       } else {
         res.status(401).end();
       }
