@@ -10,8 +10,11 @@ MongoClient.connect(url, function(err, db) {
     var database = require("./database.js");
     var readDocument = database.readDocument;
     var validate = require('express-jsonschema').validate;
-    var writeDocument = database.writeDocument;
-    var addDocument = database.addDocument;
+<<<<<<< HEAD
+    //var writeDocument = database.writeDocument;
+    //var addDocument = database.addDocument;
+=======
+>>>>>>> 098667a6faf40351534bb6b4fddf550ded8400ab
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
@@ -321,6 +324,11 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
+<<<<<<< HEAD
+    //var getCollection = database.getCollection;
+
+=======
+>>>>>>> 098667a6faf40351534bb6b4fddf550ded8400ab
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -467,26 +475,35 @@ MongoClient.connect(url, function(err, db) {
 
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
-
+    // Add friend to friendList
     app.put('/user/:userid/friend/:friendname', function(req, res){
       var friendName = req.params.friendname;
-      var userId = parseInt(req.params.userid, 10);
-      var friendId = getUser(friendName);
+      var userId = new ObjectID(req.params.userid);
 
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(userId === fromUser){
+      getUserObjectByName(friendName, function(err, userObject){
+        if(err)
+          return sendDatabaseError(res, err);
 
-        var userData = readDocument('users',userId);
-        var friended = userData.friendList.indexOf(friendId);
-        if(friended == -1){
-          userData.friendList.push(friendId);
-          writeDocument('users', userData);
+        if(userObject === null)
+          return res.status(400).end();
+        if(userId === userObject._id){
+          db.collection('users').updateOne({_id:userId},{
+            $addToSet:userObject._id
+          }, function(err){
+            if(err)
+             return sendDatabaseError(res, err);
+
+            getUserData(userId, function(err, targetObject){
+              if(err)
+                return sendDatabaseError(res, err);
+
+              res.send(targetObject);
+            });
+          });
+        } else{
+          res.status(403).end();
         }
-
-        res.send(userData);
-      } else{
-        res.status(401).end();
-      }
+      });
 
 
     });
@@ -670,8 +687,16 @@ MongoClient.connect(url, function(err, db) {
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
     app.get('/username/:name', function(req, res){
       var userName = req.params.name;
-      var userId = getUser(userName);
-      res.send(readDocument('users', userId));
+
+      getUserObjectByName(userName, function(err, userObject){
+        if(err){
+          return sendDatabaseError(res, err);
+        } else if(userObject === null){
+          return res.status(400).end();
+        }
+
+        res.send(userObject);
+      });
     });
 
 
