@@ -10,8 +10,11 @@ MongoClient.connect(url, function(err, db) {
     var database = require("./database.js");
     var readDocument = database.readDocument;
     var validate = require('express-jsonschema').validate;
+<<<<<<< HEAD
     //var writeDocument = database.writeDocument;
     //var addDocument = database.addDocument;
+=======
+>>>>>>> 098667a6faf40351534bb6b4fddf550ded8400ab
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
@@ -321,8 +324,11 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
+<<<<<<< HEAD
     //var getCollection = database.getCollection;
 
+=======
+>>>>>>> 098667a6faf40351534bb6b4fddf550ded8400ab
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
