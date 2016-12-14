@@ -14,7 +14,7 @@ export default class AddFriendPage extends React.Component {
     return (
       <div className = "container content friend">
         <div className = "row add-friend-panel">
-          <div className = "col-md-7 col-md-offset-3">
+          <div className = "col-md-6 col-md-offset-3">
             <button type="button" className="btn navbar-btn add-btn btn-friends btn-default">
               <span className="glyphicon glyphicon-user plus-icon"></span>
               <Link to={"/MyFriend"}>
