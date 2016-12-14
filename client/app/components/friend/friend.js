@@ -21,8 +21,8 @@ export default class friend extends React.Component {
                   <img className="profpic" src = "img/testProfilePic.jpg"/>
                 </div>
                 <div className ="media-body">
-                  <a type="button" data-toggle="modal" data-target={"#account-modal"+ friend._id} href="#">{data.fullName}</a>
-                    <FriendDetailModal id={friend._id}
+                  <a type="button" data-toggle="modal" data-target={"#account-modal"+ data._id} href="#">{data.fullName}</a>
+                    <FriendDetailModal id={data._id}
                                data={data}>
                     </FriendDetailModal>
                   <br/>
