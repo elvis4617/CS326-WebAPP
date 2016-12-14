@@ -33,7 +33,7 @@ export default class friendsFeed extends React.Component {
           </Link>
         </button>
         <hr />
-          {this.state.contents.map((friend, i) => {
+          {this.state.contents.map((friend) => {
               return (
                 <Friend key={parseInt((friend._id + ''), 16)} data={friend} />
               )
