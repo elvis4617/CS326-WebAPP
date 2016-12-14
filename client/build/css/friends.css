@@ -46,6 +46,7 @@ hr {
 
 .friend-div {
   margin-top: 110px;
+  min-height: 80vh;
 }
 
 .panel-body{
