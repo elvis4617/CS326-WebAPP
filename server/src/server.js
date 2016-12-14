@@ -321,7 +321,10 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
+<<<<<<< HEAD
     //var getCollection = database.getCollection;
+=======
+>>>>>>> 871091fa0ef00c5bb97d2d4d1e7df9dd72e3c0bf
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -346,6 +349,7 @@ MongoClient.connect(url, function(err, db) {
     }
 
 
+    // Michael / Elvis
     function getFriendList(userid, callback) {
       //get user with given id
       db.collection('users').findOne({ _id: ObjectID(userid)}, function(err, user) {
@@ -360,7 +364,6 @@ MongoClient.connect(url, function(err, db) {
             if(err){
               callback(err);
             }else{
-              console.log(data);
               callback(null, data);
             }
           });
@@ -368,6 +371,7 @@ MongoClient.connect(url, function(err, db) {
     });
   }
 
+    // Michael
     app.get('/friend/:userid', function(req, res) {
       var userid = req.params.userid;
       getFriendList(userid, function(err, friends){
@@ -386,27 +390,7 @@ MongoClient.connect(url, function(err, db) {
       });
     });
 
-    // not Tested, should be onhold, future funationality
-    function onMessage(message, authorId, recieverId){
-      var date = new Date().getTime();
-      var newMessage = {
-        "Type": "Message",
-        "author": authorId,
-        "reciever": recieverId,
-        "createDate": date,
-        "status": false,
-        "group":0,
-        "title": "Message",
-        "content": message,
-        "read": false
-      }
-      var newMessage1 = addDocument('requestItems',newMessage);
-      var userData = readDocument('users',recieverId);
-      userData.mailbox.unshift(newMessage1._id);
-      writeDocument('users',userData);
-      return newMessage1;
-    }
-
+    // Michael
     function getUserByUserName(username, callback){
       db.collection('users').findOne({userName: username}, function(err, user){
         if(err){
@@ -417,7 +401,7 @@ MongoClient.connect(url, function(err, db) {
       });
     }
 
-    //Not Tested
+    // Michael
     function onRequest(username, authorId, callback){
       var date = new Date().getTime();
 
@@ -466,7 +450,7 @@ MongoClient.connect(url, function(err, db) {
         });
       }
 
-    //not Tested
+    // Michael
     app.post('/friendRequest', function(req, res){
       var body = req.body;
       onRequest(body.username, body.authorId, function(err, requestItem){
@@ -519,20 +503,6 @@ MongoClient.connect(url, function(err, db) {
 
     });
 
-    //Not Tested
-    app.post('/message', function(req, res){
-      var body = req.body;
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(body.AuthorId === fromUser){
-        var newMessage = onMessage(body.Message, body.AuthorId, body.RecieverId);
-        res.status(201);
-        res.set('Location', '/message/' + newMessage._id);
-        res.send(newMessage);
-      }
-      else {
-        res.status(401).end();
-      }
-    });
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry, callback){
