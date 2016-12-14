@@ -7,11 +7,12 @@ var url = 'mongodb://localhost:27017/toGather';
 MongoClient.connect(url, function(err, db) {
 
     var bodyParser = require('body-parser');
-    var database = require("./database.js");
-    var readDocument = database.readDocument;
     var validate = require('express-jsonschema').validate;
+<<<<<<< HEAD
     //var writeDocument = database.writeDocument;
     //var addDocument = database.addDocument;
+=======
+>>>>>>> 16299cbdff98c674f7dcc83ea8965ba81a70de6c
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
@@ -321,8 +322,11 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
+<<<<<<< HEAD
 
     //var getCollection = database.getCollection;
+=======
+>>>>>>> 16299cbdff98c674f7dcc83ea8965ba81a70de6c
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -349,8 +353,9 @@ MongoClient.connect(url, function(err, db) {
 
     // Michael / Elvis
     function getFriendList(userid, callback) {
+      var userId = new ObjectID(userid);
       //get user with given id
-      db.collection('users').findOne({ _id: ObjectID(userid)}, function(err, user) {
+      db.collection('users').findOne({ _id: userId}, function(err, user) {
         if (err) {
           // An error occurred.
           return callback(err);
@@ -358,11 +363,11 @@ MongoClient.connect(url, function(err, db) {
           // user not found!
           return callback(null, null);
         }else{
-          resolveUnReadObjects(user.friendList, function(err, data){
+          resolveUserObjects(user.friendList, function(err, data){
             if(err){
               callback(err);
             }else{
-              callback(null, data);
+              callback(null, user.friendList.map((friendId) => data[friendId]));
             }
           });
         }
@@ -1113,17 +1118,6 @@ MongoClient.connect(url, function(err, db) {
       res.status(401).end();
     }
     });
-
-    function getPostDataById(Id) {
-      var postData = readDocument('postItem', Id);
-
-      postData.author = readDocument('users', postData.author).fullName;
-      postData.commentThread.forEach((comment) => {
-        comment.author = readDocument('users', comment.author);
-      });
-      var value = {contents : postData};
-      return value;
-    }
 
     app.get('/feeditem/:feeditemid', function(req, res) {
       var feeditemid = req.params.feeditemid;
