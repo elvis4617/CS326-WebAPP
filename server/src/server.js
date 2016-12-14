@@ -15,6 +15,7 @@ MongoClient.connect(url, function(err, db) {
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
+    var ResetDatabase = require('./resetdatabase');
 
     var mongo_express = require('mongo-express/lib/middleware');
     // Import the default Mongo Express configuration
@@ -675,14 +676,13 @@ MongoClient.connect(url, function(err, db) {
       }
     });
 
-      // Reset database.
-      app.post('/resetdb', function(req, res) {
+    // Reset database.
+    app.post('/resetdb', function(req, res) {
       console.log("Resetting database...");
-      // This is a debug route, so don't do any validation.
       ResetDatabase(db, function() {
         res.send();
       });
-      });
+    });
 
       //Elvis here
       //Elvis here
@@ -928,31 +928,99 @@ MongoClient.connect(url, function(err, db) {
     //Minxin here
     //Minxin here
     //Minxin here
-    function getForumData(user){
 
-      var userData = readDocument('users', user);
-      var postData = userData.postItem;
-      var postList = [];
-      for (var item in postData){
-        var postItem = readDocument('postItem', postData[item]);
-        postItem.author = readDocument('users', postItem.author);
-        postItem.lastReplyAuthor = readDocument ('users', postItem.lastReplyAuthor);
-        postItem.commentThread.forEach((comment) => {
-          comment.author = readDocument('users', comment.author);
-        });
-        postList.push(postItem);
-      }
-      var value = {contents: postList};
-
-      return value;
+  function getForumItem(postItemId, callback) {
+  // Get the feed item with the given ID.
+  db.collection('postItem').findOne({
+    _id: postItemId
+  }, function(err, postItem) {
+    if (err) {
+      // An error occurred.
+      return callback(err);
+    } else if (postItem === null) {
+      // Feed item not found!
+      return callback(null, null);
     }
+
+    var userList = [postItem.author];
+    userList.push(postItem.lastReplyAuthor);
+    postItem.commentThread.forEach((comment) => userList.push(comment.author));
+    resolveUserObjects(userList, function(err, userMap) {
+      if (err) {
+        return callback(err);
+      }
+      postItem.author = userMap[postItem.author];
+      postItem.lastReplyAuthor = userMap[postItem.lastReplyAuthor];
+      postItem.commentThread.forEach((comment) => {
+        comment.author = userMap[comment.author];
+      });
+      callback(null, postItem);
+    });
+  });
+}
+
+    function getForumData(user, callback){
+
+      db.collection('users').findOne({
+        _id: user
+      }, function (err, userData){
+        if(err){
+          return callback(err);
+        } else if (userData === null){
+          return callback(null, null);
+        }
+          var resolvedContents = [];
+
+          function processNextPostItem(i){
+            getForumItem(userData.postItem[i], function(err, postItem){
+                if(err){
+                  callback(err);
+                } else {
+                  resolvedContents.push(postItem);
+                  if(resolvedContents.length === userData.postItem.length){
+                    userData.postItem = resolvedContents;
+                    callback(null, userData.postItem);
+                  } else {
+                    processNextPostItem(i+1);
+                  }
+                }
+              });
+            }
+
+            if (userData.postItem.length === 0){
+              callback(null, userData.postItem);
+            } else {
+              processNextPostItem(0);
+            }
+          });
+      }
 
     app.get('/user/:userid/feeditem', function(req, res) {
       var userid = req.params.userid;
-      res.send(getForumData(userid));
-    });
+      var fromUser = getUserIdFromToken(req.get('Authorization'));
+      if (fromUser === userid) {
+        // Convert userid into an ObjectID before passing it to database queries.
+        getForumData(new ObjectID(userid), function(err, forumData) {
+          if (err) {
+        // A database error happened.
+        // Internal Error: 500.
+          res.status(500).send("Database error: " + err);
+        } else if (forumData === null) {
+          // Couldn't find the feed in the database.
+          res.status(400).send("Could not look up forum for user " + userid);
+        } else {
+          // Send data.
+          //console.log(forumData);
+          res.send(forumData);
+        }
+      });
+    } else {
+      // 403: Unauthorized request.
+      res.status(403).end();
+    }
+  });
 
-    function postThread(user, title, contents){
+    function postThread(user, title, contents, callback){
       var time = new Date().getTime();
       var newThread = {
         "author": user,
@@ -965,14 +1033,27 @@ MongoClient.connect(url, function(err, db) {
         "lastReplyDate": time,
         "commentThread": []
       };
-      newThread = addDocument('postItem', newThread);
-      var userData = readDocument('users', user);
 
-      userData.postItem.unshift(newThread._id);
+  db.collection('postItem').insertOne(newThread, function(err, result) {
+    if (err) {
+      return callback(err);
+    }
+    newThread._id = result.insertedId;
 
-      writeDocument('users', userData);
-
-      return newThread;
+    // Retrieve the author's user object.
+    db.collection('users').updateOne({ _id: user },
+        {
+          $push: {
+            postItem: {$each: [newThread._id],
+              $position: 0}
+          }
+        }, function(err) {
+          if (err) {
+            return callback(err);
+          }
+          callback(null, newThread);
+    });
+  });
     }
 
     app.post('/thread',
@@ -983,22 +1064,29 @@ MongoClient.connect(url, function(err, db) {
       // Check if requester is authorized to post this status update.
       // (The requester must be the author of the update.)
       if (fromUser === body.author) {
-        var newUpdate = postThread(body.author, body.title,
-          body.contents);
+        postThread(new ObjectID(fromUser), body.title, body.contents, function(err,newUpdate){
+          if (err) {
+          // A database error happened.
+          // 500: Internal error.
+          res.status(500).send("A database error occurred: " + err);
+        } else {
           // When POST creates a new resource, we should tell the client about it
           // in the 'Location' header and use status code 201.
           res.status(201);
-          res.set('Location', '/thread' + newUpdate._id);
-          // Send the update!
+          res.set('Location', '/thread/' + newUpdate._id);
+            // Send the update!
           res.send(newUpdate);
-        } else {
-          // 401: Unauthorized.
-          res.status(401).end();
         }
+      });
+    } else {
+      // 401: Unauthorized.
+      res.status(401).end();
+    }
     });
 
     function getPostDataById(Id) {
       var postData = readDocument('postItem', Id);
+
       postData.author = readDocument('users', postData.author).fullName;
       postData.commentThread.forEach((comment) => {
         comment.author = readDocument('users', comment.author);
@@ -1008,8 +1096,22 @@ MongoClient.connect(url, function(err, db) {
     }
 
     app.get('/feeditem/:feeditemid', function(req, res) {
-      var userid = req.params.feeditemid;
-      res.send(getPostDataById(userid));
+      var feeditemid = req.params.feeditemid;
+      getForumItem(new ObjectID(feeditemid), function(err, forumItem) {
+        // console.log("forum data: " +  forumItem);
+        if (err) {
+      // A database error happened.
+      // Internal Error: 500.
+        res.status(500).send("Database error: " + err);
+      } else if (forumItem === null) {
+        // Couldn't find the feed in the database.
+        res.status(400).send("Could not look up post");
+      } else {
+        // Send data.
+        //console.log(forumItem);
+        res.send(forumItem);
+        }
+      });
     });
 
 

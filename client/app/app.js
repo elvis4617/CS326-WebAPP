@@ -138,7 +138,7 @@ class App extends React.Component {
     render(){
       return(
         <div>
-          <ForumItem user={1}/>
+          <ForumItem user={"000000000000000000000001"}/>
           <Footer />
         </div>
       )
