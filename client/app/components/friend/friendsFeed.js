@@ -35,7 +35,7 @@ export default class friendsFeed extends React.Component {
         <hr />
           {this.state.contents.map((friend) => {
               return (
-                <Friend key={parseInt((friend._id + ''), 16)} data={friend} />
+                <Friend key={friend._id} data={friend} />
               )
           })}
         </div>

@@ -14,7 +14,7 @@ export default class MessageEntry extends React.Component {
     var status;
     var message = this.state.value.trim();
     if (message !== "") {
-      onMessage(message, 1, this.props.friendId, (result) => {return(status = result)});
+      onMessage(message, "000000000000000000000001", this.props.friendId, (result) => {return(status = result)});
       // Reset status update.
       this.setState({value: ""});
     }

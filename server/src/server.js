@@ -395,26 +395,65 @@ MongoClient.connect(url, function(err, db) {
       });
     });
 
+
     // not Tested, should be onhold, future funationality
-    function onMessage(message, authorId, recieverId){
+    function onMessage(message, authorId, recieverId, callback){
       var date = new Date().getTime();
-      var newMessage = {
-        "Type": "Message",
-        "author": authorId,
-        "reciever": recieverId,
-        "createDate": date,
-        "status": false,
-        "group":0,
-        "title": "Message",
-        "content": message,
-        "read": false
-      }
-      var newMessage1 = addDocument('requestItems',newMessage);
-      var userData = readDocument('users',recieverId);
-      userData.mailbox.unshift(newMessage1._id);
-      writeDocument('users',userData);
-      return newMessage1;
-    }
+        var authorObjectID = new ObjectID(authorId);
+        var newRequest ={
+          "type":'Message',
+          "author": authorObjectID,
+          "reciever": recieverId,
+          "createDate":date,
+          "status": false,
+          "group":new ObjectID("000000000000000000000001"),
+          "title":"Message",
+          "content":message,
+          "read":false
+        };
+
+          db.collection('requestItems').insertOne(newRequest, function(err, result){
+            if(err){
+              return callback(err);
+            }
+            newRequest._id = result.insertedId;
+
+            db.collection('users').updateOne({_id: recieverId},
+              {
+                $addToSet:{
+                  mailbox: newRequest._id
+                }
+              },function(err){
+              if(err){
+                return callback(err);
+              }
+              getRequestItem(newRequest._id, function(err, requestItem){
+                if(err){
+                  callback (err);
+                }
+                callback(err, requestItem)
+              });
+            });
+          });
+        }
+
+      //Not Tested
+      app.post('/message', function(req, res){
+        var body = req.body;
+        onMessage(body.Message, body.AuthorId, body.RecieverId, function(err, requestItem){
+          if(err){
+            res.status(500).send("A database error occured: " + err);
+          }
+          else if(requestItem === null){
+            res.status(400).send("Unable to find userName: " + body.username);
+          }
+          else{
+            res.status(201);
+            res.set('Location', '/requestItems/'+ requestItem._id);
+            res.send(requestItem);
+          }
+        });
+      });
 
     function getUserByUserName(username, callback){
       db.collection('users').findOne({userName: username}, function(err, user){
@@ -518,20 +557,6 @@ MongoClient.connect(url, function(err, db) {
 
     });
 
-    //Not Tested
-    app.post('/message', function(req, res){
-      var body = req.body;
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(body.AuthorId === fromUser){
-        var newMessage = onMessage(body.Message, body.AuthorId, body.RecieverId);
-        res.status(201);
-        res.set('Location', '/message/' + newMessage._id);
-        res.send(newMessage);
-      }
-      else {
-        res.status(401).end();
-      }
-    });
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry, callback){
