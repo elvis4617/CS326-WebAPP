@@ -1,5 +1,5 @@
 import React from 'react';
-import {onRequest} from '../../server';
+import {addFriend} from '../../server';
 
 export default class RequestEntry extends React.Component {
   constructor(props) {
@@ -12,9 +12,12 @@ export default class RequestEntry extends React.Component {
 
   handleRequest(e) {
     e.preventDefault();
-    onRequest(this.state.value, "000000000000000000000001", function(res){
-      
-    });
+    var entry = this.state.value.trim();
+    if(entry !== ""){
+      entry = entry.replace(" ", "%20");
+      addFriend("000000000000000000000001", entry, () =>{
+        this.setState({value: ""});
+      });}
     // Reset status update.
     this.setState({value: ""});
     }

@@ -8,11 +8,6 @@ MongoClient.connect(url, function(err, db) {
 
     var bodyParser = require('body-parser');
     var validate = require('express-jsonschema').validate;
-<<<<<<< HEAD
-    //var writeDocument = database.writeDocument;
-    //var addDocument = database.addDocument;
-=======
->>>>>>> 16299cbdff98c674f7dcc83ea8965ba81a70de6c
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
@@ -322,11 +317,6 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
-<<<<<<< HEAD
-
-    //var getCollection = database.getCollection;
-=======
->>>>>>> 16299cbdff98c674f7dcc83ea8965ba81a70de6c
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -474,19 +464,23 @@ MongoClient.connect(url, function(err, db) {
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
     // Add friend to friendList
-    app.put('/user/:userid/friend/:friendname', function(req, res){
+    app.put('/friend/:friendname/user/:userid', function(req, res){
       var friendName = req.params.friendname;
       var userId = new ObjectID(req.params.userid);
+      var fromUser = getUserIdFromToken(req.get('Authorization'));
 
+      if(req.params.userid === fromUser){
       getUserObjectByName(friendName, function(err, userObject){
         if(err)
           return sendDatabaseError(res, err);
 
         if(userObject === null)
           return res.status(400).end();
-        if(userId === userObject._id){
+
           db.collection('users').updateOne({_id:userId},{
-            $addToSet:userObject._id
+            $addToSet:{
+              friendList:userObject._id
+            }
           }, function(err){
             if(err)
              return sendDatabaseError(res, err);
@@ -498,10 +492,9 @@ MongoClient.connect(url, function(err, db) {
               res.send(targetObject);
             });
           });
-        } else{
-          res.status(403).end();
-        }
-      });
+      });} else {
+        res.status(403).end();
+      }
 
 
     });

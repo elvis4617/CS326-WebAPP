@@ -190,6 +190,13 @@ export function onRequest(username, authorId, cb) {
   });
 }
 
+export function addFriend(userId, friendName, cb){
+  sendXHR('PUT', '/friend/'+friendName+'/user/'+userId, undefined,
+          (xhr) => {
+              cb(JSON.parse(xhr.responseText));
+          });
+}
+
 export function getForumData(user, cb){
   sendXHR('GET', '/user/' + user + '/feeditem', undefined, (xhr) => {
     cb(JSON.parse(xhr.responseText));
