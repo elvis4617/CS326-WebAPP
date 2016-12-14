@@ -321,7 +321,7 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
-    var getCollection = database.getCollection;
+    //var getCollection = database.getCollection;
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -486,26 +486,35 @@ MongoClient.connect(url, function(err, db) {
 
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
-
+    // Add friend to friendList
     app.put('/user/:userid/friend/:friendname', function(req, res){
       var friendName = req.params.friendname;
-      var userId = parseInt(req.params.userid, 10);
-      var friendId = getUser(friendName);
+      var userId = new ObjectID(req.params.userid);
 
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(userId === fromUser){
+      getUserObjectByName(friendName, function(err, userObject){
+        if(err)
+          return sendDatabaseError(res, err);
 
-        var userData = readDocument('users',userId);
-        var friended = userData.friendList.indexOf(friendId);
-        if(friended == -1){
-          userData.friendList.push(friendId);
-          writeDocument('users', userData);
+        if(userObject === null)
+          return res.status(400).end();
+        if(userId === userObject._id){
+          db.collection('users').updateOne({_id:userId},{
+            $addToSet:userObject._id
+          }, function(err){
+            if(err)
+             return sendDatabaseError(res, err);
+
+            getUserData(userId, function(err, targetObject){
+              if(err)
+                return sendDatabaseError(res, err);
+
+              res.send(targetObject);
+            });
+          });
+        } else{
+          res.status(403).end();
         }
-
-        res.send(userData);
-      } else{
-        res.status(401).end();
-      }
+      });
 
 
     });
@@ -703,8 +712,16 @@ MongoClient.connect(url, function(err, db) {
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
     app.get('/username/:name', function(req, res){
       var userName = req.params.name;
-      var userId = getUser(userName);
-      res.send(readDocument('users', userId));
+
+      getUserObjectByName(userName, function(err, userObject){
+        if(err){
+          return sendDatabaseError(res, err);
+        } else if(userObject === null){
+          return res.status(400).end();
+        }
+
+        res.send(userObject);
+      });
     });
 
 
