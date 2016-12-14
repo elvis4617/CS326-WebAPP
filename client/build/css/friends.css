@@ -1,3 +1,7 @@
+.friend{
+  padding-top: 60px;
+}
+
 .pad{
   padding-top: 15px !important;
   padding-bottom: 15px !important;
@@ -42,6 +46,7 @@ hr {
 
 .friend-div {
   margin-top: 110px;
+  min-height: 80vh;
 }
 
 .panel-body{

@@ -7,11 +7,7 @@ var url = 'mongodb://localhost:27017/toGather';
 MongoClient.connect(url, function(err, db) {
 
     var bodyParser = require('body-parser');
-    var database = require("./database.js");
-    var readDocument = database.readDocument;
     var validate = require('express-jsonschema').validate;
-    var writeDocument = database.writeDocument;
-    var addDocument = database.addDocument;
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
@@ -321,7 +317,6 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
-    var getCollection = database.getCollection;
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -346,9 +341,11 @@ MongoClient.connect(url, function(err, db) {
     }
 
 
+    // Michael / Elvis
     function getFriendList(userid, callback) {
+      var userId = new ObjectID(userid);
       //get user with given id
-      db.collection('users').findOne({ _id: ObjectID(userid)}, function(err, user) {
+      db.collection('users').findOne({ _id: userId}, function(err, user) {
         if (err) {
           // An error occurred.
           return callback(err);
@@ -356,18 +353,18 @@ MongoClient.connect(url, function(err, db) {
           // user not found!
           return callback(null, null);
         }else{
-          resolveUnReadObjects(user.friendList, function(err, data){
+          resolveUserObjects(user.friendList, function(err, data){
             if(err){
               callback(err);
             }else{
-              console.log(data);
-              callback(null, data);
+              callback(null, user.friendList.map((friendId) => data[friendId]));
             }
           });
         }
     });
   }
 
+    // Michael
     app.get('/friend/:userid', function(req, res) {
       var userid = req.params.userid;
       getFriendList(userid, function(err, friends){
@@ -386,27 +383,7 @@ MongoClient.connect(url, function(err, db) {
       });
     });
 
-    // not Tested, should be onhold, future funationality
-    function onMessage(message, authorId, recieverId){
-      var date = new Date().getTime();
-      var newMessage = {
-        "Type": "Message",
-        "author": authorId,
-        "reciever": recieverId,
-        "createDate": date,
-        "status": false,
-        "group":0,
-        "title": "Message",
-        "content": message,
-        "read": false
-      }
-      var newMessage1 = addDocument('requestItems',newMessage);
-      var userData = readDocument('users',recieverId);
-      userData.mailbox.unshift(newMessage1._id);
-      writeDocument('users',userData);
-      return newMessage1;
-    }
-
+    // Michael
     function getUserByUserName(username, callback){
       db.collection('users').findOne({userName: username}, function(err, user){
         if(err){
@@ -417,7 +394,7 @@ MongoClient.connect(url, function(err, db) {
       });
     }
 
-    //Not Tested
+    // Michael
     function onRequest(username, authorId, callback){
       var date = new Date().getTime();
 
@@ -466,7 +443,7 @@ MongoClient.connect(url, function(err, db) {
         });
       }
 
-    //not Tested
+    // Michael
     app.post('/friendRequest', function(req, res){
       var body = req.body;
       onRequest(body.username, body.authorId, function(err, requestItem){
@@ -486,44 +463,39 @@ MongoClient.connect(url, function(err, db) {
 
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
-
+    // Add friend to friendList
     app.put('/user/:userid/friend/:friendname', function(req, res){
       var friendName = req.params.friendname;
-      var userId = parseInt(req.params.userid, 10);
-      var friendId = getUser(friendName);
+      var userId = new ObjectID(req.params.userid);
 
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(userId === fromUser){
+      getUserObjectByName(friendName, function(err, userObject){
+        if(err)
+          return sendDatabaseError(res, err);
 
-        var userData = readDocument('users',userId);
-        var friended = userData.friendList.indexOf(friendId);
-        if(friended == -1){
-          userData.friendList.push(friendId);
-          writeDocument('users', userData);
+        if(userObject === null)
+          return res.status(400).end();
+        if(userId === userObject._id){
+          db.collection('users').updateOne({_id:userId},{
+            $addToSet:userObject._id
+          }, function(err){
+            if(err)
+             return sendDatabaseError(res, err);
+
+            getUserData(userId, function(err, targetObject){
+              if(err)
+                return sendDatabaseError(res, err);
+
+              res.send(targetObject);
+            });
+          });
+        } else{
+          res.status(403).end();
         }
-
-        res.send(userData);
-      } else{
-        res.status(401).end();
-      }
+      });
 
 
     });
 
-    //Not Tested
-    app.post('/message', function(req, res){
-      var body = req.body;
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      if(body.AuthorId === fromUser){
-        var newMessage = onMessage(body.Message, body.AuthorId, body.RecieverId);
-        res.status(201);
-        res.set('Location', '/message/' + newMessage._id);
-        res.send(newMessage);
-      }
-      else {
-        res.status(401).end();
-      }
-    });
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function writeRequest(userId, recieverName, requestContent, titleEntry, groupName, typeEntry, callback){
@@ -703,8 +675,16 @@ MongoClient.connect(url, function(err, db) {
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
     app.get('/username/:name', function(req, res){
       var userName = req.params.name;
-      var userId = getUser(userName);
-      res.send(readDocument('users', userId));
+
+      getUserObjectByName(userName, function(err, userObject){
+        if(err){
+          return sendDatabaseError(res, err);
+        } else if(userObject === null){
+          return res.status(400).end();
+        }
+
+        res.send(userObject);
+      });
     });
 
 
@@ -1128,17 +1108,6 @@ MongoClient.connect(url, function(err, db) {
       res.status(401).end();
     }
     });
-
-    function getPostDataById(Id) {
-      var postData = readDocument('postItem', Id);
-
-      postData.author = readDocument('users', postData.author).fullName;
-      postData.commentThread.forEach((comment) => {
-        comment.author = readDocument('users', comment.author);
-      });
-      var value = {contents : postData};
-      return value;
-    }
 
     app.get('/feeditem/:feeditemid', function(req, res) {
       var feeditemid = req.params.feeditemid;

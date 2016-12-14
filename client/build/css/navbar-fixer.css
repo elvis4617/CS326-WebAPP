@@ -45,5 +45,11 @@
 
   .friend-div{
     margin-top: 170px;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+
+  .friend{
+    padding-top: 120px;
   }
 }
