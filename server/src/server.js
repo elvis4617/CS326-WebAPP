@@ -296,7 +296,7 @@ MongoClient.connect(url, function(err, db) {
           res.status(401).end();
         }
     });
-
+    //Update account info
     app.post('/userData/:userid', validate({body: userSchema}), function(req, res) {
       var userId = req.params.userid;
       var fromUser = getUserIdFromToken(req.get('Authorization'));

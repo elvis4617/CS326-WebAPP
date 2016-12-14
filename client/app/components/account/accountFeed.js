@@ -48,29 +48,31 @@ export default class AccountFeed extends React.Component {
 
   handleUpdateUserInfo(e) {
   e.preventDefault();
-  /*if(typeof this.props.name == 'undefined' ||
-      typeof this.props.email == 'undefined' ||
-      typeof this.props.grade == 'undefined' ||
-      typeof this.props.major == 'undefined' ||
-      typeof this.props.description == 'undefined')
-      alert("You must fill in all fields before commit any changes.");
-  else*/
+  var infoUpdated = false;
+  if(this.state.name.length === 0){
+    this.state.name = this.state.contents.fullName;
+  } else {infoUpdated = true}
+  if(this.state.email.length === 0){
+    this.state.email = this.state.contents.email;
+  } else {infoUpdated = true}
+  if(this.state.grade.length === 0){
+    this.state.grade = this.state.contents.grade;
+  } else {infoUpdated = true}
+  if(this.state.major.length === 0){
+    this.state.major = this.state.contents.major;
+  } else {infoUpdated = true}
+  if(this.state.description.length === 0){
+    this.state.description = this.state.contents.description;
+  } else {infoUpdated = true}
+  if(infoUpdated != true){
+    alert("Please fill in forms before submiting. Thanks!");
+    this.state.name = "";
+    this.state.email = "";
+    this.state.grade = "";
+    this.state.major = "";
+    this.state.description = "";
+  } else{
   if(confirm("Do you want to Submit?") == true){
-    if(this.state.name.length === 0){
-      this.state.name = this.state.contents.fullName;
-    }
-    if(this.state.email.length === 0){
-      this.state.email = this.state.contents.email;
-    }
-    if(this.state.grade.length === 0){
-      this.state.grade = this.state.contents.grade;
-    }
-    if(this.state.major.length === 0){
-      this.state.major = this.state.contents.major;
-    }
-    if(this.state.description.length === 0){
-      this.state.description = this.state.contents.description;
-    }
     updateUserInfo(this.props.user,
                    this.state.name,
                    this.state.email,
@@ -85,7 +87,13 @@ export default class AccountFeed extends React.Component {
     document.getElementById("grade").reset();
     document.getElementById("major").reset();
     document.getElementById("description").reset();
+    this.state.name = "";
+    this.state.email = "";
+    this.state.grade = "";
+    this.state.major = "";
+    this.state.description = "";
     this.refresh();
+    }
   }
   }
 
