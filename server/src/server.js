@@ -225,6 +225,7 @@ MongoClient.connect(url, function(err, db) {
       }
     });
 
+    //get user by ID
     function getUserData(user, callback){
       db.collection('users').findOne({
         _id:user
@@ -320,7 +321,6 @@ MongoClient.connect(url, function(err, db) {
         res.status(401).end();
       }
     });
-    var getCollection = database.getCollection;
 
     //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     function getUserObjectByName(userName, callback){
@@ -360,7 +360,6 @@ MongoClient.connect(url, function(err, db) {
             if(err){
               callback(err);
             }else{
-              console.log(data);
               callback(null, data);
             }
           });
@@ -522,7 +521,8 @@ MongoClient.connect(url, function(err, db) {
     });
 
 
-    //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+    //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
+
     app.put('/user/:userid/friend/:friendname', function(req, res){
       var friendName = req.params.friendname;
       var userId = parseInt(req.params.userid, 10);
@@ -722,7 +722,7 @@ MongoClient.connect(url, function(err, db) {
     }); //resolveUserObjects
    }); //app
 
-    //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+    //Andyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy look at this
     app.get('/username/:name', function(req, res){
       var userName = req.params.name;
       var userId = getUser(userName);
