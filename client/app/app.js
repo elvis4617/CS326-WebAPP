@@ -21,7 +21,7 @@ class LandingPage extends React.Component {
     return (
       <div>
         <Landing />
-        <Recommend user={1} />
+        <Recommend/>
         <Footer />
       </div>
     );
@@ -87,7 +87,7 @@ class FriendsPage extends React.Component {
   render() {
     return (
       <div>
-        <FriendsFeed user={1} />
+        <FriendsFeed user={"000000000000000000000001"} />
         <Footer />
       </div>
     )
@@ -120,7 +120,7 @@ class App extends React.Component {
     render() {
       return (
         <div>
-          <NavBar user={1} />
+          <NavBar user={"000000000000000000000001"} />
             <div className="container">
               <div className="row">
                 <div className="col-md-12">
@@ -157,6 +157,7 @@ class App extends React.Component {
         <Route path="/MyProfile" component={AccountPage}/>
         <Route path="/AddFriend" component={AddFriend} />
         <Route path="/SearchResult/:userId/:key" component={SearchResultPage}/>
+        <Route path="/SearchResult/:userId/" component={LandingPage}/>
         <Route path="/About" component={AboutPage}/>
         <Route path="/Faq" component={FaqPage}/>
         <Route path="/Contact" component={ContactPage}/>

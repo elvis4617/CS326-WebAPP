@@ -15,7 +15,7 @@ export default class Request extends React.Component{
       var callbackFunction = (updatedUnReadStatus) => {
       this.setState({read: updatedUnReadStatus});
       };
-      readRequest(this.state._id, 1, callbackFunction);
+      readRequest(this.state._id, this.props.user, callbackFunction);
     }
   }
 

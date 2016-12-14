@@ -19,6 +19,7 @@ MongoClient.connect(url, function(err, db) {
     var mongo_express = require('mongo-express/lib/middleware');
     // Import the default Mongo Express configuration
     var mongo_express_config = require('mongo-express/config.default.js');
+    var ResetDatabase = require('./resetdatabase');
 
 
 
@@ -102,7 +103,6 @@ MongoClient.connect(url, function(err, db) {
          var query = {
            $or: groupList.map((id) => { return {_id: id } })
          };
-         // Resolve 'like' counter
          db.collection('groups').find(query).toArray(function(err, groups) {
            if (err) {
              return callback(err);
@@ -675,66 +675,66 @@ MongoClient.connect(url, function(err, db) {
       }
     });
 
-    // Reset database.
+      // Reset database.
       app.post('/resetdb', function(req, res) {
       console.log("Resetting database...");
       // This is a debug route, so don't do any validation.
-      database.resetDatabase();
-      // res.send() sends an empty response with status code 200
-      res.send();
+      ResetDatabase(db, function() {
+        res.send();
+      });
       });
 
       //Elvis here
       //Elvis here
       //Elvis here
 
-      function getMatchGroup(search_key){
+      function getMatchGroup(search_key, callback){
         var groupList = [];
-        var keys = search_key.toLowerCase().split(" ");
-        for(var i = 1; i <= readDocument('dataBase', 2).List.length; i++){
-          var group = readDocument('groups', i);
-          var groupNameArr = group.groupName.toLowerCase().split(" ");
-          var index,index1;
-          for(index in groupNameArr){
-            for(index1 in keys){
-              if(groupNameArr[index].indexOf(keys[index1]) != -1){
-                groupList.push(group);
-                break;
-              }
-            }
+        var keys = search_key.split(" ");
+        var query = {
+          $or: keys.map((key) => { return {"groupName": { $regex : ".*" + key + ".*", '$options' : 'i'} } })
+        };
+        db.collection('groups').find(query).toArray(function(err, groups) {
+          if (err) {
+            return callback(err);
+          }else{
+            groups.forEach((group) => {
+              groupList.push(group);
+            });
+            var value = {contents : groupList};
+            callback(null, value);
           }
-        }
-        var value = {contents : groupList};
-        return value;
+      });
       }
 
       app.post('/search', function(req, res){
-        console.log(typeof(req.body));
         if (typeof(req.body) === 'string') {
           var queryText = req.body;
-          res.send(getMatchGroup(queryText));
+          getMatchGroup(queryText, function(err, data){
+            if(err){
+              res.status(404).end();
+            }else {
+              res.status(200).send(data);
+            }
+          });
         }else{
           res.status(400).end();
         }
       });
 
-      function getRecommendPostItem() {
-        // Get the User object with the id "user".
-        var postItem = [];
-        for(var i = 1; ; i++){
-          try{
-            postItem.push(readDocument('postItem', i));
-          }catch(e){
-            break;
+      function getRecommendPostItem(callback) {
+        db.collection('postItem').find().toArray(function(err, posts) {
+          if (err) {
+            return callback(err);
+          }else{
+            var userMaxList = getThreeMaxPost(posts);
+            while(userMaxList.indexOf(-1) != -1){
+              userMaxList.splice(-1, 1);
+            }
+            var value = {contents : userMaxList};
+            callback(null, value);
           }
-        }
-        var userMaxList = getThreeMaxPost(postItem);
-        while(userMaxList.indexOf(-1) != -1){
-          userMaxList.splice(-1, 1);
-        }
-
-        var value = {contents : userMaxList};
-        return value;
+        });
       }
 
       function getThreeMaxPost(postItemData){
@@ -784,64 +784,143 @@ MongoClient.connect(url, function(err, db) {
       }
 
       app.get('/postItem', function(req, res){
-        res.send(getRecommendPostItem());
+        getRecommendPostItem(function(err, data){
+          if(err){
+            res.status(500).end();
+          }else {
+            res.status(200).send(data);
+          }
+        });
       });
 
-      function getUnReadMsgs(user){
-        var userData = readDocument('users', user);
-        var unReadList = [];
-        if(userData.unread.length != 0){
-          for(var i = 0; i<userData.unread.length; i++){
-            var request = readDocument('requestItems', userData.unread[i]);
-            if(!request.read)
-              unReadList.push(request);
+      function getUnReadMsgs(user, callback){
+        var query = {
+          "_id": ObjectID(user)
+        };
+
+        db.collection('users').findOne(query, function(err, user) {
+          if (err) {
+            callback(err);
+          } else {
+            resolveUnReadObjects(user.unread, function(err, data){
+              var value = {contents : data.map((unread) => {
+                if(!unread.read) return unread;
+              })};
+              callback(null, value);
+            });
+
           }
-        }
-        var value = {contents : unReadList};
-        return value;
+        });
       }
 
-
-      function readRequest(requestItemId, userId) {
-        var requestItem = readDocument('requestItems', requestItemId);
-        requestItem.read = true;
-        writeDocument('requestItems', requestItem);
-        var user = readDocument('users', userId);
-        var unRead = user.unread;
-        if(unRead.indexOf(requestItemId) != -1){
-          user.unread.splice(unRead.indexOf(requestItemId),1);
-          writeDocument('users', user);
-        }
-        return true;
-      }
+      function resolveUnReadObjects(unReadList, callback) {
+         // Special case: userList is empty.
+         // It would be invalid to query the database with a logical OR
+         // query with an empty array.
+         if (unReadList.length === 0) {
+           callback(null, []);
+         } else {
+           // Build up a MongoDB "OR" query to resolve all of the user objects
+           // in the userList.
+           var query = {
+             $or: unReadList.map((id) => { return {_id: Object(id) } })
+           };
+           // Resolve 'like' counter
+           db.collection('requestItems').find(query).toArray(function(err, posts) {
+             if (err) {
+               return callback(err);
+             }
+             // Build a map from ID to user object.
+             // (so userMap["4"] will give the user with ID 4)
+             callback(null, posts);
+           });
+         }
+       }
 
       app.get('/unReadReq/:userId', function(req, res) {
-        var userid = parseInt(req.params.userId, 10);
-        var fromUser = getUserIdFromToken(req.get('Authorization'));
-        if (true) {
-          // Send response.
-          res.send(getUnReadMsgs(userid));
-        } else {
-          // 401: Unauthorized request.
-          res.status(401).end();
-        }
+         var userid = req.params.userId;
+         var fromUser = getUserIdFromToken(req.get('Authorization'));
+         if (userid == fromUser) {
+           // Send response.
+           getUnReadMsgs(userid, function(err, data){
+             if(err){
+               res.status(500).end();
+             }else{
+               res.send(data);
+             }
+           });
+         } else {
+           // 401: Unauthorized request.
+           res.status(401).end();
+         }
       });
 
-      app.put('/readRequest/:requestItemId/:userId', function(req, res) {
-      var fromUser = getUserIdFromToken(req.get('Authorization'));
-      var requestItemId = req.params.requestItemId;
-      var userid = req.params.userId;
-      var requestItems = readDocument('requestItems', requestItemId);
-      // Check that the requester is the author of this feed item.
-      if (fromUser === requestItems.reciever) {
-        // Check that the body is a string, and not something like a JSON object.
-        // We can't use JSON validation here, since the body is simply text!
-        res.send(readRequest(requestItemId, userid));
-      } else {
-        // 401: Unauthorized.
-        res.status(401).end();
+      function readRequest(requestItemId, userId, callback) {
+        var query = {
+          "_id": ObjectID(requestItemId)
+        };
+
+        db.collection('requestItems').updateOne(query, { $set: { read: true } }, function(err, result){
+          if (err) {
+            callback(err);
+          } else {
+            if (result.modifiedCount === 1) {
+            // Filter matched at least 1 document, which the database modified.
+              db.collection('users').findOne({ _id: ObjectID(userId) }, function(err, user){
+              if(err){
+                callback(err);
+              }else{
+                var unRead = user.unread;
+                for(var i = 0; i< unRead.length; i++){
+                  if(unRead[i].equals(ObjectID(requestItemId))){
+                    unRead.splice(i,1);
+                  }
+                }
+                db.collection('users').updateOne({ _id: ObjectID(userId) }, { $set: { unread: unRead } }, function(err, result){
+                  if (err) {
+                    callback(err);
+                  } else {
+                    if (result.modifiedCount === 1) {
+                      callback(null, true);
+                    }else{
+                      // Filter did not match any documents, so no change was made.
+                      // It is likely that this document was removed from the database prior
+                      // to the operation.
+                    }
+                  }
+                });
+              }
+              });
+            } else {
+              // Filter did not match any documents, so no change was made.
+              // It is likely that this document was removed from the database prior
+              // to the operation.
+              }
+          }
+        });
       }
-    });
+
+      app.put('/readRequest/:requestItemId/:userId', function(req, res) {
+        var fromUser = getUserIdFromToken(req.get('Authorization'));
+        var requestItemId = req.params.requestItemId;
+        var userid = req.params.userId;
+        db.collection('requestItems').findOne({ _id: ObjectID(requestItemId) }, function(err, request){
+          if (request.reciever.equals(ObjectID(fromUser))) {
+            // Check that the requester is the author of this feed item.
+            readRequest(requestItemId, userid, function(err, data){
+              if(err){
+                res.status(500).end();
+              }else{
+                res.send(data);
+              }
+            });
+          } else {
+            // 401: Unauthorized.
+            res.status(401).end();
+          }
+        });
+      });
+
     //Elvis not here
     //Elvis not here
     //Elvis not here
