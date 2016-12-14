@@ -11,9 +11,9 @@ export default class Mail extends React.Component {
     e.preventDefault();
     if(!this.props.status){
       if(this.props.type == "invite")
-        this.props.onAccept(this.props.reciever, this.props.group, this.props.mailId);
+        this.props.onAccept(this.props.reciever.fullName, this.props.group, this.props.mailId);
       else
-        this.props.onAccept(this.props.author, this.props.group, this.props.mailId);
+        this.props.onAccept(this.props.author.fullName, this.props.group, this.props.mailId);
     }
   }
 
@@ -21,7 +21,7 @@ export default class Mail extends React.Component {
     var acceptStatus = "Accept"
     if(this.props.status)
       acceptStatus = "Accepted";
-    if(this.props.author === "Someone")
+    if(this.props.author.fullName === "Someone")
       acceptStatus ="";
 
     return(
@@ -33,8 +33,8 @@ export default class Mail extends React.Component {
         <div className="media-body">
           <div className="media-body">
 
-              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"1"}>{this.props.author}</a>&lsquo;s {this.props.type} to
-              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"2"}> {this.props.reciever}</a>
+              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"1"}>{this.props.author.fullName}</a>&lsquo;s {this.props.type} to
+              <a type="button" data-toggle="modal" data-target={"#account-modal"+this.props.mailId+"2"}> {this.props.reciever.fullName}</a>
               <AccountDetailModal mailId={this.props.mailId + "1"}
                          author={this.props.author}>
               </AccountDetailModal>

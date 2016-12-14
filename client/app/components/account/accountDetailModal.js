@@ -1,5 +1,4 @@
 import React from 'react';
-import {getUserDataByName} from '../../server';
 
 export default class AccountDetailModal extends React.Component {
 
@@ -11,9 +10,9 @@ export default class AccountDetailModal extends React.Component {
   }
 
   refresh() {
-    getUserDataByName(this.props.author, (userData) => {
-    this.setState({contents:userData});
-  });
+
+    this.setState({contents:this.props.author});
+
  }
 
   componentDidMount() {
@@ -40,7 +39,7 @@ export default class AccountDetailModal extends React.Component {
                                 <img className="profpic" src = "img/testProfilePic.jpg"/>
                               </div>
                               <div className="media-body">
-                                <h2>{this.state.contents.userName}</h2>
+                                <h2>{this.props.author.userName}</h2>
                               </div>
                             </div>
                           </div>
@@ -49,34 +48,45 @@ export default class AccountDetailModal extends React.Component {
                         <div className="row info">
                           <h4>User Information:</h4>
                           <div className="col-md-12">
-                            <label>Full name:</label>{this.state.contents.fullName}
+                            <label>Full name:</label>{this.props.author.fullName}
                           </div>
                         </div>
 
                         <div className="row text">
                           <div className="col-md-12">
-                            <label>E-mail:</label>{this.state.contents.email}
+                            <label>E-mail:</label>{this.props.author.email}
                           </div>
                         </div>
 
                         <div className="row text">
                           <div className="col-md-5">
-                            <label>Grade:</label>{this.state.contents.grade}
+                            <label>Grade:</label>{this.props.author.grade}
                           </div>
                           <div className="col-md-7">
-                            <label>Major:</label>{this.state.contents.major}
+                            <label>Major:</label>{this.props.author.major}
                           </div>
                         </div>
 
                         <div className="row text">
                           <div className="col-md-12">
-                            <label>Description:</label>{this.state.contents.description}
+                            <label>Description:</label>{this.props.author.description}
                           </div>
                         </div>
 
                         <div className="row text">
                           <div className="col-md-12">
-                            <label>Group:</label>{this.state.contents.groupList}
+                            <label >Group:</label>
+                            {
+                              this.props.author.groupList.map((group, i) => {
+                                return(
+                                  <span key={i}>
+                                  {" " + i + "." + group.groupName}
+                                </span>
+                                )
+                              })
+
+
+                            }
                           </div>
                         </div>
                       </div>

@@ -4,7 +4,7 @@
 //eyJpZCI6MX0=
 
 // for 'id: 1'
-var token = 'eyJpZCI6MX0=';
+var token = 'eyJpZCI6IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSJ9';
 /**
 * Properly configure+send an XMLHttpRequest with error handling,
 * authorization token, and other needed properties.
@@ -230,4 +230,16 @@ export function getPostDataById(Id, cb) {
   sendXHR('GET', '/feeditem/' + Id, undefined, (xhr) => {
     cb(JSON.parse(xhr.responseText));
   });
+}
+
+
+export function postReply(user, contents, Id, cb){
+  sendXHR('POST', '/thread/comments', {
+    author: user,
+    contents: contents,
+    threadid: Id
+  }, (xhr) => {
+    // Return the new status update.
+    cb(JSON.parse(xhr.responseText));
+});
 }

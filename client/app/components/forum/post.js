@@ -13,7 +13,9 @@ export default class Post extends React.Component{
     return(
       <tr>
         <th colSpan = "2" className = "thread text-left"><a data-toggle = "modal" data-target={"#thread-modal"+this.state._id} href="#">{this.state.title}</a>
-          <ThreadModal id = {this.state._id}>
+          <ThreadModal id = {this.state._id}
+                       commentThread = {this.state.commentThread}
+                       user = {1}>
           </ThreadModal>
         </th>
         <th className = "cell-stat text-center"><a className = "name" data-toggle="modal" data-target={"#account-modal"+this.state._id} href = "#">{this.state.author.fullName}</a>

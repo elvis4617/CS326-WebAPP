@@ -10,7 +10,7 @@ export default class NewCommentBox extends React.Component{
 
   handlePost(e){
     e.preventDefault();
-    var replyContent = this.state.value2.trim();
+    var replyContent = this.state.value.trim();
     if (replyContent !== ""){
       this.props.onPost(replyContent);
       this.setState({value: ""});
@@ -18,7 +18,7 @@ export default class NewCommentBox extends React.Component{
   }
 
   handleChange(e){
-    e.preventDefault();
+    // e.preventDefault();
     this.setState({value: e.target.value});
   }
 
@@ -29,6 +29,7 @@ export default class NewCommentBox extends React.Component{
               <h2 className = "pull-left"> Reply to Thread </h2>
               <div className = "thread-body-container">
                 <textarea className="comment-box"
+                          value = {this.state.value}
                           onChange={(e) => this.handleChange(e)}/>
               </div>
               <div className = "submit-button">
