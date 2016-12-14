@@ -345,6 +345,7 @@ MongoClient.connect(url, function(err, db) {
     }
 
 
+    // Michael / Elvis
     function getFriendList(userid, callback) {
       //get user with given id
       db.collection('users').findOne({ _id: ObjectID(userid)}, function(err, user) {
@@ -367,6 +368,7 @@ MongoClient.connect(url, function(err, db) {
     });
   }
 
+    // Michael
     app.get('/friend/:userid', function(req, res) {
       var userid = req.params.userid;
       getFriendList(userid, function(err, friends){
@@ -386,14 +388,15 @@ MongoClient.connect(url, function(err, db) {
     });
 
 
-    // not Tested, should be onhold, future funationality
+    // Michael
     function onMessage(message, authorId, recieverId, callback){
       var date = new Date().getTime();
         var authorObjectID = new ObjectID(authorId);
+        var recieverObjectID = new ObjectID(recieverId)
         var newRequest ={
           "type":'Message',
           "author": authorObjectID,
-          "reciever": recieverId,
+          "reciever": recieverObjectID,
           "createDate":date,
           "status": false,
           "group":new ObjectID("000000000000000000000001"),
@@ -408,7 +411,7 @@ MongoClient.connect(url, function(err, db) {
             }
             newRequest._id = result.insertedId;
 
-            db.collection('users').updateOne({_id: recieverId},
+            db.collection('users').updateOne({_id: recieverObjectID},
               {
                 $addToSet:{
                   mailbox: newRequest._id
@@ -417,17 +420,12 @@ MongoClient.connect(url, function(err, db) {
               if(err){
                 return callback(err);
               }
-              getRequestItem(newRequest._id, function(err, requestItem){
-                if(err){
-                  callback (err);
-                }
-                callback(err, requestItem)
-              });
+              callback(null, newRequest._id)
             });
           });
         }
 
-      //Not Tested
+      // Michael
       app.post('/message', function(req, res){
         var body = req.body;
         onMessage(body.Message, body.AuthorId, body.RecieverId, function(err, requestItem){
@@ -445,6 +443,7 @@ MongoClient.connect(url, function(err, db) {
         });
       });
 
+    // Michael
     function getUserByUserName(username, callback){
       db.collection('users').findOne({userName: username}, function(err, user){
         if(err){
@@ -455,7 +454,7 @@ MongoClient.connect(url, function(err, db) {
       });
     }
 
-    //Not Tested
+    // Michael
     function onRequest(username, authorId, callback){
       var date = new Date().getTime();
 
@@ -504,7 +503,7 @@ MongoClient.connect(url, function(err, db) {
         });
       }
 
-    //not Tested
+    // Michael
     app.post('/friendRequest', function(req, res){
       var body = req.body;
       onRequest(body.username, body.authorId, function(err, requestItem){
