@@ -15,6 +15,7 @@ MongoClient.connect(url, function(err, db) {
     var postThreadSchema = require('./schemas/thread.json');
     var userSchema = require('./schemas/user.json');
     var commentSchema = require('./schemas/comment.json');
+    var ResetDatabase = require('./resetdatabase');
 
     var mongo_express = require('mongo-express/lib/middleware');
     // Import the default Mongo Express configuration
@@ -676,13 +677,12 @@ MongoClient.connect(url, function(err, db) {
     });
 
     // Reset database.
-      app.post('/resetdb', function(req, res) {
+    app.post('/resetdb', function(req, res) {
       console.log("Resetting database...");
-      // This is a debug route, so don't do any validation.
-      database.resetDatabase();
-      // res.send() sends an empty response with status code 200
-      res.send();
+      ResetDatabase(db, function() {
+        res.send();
       });
+    });
 
       //Elvis here
       //Elvis here
