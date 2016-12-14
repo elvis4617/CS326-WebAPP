@@ -931,7 +931,7 @@ MongoClient.connect(url, function(err, db) {
           res.status(400).send("Could not look up forum for user " + userid);
         } else {
           // Send data.
-          console.log(forumData);
+          //console.log(forumData);
           res.send(forumData);
         }
       });
@@ -988,6 +988,7 @@ MongoClient.connect(url, function(err, db) {
 
     function getPostDataById(Id) {
       var postData = readDocument('postItem', Id);
+
       postData.author = readDocument('users', postData.author).fullName;
       postData.commentThread.forEach((comment) => {
         comment.author = readDocument('users', comment.author);
@@ -997,8 +998,22 @@ MongoClient.connect(url, function(err, db) {
     }
 
     app.get('/feeditem/:feeditemid', function(req, res) {
-      var userid = req.params.feeditemid;
-      res.send(getPostDataById(userid));
+      var feeditemid = req.params.feeditemid;
+      getForumItem(new ObjectID(feeditemid), function(err, forumItem) {
+        // console.log("forum data: " +  forumItem);
+        if (err) {
+      // A database error happened.
+      // Internal Error: 500.
+        res.status(500).send("Database error: " + err);
+      } else if (forumItem === null) {
+        // Couldn't find the feed in the database.
+        res.status(400).send("Could not look up post");
+      } else {
+        // Send data.
+        console.log(forumItem);
+        res.send(forumItem);
+        }
+      });
     });
 
 

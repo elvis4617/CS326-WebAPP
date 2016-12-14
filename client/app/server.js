@@ -232,6 +232,12 @@ export function getPostDataById(Id, cb) {
   });
 }
 
+export function getForumItem(Id, cb) {
+  sendXHR('GET', '/feeditem/' + Id, undefined, (xhr) => {
+    cb(JSON.parse(xhr.responseText));
+  });
+}
+
 
 export function postReply(user, contents, Id, cb){
   sendXHR('POST', '/thread/comments', {
