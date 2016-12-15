@@ -10,10 +10,6 @@ export default class friend extends React.Component {
 
   render() {
     var data = this.state;
-<<<<<<< HEAD
-    //console.log(data);
-=======
->>>>>>> a234ec8d31ae220df0fba240a6de518e57f97cb7
     return (
       <div className ="row">
         <div className ="col-md-12">
