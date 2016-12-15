@@ -1,7 +1,5 @@
-# Startup Product: Client Side
+# ToGather: Client side
 
-This repository will hold the *client side* of your product. The client
-side of your product runs in the browser.
+This repository will hold the *client side* of your product.
 
-Problems:
-  * Navigation bar wrongly display (Logo SearchField) after the screen size getting smaller
+The client side of your product runs in the browser.
