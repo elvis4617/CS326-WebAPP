@@ -10,3 +10,5 @@
 4. Potential Bug: some unexpected invalid http request will break the server.
 
 5. Any social media icons except github was not in use on purposes, only direct to index page.
+
+6. Textarea does not clear after posting new thread.
