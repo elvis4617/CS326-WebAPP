@@ -1,6 +1,31 @@
 import React from 'react';
 
 export default class About extends React.Component{
+
+  elvisGithubClick(e){
+    e.preventDefault();
+    window.open("https://github.com/elvis4617");
+  }
+
+  andyGithubClick(e){
+    e.preventDefault();
+    window.open("https://github.com/theLauA");
+  }
+  jpobrienGithubClick(e){
+    e.preventDefault();
+    window.open("https://github.com/Jpobrien");
+  }
+
+  minxinGithubClick(e){
+    e.preventDefault();
+    window.open("https://github.com/6hwl");
+  }
+
+  michaelGithubClick(e){
+    e.preventDefault();
+    window.open("https://github.com/mschmittlein413");
+  }
+
   render(){
     return(
       <div className="container">
@@ -45,7 +70,7 @@ export default class About extends React.Component{
                             </li>
                             <li><a href="#"><i className="fa fa-twitter"></i></a>
                             </li>
-                            <li><a href="#"><i className="fa fa-github"></i></a>
+                            <li><a href="#" onClick={(e) => this.elvisGithubClick(e)}><i className="fa fa-github"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -66,7 +91,7 @@ export default class About extends React.Component{
                             </li>
                             <li><a href="#"><i className="fa fa-twitter"></i></a>
                             </li>
-                            <li><a href="#"><i className="fa fa-github"></i></a>
+                            <li><a href="#" onClick={(e) => this.andyGithubClick(e)}><i className="fa fa-github"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -87,7 +112,7 @@ export default class About extends React.Component{
                             </li>
                             <li><a href="#"><i className="fa fa-twitter"></i></a>
                             </li>
-                            <li><a href="#"><i className="fa fa-github"></i></a>
+                            <li><a href="#" onClick={(e) => this.minxinGithubClick(e)}><i className="fa fa-github"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -108,7 +133,7 @@ export default class About extends React.Component{
                             </li>
                             <li><a href="#"><i className="fa fa-twitter"></i></a>
                             </li>
-                            <li><a href="#"><i className="fa fa-github"></i></a>
+                            <li><a href="#" onClick={(e) => this.michaelGithubClick(e)}><i className="fa fa-github"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -116,12 +141,12 @@ export default class About extends React.Component{
             </div>
             <div className="col-md-4 text-center">
                 <div className="thumbnail">
-                    <img className="img-responsive" src="http://placehold.it/750x450" alt=""/>
+                    <img className="img-responsive developer-icon" src="img/jpobrien.png" alt=""/>
                     <div className="caption">
                         <h3>John O&#39;Brien<br/>
                             <small>Developer</small>
                         </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
+                        <p>A mystery guy.</p>
                         <ul className="list-inline">
                             <li><a href="#"><i className="fa fa-facebook"></i></a>
                             </li>
@@ -129,7 +154,7 @@ export default class About extends React.Component{
                             </li>
                             <li><a href="#"><i className="fa fa-twitter"></i></a>
                             </li>
-                            <li><a href="#"><i className="fa fa-github"></i></a>
+                            <li><a href="#" onClick={(e) => this.jpobrienGithubClick(e)}><i className="fa fa-github"></i></a>
                             </li>
                         </ul>
                     </div>

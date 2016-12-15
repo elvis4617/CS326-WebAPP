@@ -2,6 +2,12 @@ import React from 'react';
 import { Link} from 'react-router';
 
 export default class Footer extends React.Component{
+
+  githubClick(e){
+    e.preventDefault();
+    window.open("https://github.com/elvis4617/ToGather");
+  }
+
   render(){
     return(
       <div className="wrapper">
@@ -11,7 +17,7 @@ export default class Footer extends React.Component{
           <a href="#"><i className="fa fa-facebook"></i></a>
           <a href="#"><i className="fa fa-twitter"></i></a>
           <a href="#"><i className="fa fa-linkedin"></i></a>
-          <a href="#"><i className="fa fa-github"></i></a>
+          <a href="#" onClick={(e) => this.githubClick(e)}><i className="fa fa-github"></i></a>
         </div>
 
         <div className="footer-center">
